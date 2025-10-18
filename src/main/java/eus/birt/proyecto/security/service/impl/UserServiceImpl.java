@@ -8,6 +8,7 @@ import eus.birt.proyecto.dto.UsuarioDTO;
 import eus.birt.proyecto.model.UsuarioEntity;
 import eus.birt.proyecto.payload.response.MensajeResponse;
 import eus.birt.proyecto.security.persistence.UserRepository;
+import eus.birt.proyecto.security.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

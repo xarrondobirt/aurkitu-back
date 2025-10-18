@@ -2,12 +2,11 @@ package eus.birt.proyecto.model;
 
 import java.time.Instant;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entidad que mapea la tabla usuarios
+ * Entidad que mapea la tabla usuario
  */
 @Getter
 @Setter
@@ -26,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 public class UsuarioEntity {
 
 	@Id
@@ -42,13 +41,13 @@ public class UsuarioEntity {
 	private String email;
 
 	@NotBlank
-	@Column(name = "upassword")
+	@Column(name = "password")
 	private String password;
 
 	@Column(name = "last_updated_by")
-	private Instant updatedBy;
+	private final Instant updatedBy = Instant.now();
 
 	@Column(name = "created_by")
-	private Instant createdBy;
+	private final Instant createdBy = Instant.now();
 
 }

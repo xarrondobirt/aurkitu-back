@@ -1,4 +1,4 @@
-package eus.birt.proyecto.security.service.impl;
+package eus.birt.proyecto.security.service;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
 import eus.birt.proyecto.exception.UnauthorizedException;
