@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
+  <!-- INCLUYE LOS CONVERSORES DE SPRING BOOT -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 	 
 	  <property name="APP_NAME" value="proy01" />
 	  <property name="COMPONENT_NAME" value="applicacion" />
-	  <property name="LOG_PATTERN" value="[%d{ISO8601}][${hostName}][%p][${APP_NAME}][${COMPONENT_NAME}][%t][${PID}][%c{1}:%L][%X{userLogin}][%X{iporigen}] %m%n" />
+	 <property name="LOG_PATTERN" value="%clr([%d{ISO8601}][%p][${APP_NAME}][%c{1}] %m){green:INFO, red:ERROR}%n" />
 	  <property name="LOG_PATH" value="./datos/log" />
 	 <appender name="Console"
         class="ch.qos.logback.core.ConsoleAppender">        

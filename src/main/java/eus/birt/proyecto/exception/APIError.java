@@ -27,16 +27,16 @@ public class APIError {
 	/**
 	 * Constructor APIError
 	 *
-	 * @param i                  Código de estado HTTP.
+	 * @param status             Código de estado HTTP.
 	 * @param error              Tipo de error.
 	 * @param message            Mensaje descriptivo del error.
 	 * @param httpServletRequest HttpServletRequest
 	 */
-	public APIError(int i, String error, String message, HttpServletRequest httpServletRequest) {
+	public APIError(int status, String error, String message, HttpServletRequest httpServletRequest) {
 		super();
 
 		this.setTimestamp(ZonedDateTime.now());
-		this.status = i;
+		this.status = status;
 		this.error = error;
 		this.message = message;
 		this.path = buildPath(httpServletRequest);
