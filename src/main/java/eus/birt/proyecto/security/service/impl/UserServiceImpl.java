@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
+import eus.birt.proyecto.exception.UnauthorizedException;
 import eus.birt.proyecto.model.UsuarioEntity;
 import eus.birt.proyecto.payload.response.MensajeResponse;
 import eus.birt.proyecto.security.persistence.UserRepository;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 		// Verificar si el email ya existe
 		if (userRepo.existsByEmail(usuarioDTO.getEmail())) {
-			throw new RuntimeException("El email ya está registrado");
+			throw new UnauthorizedException("El email ya está registrado");
 		}
 
 		// Encriptar password con MD5
