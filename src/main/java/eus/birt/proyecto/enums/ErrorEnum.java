@@ -13,7 +13,11 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorEnum {
 	EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email ya registrado"),
 	USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Alias no disponible"),
-	EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Alias no disponible");
+	EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Alias no disponible"),
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Usuario no encontrado"),
+	USERNAME_ALREADY_VERIFIED(HttpStatus.CONFLICT, "Usuario ya verificado"),
+	VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "Código de verificación no encontrado"),
+	VERIFICATION_CODE_EXPIRED(HttpStatus.GONE, "Código de verificación caducado");
 
 	private final HttpStatus status;
 	private final String message;

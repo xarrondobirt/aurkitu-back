@@ -1,5 +1,7 @@
 package eus.birt.proyecto.security.service.impl;
 
+import java.time.Instant;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -9,6 +11,8 @@ import eus.birt.proyecto.exception.CustomResponseStatusException;
 import eus.birt.proyecto.mail.service.MailService;
 import eus.birt.proyecto.model.CodigoVerificacionEntity;
 import eus.birt.proyecto.model.UsuarioEntity;
+import eus.birt.proyecto.payload.request.RegistroUsuarioRequest;
+import eus.birt.proyecto.payload.response.MensajeResponse;
 import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
 import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
 import eus.birt.proyecto.security.persistence.UserRepository;
@@ -63,5 +67,35 @@ public class UserServiceImpl implements UserService {
 		mailService.enviarCodigoVerificacion(usuario.getEmail(), codigo);
 
 		return new RegistroUsuarioResponse(usuarioNuevo.getId(), Constantes.USUARIO_SIN_VERIFICAR);
+	}
+
+	@Override
+	@Transactional
+	public MensajeResponse verificarCodigo(RegistroUsuarioRequest request) {
+		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
+
+		UsuarioEntity usuario = userRepo.findById(request.getIdUsuario())
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.USER_NOT_FOUND));
+
+		// Verificar si ya está verificado
+		if (usuario.isVerificado()) {
+			throw new CustomResponseStatusException(ErrorEnum.USERNAME_ALREADY_VERIFIED);
+		}
+
+		// Buscar código de verificación
+		CodigoVerificacionEntity codigo = codVerificacionRepo
+				.findByUsuarioIdAndCodigo(request.getIdUsuario(), request.getCodigoVerificacion())
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.VERIFICATION_CODE_NOT_FOUND));
+
+		// Verificar expiración
+		if (codigo.getExpirationDate().isBefore(Instant.now())) {
+			throw new CustomResponseStatusException(ErrorEnum.VERIFICATION_CODE_EXPIRED);
+		}
+
+		// Marcar usuario como verificado
+		usuario.setVerificado(true);
+		userRepo.save(usuario);
+
+		return new MensajeResponse(Constantes.EMAIL_VERIFICADO);
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
+import eus.birt.proyecto.payload.request.RegistroUsuarioRequest;
+import eus.birt.proyecto.payload.response.MensajeResponse;
 import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
 import eus.birt.proyecto.security.service.UserService;
 import jakarta.validation.Valid;
@@ -39,5 +41,12 @@ public class AuthController {
 
 		return new ResponseEntity<>(userService.registrarUsuario(usuarioDTO), HttpStatus.OK);
 
+	}
+
+	@PostMapping("/verificar-email")
+	public ResponseEntity<MensajeResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
+		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL");
+
+		return ResponseEntity.ok(userService.verificarCodigo(request));
 	}
 }
