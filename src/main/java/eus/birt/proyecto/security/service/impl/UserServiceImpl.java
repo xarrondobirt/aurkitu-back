@@ -1,15 +1,21 @@
 package eus.birt.proyecto.security.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
-import eus.birt.proyecto.exception.UnauthorizedException;
+import eus.birt.proyecto.enums.ErrorEnum;
+import eus.birt.proyecto.exception.CustomResponseStatusException;
+import eus.birt.proyecto.model.CodigoVerificacionEntity;
 import eus.birt.proyecto.model.UsuarioEntity;
 import eus.birt.proyecto.payload.response.MensajeResponse;
+import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
 import eus.birt.proyecto.security.persistence.UserRepository;
 import eus.birt.proyecto.security.service.UserService;
+import eus.birt.proyecto.utils.Constantes;
+import eus.birt.proyecto.utils.GeneradorCodigos;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,18 +23,25 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepo;
+	private final UserRepository userRepo;
+	private final CodigoVerificacionRepository codVerificacionRepo;
 
 	@Override
+	@Transactional
 	public MensajeResponse registrarUsuario(UsuarioDTO usuarioDTO) {
 		log.info("AUTH - SERVICE - REGISTRO");
 
 		// Verificar si el email ya existe
 		if (userRepo.existsByEmail(usuarioDTO.getEmail())) {
-			throw new UnauthorizedException("El email ya está registrado");
+			throw new CustomResponseStatusException(ErrorEnum.EMAIL_ALREADY_EXISTS);
+		}
+
+		// Verificar si el username está disponible
+		if (userRepo.existsByUsername(usuarioDTO.getUsername())) {
+			throw new CustomResponseStatusException(ErrorEnum.USERNAME_ALREADY_EXISTS);
 		}
 
 		// Encriptar password con MD5
@@ -36,10 +49,14 @@ public class UserServiceImpl implements UserService {
 
 		// Crear y guardar usuario
 		UsuarioEntity usuario = UsuarioEntity.builder().username(usuarioDTO.getUsername()).email(usuarioDTO.getEmail())
-				.password(passwordMd5).build();
+				.password(passwordMd5).verificado(false).build();
 
-		userRepo.save(usuario);
+		UsuarioEntity usuarioNuevo = userRepo.save(usuario);
 
-		return new MensajeResponse("Usuario registrado correctamente");
+		String codigo = GeneradorCodigos.generarCodigo(6);
+
+		codVerificacionRepo.save(CodigoVerificacionEntity.builder().codigo(codigo).usuario(usuarioNuevo).build());
+
+		return new MensajeResponse(Constantes.USUARIO_SIN_VERIFICAR);
 	}
 }

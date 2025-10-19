@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 import eus.birt.proyecto.exception.APIError;
-import eus.birt.proyecto.utils.ConstantesError;
+import eus.birt.proyecto.utils.Constantes;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<APIError> handleResponseStatus(ResponseStatusException ex, HttpServletRequest request) {
-		log.error(ConstantesError.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
+		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
 		APIError error = new APIError(status.value(), status.getReasonPhrase(), ex.getReason(), request);
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<APIError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
-		log.error(ConstantesError.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
+		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		// Coger solo el mensaje personalizado de las anotaciones de los parámetros
 		String errorMessage = ex.getBindingResult().getFieldErrors().stream().map(error -> error.getDefaultMessage())
@@ -69,10 +69,10 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<APIError> handleRuntime(RuntimeException ex, HttpServletRequest request) {
-		log.error(ConstantesError.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
+		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		APIError error = new APIError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getMessage(), request);
+				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex.getLocalizedMessage(), request);
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

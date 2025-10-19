@@ -1,6 +1,7 @@
 package eus.birt.proyecto.model;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -8,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,7 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entidad que mapea la tabla usuario
+ * Entidad que mapea la tabla codigos_verificacion
  */
 @Getter
 @Setter
@@ -26,33 +29,29 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "usuario")
-public class UsuarioEntity {
+@Table(name = "codigos_verificacion")
+public class CodigoVerificacionEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotBlank
-	@Size(max = 20)
-	private String username;
+	@OneToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private UsuarioEntity usuario;
 
 	@NotBlank
-	@Column(name = "email")
-	private String email;
+	@Size(max = 6)
+	@Column(name = "code")
+	private String codigo;
 
-	@NotBlank
-	@Column(name = "password")
-	private String password;
-
-	@Column(name = "last_update_date")
-	private final Instant updateDate = Instant.now();
-
+	@Nonnull
 	@Column(name = "create_date")
 	private final Instant createDate = Instant.now();
 
 	@Nonnull
-	@Column(name = "verificado")
-	private boolean verificado;
+	@Column(name = "expiration_date")
+	private final Instant expirationDate = Instant.now().plus(1, ChronoUnit.HOURS); // El código expira una hora después
+																					// de crearlo
 
 }
