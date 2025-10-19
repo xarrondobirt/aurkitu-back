@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
-import eus.birt.proyecto.payload.response.MensajeResponse;
+import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
 import eus.birt.proyecto.security.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class AuthController {
 	 * @return Mensaje informativo
 	 */
 	@PostMapping("/registro")
-	public ResponseEntity<MensajeResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+	public ResponseEntity<RegistroUsuarioResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
 		log.info("AUTH - CONTROLLER - REGISTRO");
 
 		return new ResponseEntity<>(userService.registrarUsuario(usuarioDTO), HttpStatus.OK);

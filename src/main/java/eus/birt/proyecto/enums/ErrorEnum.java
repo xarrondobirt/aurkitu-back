@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorEnum {
 	EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email ya registrado"),
-	USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Alias no disponible");
+	USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Alias no disponible"),
+	EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Alias no disponible");
 
 	private final HttpStatus status;
 	private final String message;

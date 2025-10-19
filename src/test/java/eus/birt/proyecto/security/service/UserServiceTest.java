@@ -17,8 +17,10 @@ import org.springframework.util.DigestUtils;
 import eus.birt.proyecto.dto.UsuarioDTO;
 import eus.birt.proyecto.enums.ErrorEnum;
 import eus.birt.proyecto.exception.CustomResponseStatusException;
+import eus.birt.proyecto.mail.service.MailService;
 import eus.birt.proyecto.model.UsuarioEntity;
-import eus.birt.proyecto.payload.response.MensajeResponse;
+import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
+import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
 import eus.birt.proyecto.security.persistence.UserRepository;
 import eus.birt.proyecto.security.service.impl.UserServiceImpl;
 import eus.birt.proyecto.utils.Constantes;
@@ -28,6 +30,12 @@ class UserServiceTest {
 
 	@Mock
 	private UserRepository userRepo;
+
+	@Mock
+	private CodigoVerificacionRepository codVerificacionRepo;
+
+	@Mock
+	private MailService mailService;
 
 	@InjectMocks
 	private UserServiceImpl userService;
@@ -55,11 +63,11 @@ class UserServiceTest {
 		Mockito.when(userRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
 		// Act
-		MensajeResponse resultado = userService.registrarUsuario(usuarioDTO);
+		RegistroUsuarioResponse resultado = userService.registrarUsuario(usuarioDTO);
 
 		// Assert
 		assertNotNull(resultado);
-		assertEquals(Constantes.USUARIO_REGISTRADO_OK, resultado.getMensaje());
+		assertEquals(Constantes.USUARIO_SIN_VERIFICAR, resultado.getMensaje());
 		Mockito.verify(userRepo).existsByEmail("birt@birt.eus");
 		Mockito.verify(userRepo).existsByUsername("birt");
 		Mockito.verify(userRepo).save(any(UsuarioEntity.class));
