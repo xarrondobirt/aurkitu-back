@@ -36,4 +36,4 @@ build/
 ### Eclipse ###
 .metadata/
 
-datos/log/
+datos
