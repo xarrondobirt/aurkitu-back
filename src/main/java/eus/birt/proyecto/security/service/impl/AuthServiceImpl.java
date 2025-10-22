@@ -1,22 +1,30 @@
 package eus.birt.proyecto.security.service.impl;
 
 import java.time.Instant;
+import java.util.Set;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import eus.birt.proyecto.dto.UsuarioDTO;
 import eus.birt.proyecto.enums.ErrorEnum;
 import eus.birt.proyecto.exception.CustomResponseStatusException;
 import eus.birt.proyecto.mail.service.MailService;
 import eus.birt.proyecto.model.CodigoVerificacionEntity;
+import eus.birt.proyecto.model.RefreshTokenEntity;
 import eus.birt.proyecto.model.UsuarioEntity;
+import eus.birt.proyecto.payload.request.LoginRequest;
 import eus.birt.proyecto.payload.request.RegistroUsuarioRequest;
+import eus.birt.proyecto.payload.response.LoginResponse;
 import eus.birt.proyecto.payload.response.MensajeResponse;
 import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
+import eus.birt.proyecto.security.jwt.JwtUtils;
 import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
+import eus.birt.proyecto.security.persistence.RefreshTokenRepository;
 import eus.birt.proyecto.security.persistence.UserRepository;
-import eus.birt.proyecto.security.service.UserService;
+import eus.birt.proyecto.security.service.AuthService;
 import eus.birt.proyecto.utils.Constantes;
 import eus.birt.proyecto.utils.GeneradorCodigos;
 import jakarta.transaction.Transactional;
@@ -24,16 +32,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servicio que implementa la interfaz {@link UserService}
+ * Servicio que implementa la interfaz {@link AuthService}
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class AuthServiceImpl implements AuthService {
 
 	private final UserRepository userRepo;
 	private final CodigoVerificacionRepository codVerificacionRepo;
 	private final MailService mailService;
+	private final PasswordEncoder passwordEncoder;
+	private final RefreshTokenRepository refreshTokenRepo;
+	private final JwtUtils jwtUtils;
+
+	@Value("${eus.birt.proyecto.jwtRefreshExpirationMs}")
+	private int refreshTokenDurationMs;
 
 	@Override
 	@Transactional
@@ -50,12 +64,12 @@ public class UserServiceImpl implements UserService {
 			throw new CustomResponseStatusException(ErrorEnum.USERNAME_ALREADY_EXISTS);
 		}
 
-		// Encriptar password con MD5
-		String passwordMd5 = DigestUtils.md5DigestAsHex(usuarioDTO.getPassword().getBytes());
+		// Encriptar password
+		String passwordBcrypt = passwordEncoder.encode(usuarioDTO.getPassword());
 
 		// Crear y guardar usuario
 		UsuarioEntity usuario = UsuarioEntity.builder().username(usuarioDTO.getUsername()).email(usuarioDTO.getEmail())
-				.password(passwordMd5).verificado(false).build();
+				.password(passwordBcrypt).verificado(false).build();
 
 		UsuarioEntity usuarioNuevo = userRepo.save(usuario);
 
@@ -97,5 +111,58 @@ public class UserServiceImpl implements UserService {
 		userRepo.save(usuario);
 
 		return new MensajeResponse(Constantes.EMAIL_VERIFICADO);
+	}
+
+	@Override
+	public LoginResponse login(LoginRequest request) {
+		log.info("AUTH - SERVICE - LOGIN");
+
+		// Validar credenciales
+		UsuarioEntity usuario = userRepo.findByUsername(request.getUsername())
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.BAD_CREDENTIALS));
+
+		// Verificar la contraseña y si ya está verificado
+		if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword()) || !usuario.isVerificado()) {
+			throw new CustomResponseStatusException(ErrorEnum.BAD_CREDENTIALS);
+		}
+
+		// Generar access token
+		String accessToken = jwtUtils.generateAccessToken(usuario);
+
+		// Manejar refresh token
+		RefreshTokenEntity refreshToken = new RefreshTokenEntity();
+
+		refreshToken.setUsuario(usuario);
+		refreshToken.setExpiracion(Instant.now().plusMillis(refreshTokenDurationMs));
+		refreshToken.setToken(UUID.randomUUID().toString());
+
+		refreshTokenRepo.save(refreshToken);
+
+		// Actualizar último login
+//		usuario.setLastLogin(Instant.now());
+//		usuarioRepo.save(usuario);
+
+		return new LoginResponse(accessToken);
+	}
+
+	@Override
+	public void logout(String authHeader) {
+		log.info("AUTH - SERVICE - LOGOUT");
+
+		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
+			throw new CustomResponseStatusException(ErrorEnum.SESION_ERROR);
+		}
+
+		String accessToken = authHeader.substring(7);
+		Integer idUser = jwtUtils.getUserIdFromToken(accessToken);
+
+		UsuarioEntity usuario = userRepo.findById(idUser)
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.USER_NOT_FOUND));
+
+		Set<RefreshTokenEntity> refreshTokens = refreshTokenRepo.findByUsuarioId(usuario.getId());
+
+		if (!refreshTokens.isEmpty()) {
+			refreshTokenRepo.deleteAll(refreshTokens);
+		}
 	}
 }

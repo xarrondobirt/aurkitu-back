@@ -1,5 +1,7 @@
 package eus.birt.proyecto.security.persistence;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import eus.birt.proyecto.model.UsuarioEntity;
@@ -24,4 +26,12 @@ public interface UserRepository extends JpaRepository<UsuarioEntity, Integer> {
 	 * @return true si existe el username, false en caso contrario
 	 */
 	boolean existsByUsername(String username);
+
+	/**
+	 * Busca un usuario por su username
+	 * 
+	 * @param username Nombre del usuario
+	 * @return Un usuario si existe
+	 */
+	Optional<UsuarioEntity> findByUsername(String username);
 }

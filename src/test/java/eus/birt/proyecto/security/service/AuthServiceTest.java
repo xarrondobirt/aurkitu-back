@@ -22,11 +22,11 @@ import eus.birt.proyecto.model.UsuarioEntity;
 import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
 import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
 import eus.birt.proyecto.security.persistence.UserRepository;
-import eus.birt.proyecto.security.service.impl.UserServiceImpl;
+import eus.birt.proyecto.security.service.impl.AuthServiceImpl;
 import eus.birt.proyecto.utils.Constantes;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class AuthServiceTest {
 
 	@Mock
 	private UserRepository userRepo;
@@ -38,7 +38,7 @@ class UserServiceTest {
 	private MailService mailService;
 
 	@InjectMocks
-	private UserServiceImpl userService;
+	private AuthServiceImpl userService;
 
 	private UsuarioDTO usuarioDTO;
 	private UsuarioEntity usuarioEntity;

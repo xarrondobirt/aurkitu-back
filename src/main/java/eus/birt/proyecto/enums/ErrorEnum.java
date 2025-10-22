@@ -17,7 +17,9 @@ public enum ErrorEnum {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Usuario no encontrado"),
 	USERNAME_ALREADY_VERIFIED(HttpStatus.CONFLICT, "Usuario ya verificado"),
 	VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "Código de verificación no encontrado"),
-	VERIFICATION_CODE_EXPIRED(HttpStatus.GONE, "Código de verificación caducado");
+	VERIFICATION_CODE_EXPIRED(HttpStatus.GONE, "Código de verificación caducado"),
+	BAD_CREDENTIALS(HttpStatus.BAD_REQUEST, "Credenciales inválidas"),
+	SESION_ERROR(HttpStatus.UNAUTHORIZED, "Sesión no válida");
 
 	private final HttpStatus status;
 	private final String message;
