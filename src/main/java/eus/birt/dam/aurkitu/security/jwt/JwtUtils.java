@@ -1,4 +1,4 @@
-package eus.birt.proyecto.security.jwt;
+package eus.birt.dam.aurkitu.security.jwt;
 
 import java.util.Date;
 
@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import eus.birt.proyecto.enums.ErrorEnum;
-import eus.birt.proyecto.exception.CustomResponseStatusException;
-import eus.birt.proyecto.model.UsuarioEntity;
-import eus.birt.proyecto.utils.Constantes;
+import eus.birt.dam.aurkitu.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.exception.AurkituException;
+import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.utils.Constantes;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -73,7 +73,7 @@ public class JwtUtils {
 			Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseSignedClaims(authToken);
 		} catch (JwtException e) {
 			log.error(ErrorEnum.SESION_ERROR.getMessage(), e.getMessage());
-			throw new CustomResponseStatusException(ErrorEnum.SESION_ERROR);
+			throw new AurkituException(ErrorEnum.SESION_ERROR);
 		}
 
 		return bToken;

@@ -1,4 +1,4 @@
-package eus.birt.proyecto.model;
+package eus.birt.dam.aurkitu.model;
 
 import java.time.Instant;
 
@@ -27,7 +27,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "refresh_token")
 public class RefreshTokenEntity {
 
 	@Id
@@ -39,15 +39,15 @@ public class RefreshTokenEntity {
 	private UsuarioEntity usuario;
 
 	@NotBlank
-	@Column(name = "token")
+	@Column(name = "hashed_token")
 	private String token;
 
 	@Nonnull
-	@Column(name = "created_date")
+	@Column(name = "create_date")
 	private final Instant createDate = Instant.now();
 
 	@Nonnull
-	@Column(name = "fecha_expiracion")
+	@Column(name = "expiration_date")
 	private Instant expiracion;
 
 	/**
@@ -58,5 +58,4 @@ public class RefreshTokenEntity {
 	public boolean isExpirado() {
 		return this.expiracion.isBefore(Instant.now());
 	}
-
 }

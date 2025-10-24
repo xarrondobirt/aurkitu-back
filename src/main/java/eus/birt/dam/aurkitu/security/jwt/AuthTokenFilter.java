@@ -1,4 +1,4 @@
-package eus.birt.proyecto.security.jwt;
+package eus.birt.dam.aurkitu.security.jwt;
 
 import java.io.IOException;
 import java.util.List;

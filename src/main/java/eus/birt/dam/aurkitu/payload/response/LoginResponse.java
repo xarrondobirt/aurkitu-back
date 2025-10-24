@@ -1,4 +1,4 @@
-package eus.birt.proyecto.payload.response;
+package eus.birt.dam.aurkitu.payload.response;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

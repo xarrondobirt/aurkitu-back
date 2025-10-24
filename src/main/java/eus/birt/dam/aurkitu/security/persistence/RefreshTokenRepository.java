@@ -1,10 +1,10 @@
-package eus.birt.proyecto.security.persistence;
+package eus.birt.dam.aurkitu.security.persistence;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import eus.birt.proyecto.model.RefreshTokenEntity;
+import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
 
 /**
  * Repositorio para {@link RefreshTokenEntity}
