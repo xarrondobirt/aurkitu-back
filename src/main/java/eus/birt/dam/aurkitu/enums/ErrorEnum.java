@@ -1,4 +1,4 @@
-package eus.birt.proyecto.enums;
+package eus.birt.dam.aurkitu.enums;
 
 import org.springframework.http.HttpStatus;
 

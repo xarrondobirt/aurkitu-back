@@ -1,8 +1,7 @@
-package eus.birt.proyecto.model;
+package eus.birt.dam.aurkitu.model;
 
 import java.time.Instant;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,21 +37,20 @@ public class UsuarioEntity {
 	private String username;
 
 	@NotBlank
+	@Column(name = "hashed_password")
+	private String password;
+
+	@NotBlank
 	@Column(name = "email")
 	private String email;
 
-	@NotBlank
-	@Column(name = "password")
-	private String password;
+	@Column(name = "verificado")
+	private boolean verificado;
 
 	@Column(name = "last_update_date")
 	private final Instant updateDate = Instant.now();
 
 	@Column(name = "create_date")
 	private final Instant createDate = Instant.now();
-
-	@Nonnull
-	@Column(name = "verificado")
-	private boolean verificado;
 
 }

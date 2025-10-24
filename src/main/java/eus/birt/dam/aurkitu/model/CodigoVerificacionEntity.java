@@ -1,4 +1,4 @@
-package eus.birt.proyecto.model;
+package eus.birt.dam.aurkitu.model;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -51,7 +51,6 @@ public class CodigoVerificacionEntity {
 
 	@Nonnull
 	@Column(name = "expiration_date")
-	private final Instant expirationDate = Instant.now().plus(1, ChronoUnit.HOURS); // El código expira una hora después
-																					// de crearlo
+	private final Instant expirationDate = Instant.now().plus(1, ChronoUnit.HOURS);
 
 }

@@ -1,4 +1,4 @@
-package eus.birt.proyecto.mail.service.impl;
+package eus.birt.dam.aurkitu.mail.service.impl;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import eus.birt.proyecto.enums.ErrorEnum;
-import eus.birt.proyecto.exception.CustomResponseStatusException;
-import eus.birt.proyecto.mail.service.MailService;
-import eus.birt.proyecto.utils.Constantes;
+import eus.birt.dam.aurkitu.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.exception.AurkituException;
+import eus.birt.dam.aurkitu.mail.service.MailService;
+import eus.birt.dam.aurkitu.utils.Constantes;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +48,7 @@ public class MailServiceImpl implements MailService {
 
 		} catch (MessagingException e) {
 			log.error("Error enviando email a {}: {}", email, e.getMessage());
-			throw new CustomResponseStatusException(ErrorEnum.EMAIL_SEND_ERROR);
+			throw new AurkituException(ErrorEnum.EMAIL_SEND_ERROR);
 		}
-
 	}
 }

@@ -1,4 +1,4 @@
-package eus.birt.proyecto.utils;
+package eus.birt.dam.aurkitu.utils;
 
 import java.security.SecureRandom;
 

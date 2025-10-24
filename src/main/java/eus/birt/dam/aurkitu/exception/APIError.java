@@ -1,4 +1,4 @@
-package eus.birt.proyecto.exception;
+package eus.birt.dam.aurkitu.exception;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;

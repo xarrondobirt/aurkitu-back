@@ -1,4 +1,4 @@
-package eus.birt.proyecto.payload.response;
+package eus.birt.dam.aurkitu.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public final class MensajeResponse {
+
 	private String mensaje;
 }

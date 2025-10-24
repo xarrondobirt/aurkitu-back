@@ -1,10 +1,10 @@
-package eus.birt.proyecto.security.persistence;
+package eus.birt.dam.aurkitu.security.persistence;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import eus.birt.proyecto.model.CodigoVerificacionEntity;
+import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 
 /**
  * Repositorio para gestionar la entidad {@link CodigoVerificacionEntity}

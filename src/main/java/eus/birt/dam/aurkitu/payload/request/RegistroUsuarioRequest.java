@@ -1,4 +1,4 @@
-package eus.birt.proyecto.payload.request;
+package eus.birt.dam.aurkitu.payload.request;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;

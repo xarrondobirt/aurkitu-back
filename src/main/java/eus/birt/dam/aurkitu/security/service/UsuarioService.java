@@ -1,14 +1,14 @@
-package eus.birt.proyecto.security.service;
+package eus.birt.dam.aurkitu.security.service;
 
-import eus.birt.proyecto.dto.UsuarioDTO;
-import eus.birt.proyecto.payload.request.RegistroUsuarioRequest;
-import eus.birt.proyecto.payload.response.MensajeResponse;
-import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
+import eus.birt.dam.aurkitu.dto.UsuarioDTO;
+import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
+import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 
 /**
  * Interfaz que define las operaciones relacionadas con la gestión de usuarios
  */
-public interface UserService {
+public interface UsuarioService {
 
 	/**
 	 * Registra un usuario en la aplicación

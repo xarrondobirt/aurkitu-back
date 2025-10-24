@@ -1,23 +1,21 @@
-package eus.birt.proyecto.exception;
+package eus.birt.dam.aurkitu.exception;
 
-import org.springframework.http.HttpStatus;
+import java.io.Serial;
+
 import org.springframework.web.server.ResponseStatusException;
 
-import eus.birt.proyecto.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.enums.ErrorEnum;
 
 /**
  * Clase base para excepciones personalizadas que representan respuestas HTTP
  * con un código de estado específico. Hereda de {@link ResponseStatusException}
  */
-public class CustomResponseStatusException extends ResponseStatusException {
+public class AurkituException extends ResponseStatusException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
-	public CustomResponseStatusException(HttpStatus status, String reason) {
-		super(status, reason);
-	}
-
-	public CustomResponseStatusException(ErrorEnum errorType) {
+	public AurkituException(ErrorEnum errorType) {
 		super(errorType.getStatus(), errorType.getMessage());
 	}
 }

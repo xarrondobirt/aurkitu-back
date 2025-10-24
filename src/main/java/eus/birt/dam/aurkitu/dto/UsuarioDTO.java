@@ -1,6 +1,6 @@
-package eus.birt.proyecto.dto;
+package eus.birt.dam.aurkitu.dto;
 
-import eus.birt.proyecto.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

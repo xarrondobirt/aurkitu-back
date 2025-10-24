@@ -1,4 +1,4 @@
-package eus.birt.proyecto.config;
+package eus.birt.dam.aurkitu.config;
 
 import java.util.Properties;
 
