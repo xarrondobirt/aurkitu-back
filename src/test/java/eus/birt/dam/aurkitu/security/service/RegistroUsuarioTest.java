@@ -12,23 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.DigestUtils;
 
-<<<<<<<< HEAD:src/test/java/eus/birt/dam/aurkitu/security/service/AuthServiceTest.java
-import eus.birt.proyecto.dto.UsuarioDTO;
-import eus.birt.proyecto.enums.ErrorEnum;
-import eus.birt.proyecto.exception.CustomResponseStatusException;
-import eus.birt.proyecto.mail.service.MailService;
-import eus.birt.proyecto.model.UsuarioEntity;
-import eus.birt.proyecto.payload.response.RegistroUsuarioResponse;
-import eus.birt.proyecto.security.persistence.CodigoVerificacionRepository;
-import eus.birt.proyecto.security.persistence.UserRepository;
-import eus.birt.proyecto.security.service.impl.AuthServiceImpl;
-import eus.birt.proyecto.utils.Constantes;
-
-@ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
-========
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
@@ -37,12 +23,11 @@ import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
-import eus.birt.dam.aurkitu.security.service.impl.UsuarioServiceImpl;
+import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
 import eus.birt.dam.aurkitu.utils.Constantes;
 
 @ExtendWith(MockitoExtension.class)
-class UsuarioServiceTest {
->>>>>>>> develop:src/test/java/eus/birt/dam/aurkitu/security/service/UsuarioServiceTest.java
+class RegistroUsuarioTest {
 
 	@Mock
 	private UsuarioRepository userRepo;
@@ -53,12 +38,11 @@ class UsuarioServiceTest {
 	@Mock
 	private MailService mailService;
 
+	@Mock
+	private PasswordEncoder passwordEncoder;
+
 	@InjectMocks
-<<<<<<<< HEAD:src/test/java/eus/birt/dam/aurkitu/security/service/AuthServiceTest.java
-	private AuthServiceImpl userService;
-========
-	private UsuarioServiceImpl usuarioService;
->>>>>>>> develop:src/test/java/eus/birt/dam/aurkitu/security/service/UsuarioServiceTest.java
+	private AuthServiceImpl authService;
 
 	private UsuarioDTO usuarioDTO;
 	private UsuarioEntity usuarioEntity;
@@ -83,7 +67,7 @@ class UsuarioServiceTest {
 		Mockito.when(userRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
 		// Act
-		RegistroUsuarioResponse resultado = usuarioService.registrarUsuario(usuarioDTO);
+		RegistroUsuarioResponse resultado = authService.registrarUsuario(usuarioDTO);
 
 		// Assert
 		assertNotNull(resultado);
@@ -101,7 +85,7 @@ class UsuarioServiceTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class, () -> {
-			usuarioService.registrarUsuario(usuarioDTO);
+			authService.registrarUsuario(usuarioDTO);
 		});
 
 		assertEquals(ErrorEnum.EMAIL_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
@@ -117,7 +101,7 @@ class UsuarioServiceTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> usuarioService.registrarUsuario(usuarioDTO));
+				() -> authService.registrarUsuario(usuarioDTO));
 
 		assertEquals(ErrorEnum.USERNAME_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
 		Mockito.verify(userRepo, Mockito.never()).save(any());
