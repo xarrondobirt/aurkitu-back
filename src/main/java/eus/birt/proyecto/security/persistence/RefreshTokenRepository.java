@@ -1,6 +1,6 @@
 package eus.birt.proyecto.security.persistence;
 
-import java.util.Set;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,6 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
 	 * @param idUser Id del usuario
 	 * @return RefreshToken del usuario
 	 */
-	Set<RefreshTokenEntity> findByUsuarioId(Integer idUser);
+	Optional<RefreshTokenEntity> findByUsuarioId(Integer idUser);
 
 }

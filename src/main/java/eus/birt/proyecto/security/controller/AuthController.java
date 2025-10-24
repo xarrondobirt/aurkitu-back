@@ -75,6 +75,12 @@ public class AuthController {
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Cierra la sesión del usuario invalidando su token JWT
+	 * 
+	 * @param request Solicitud HTTP que contiene el header de autorización
+	 * @return ResponseEntity con estado OK (200)
+	 */
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 		log.info("AUTH - CONTROLLER - LOGOUT");
@@ -82,5 +88,21 @@ public class AuthController {
 		String authHeader = request.getHeader(Constantes.AUTH);
 		authService.logout(authHeader);
 		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Refresca el token JWT del usuario.
+	 *
+	 * @param requestRefToken HttpServletRequest
+	 * @return Token JWT actualizado.
+	 * @throws UnauthorizedException Si la actualización del token falla.
+	 */
+	@PostMapping("/refreshToken")
+	public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
+		log.info("AUTH - CONTROLLER - REFRESH TOKEN");
+
+		String authHeader = request.getHeader(Constantes.AUTH);
+
+		return ResponseEntity.ok(authService.refreshToken(authHeader));
 	}
 }

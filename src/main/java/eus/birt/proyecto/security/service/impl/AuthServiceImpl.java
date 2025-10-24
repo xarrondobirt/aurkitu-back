@@ -1,7 +1,7 @@
 package eus.birt.proyecto.security.service.impl;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -114,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional
 	public LoginResponse login(LoginRequest request) {
 		log.info("AUTH - SERVICE - LOGIN");
 
@@ -138,14 +139,11 @@ public class AuthServiceImpl implements AuthService {
 
 		refreshTokenRepo.save(refreshToken);
 
-		// Actualizar último login
-//		usuario.setLastLogin(Instant.now());
-//		usuarioRepo.save(usuario);
-
 		return new LoginResponse(accessToken);
 	}
 
 	@Override
+	@Transactional
 	public void logout(String authHeader) {
 		log.info("AUTH - SERVICE - LOGOUT");
 
@@ -159,10 +157,47 @@ public class AuthServiceImpl implements AuthService {
 		UsuarioEntity usuario = userRepo.findById(idUser)
 				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.USER_NOT_FOUND));
 
-		Set<RefreshTokenEntity> refreshTokens = refreshTokenRepo.findByUsuarioId(usuario.getId());
+		Optional<RefreshTokenEntity> refreshToken = refreshTokenRepo.findByUsuarioId(usuario.getId());
 
-		if (!refreshTokens.isEmpty()) {
-			refreshTokenRepo.deleteAll(refreshTokens);
+		if (refreshToken.isPresent()) {
+			refreshTokenRepo.delete(refreshToken.get());
 		}
+	}
+
+	@Override
+	@Transactional
+	public LoginResponse refreshToken(String authHeader) {
+		log.info("AUTH - SERVICE - REFRESH TOKEN");
+
+		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
+			throw new CustomResponseStatusException(ErrorEnum.SESION_ERROR);
+		}
+
+		String accessToken = authHeader.substring(7);
+		Integer idUser = jwtUtils.getUserIdFromToken(accessToken);
+
+		// Buscar usuario y su refresh token en BD
+		RefreshTokenEntity refreshToken = refreshTokenRepo.findByUsuarioId(idUser)
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.REFRESH_TOKEN_INVALIDO));
+
+		// Verificar y eliminar el viejo
+		if (refreshToken.getExpiracion().isBefore(Instant.now())) {
+			refreshTokenRepo.delete(refreshToken);
+			throw new CustomResponseStatusException(ErrorEnum.REFRESH_TOKEN_CADUCADO);
+		}
+
+		refreshTokenRepo.delete(refreshToken);
+
+		UsuarioEntity usuario = userRepo.findById(idUser)
+				.orElseThrow(() -> new CustomResponseStatusException(ErrorEnum.USER_NOT_FOUND));
+
+		RefreshTokenEntity newRefreshToken = new RefreshTokenEntity();
+		newRefreshToken.setUsuario(usuario);
+		newRefreshToken.setToken(UUID.randomUUID().toString());
+		newRefreshToken.setExpiracion(Instant.now().plusMillis(refreshTokenDurationMs));
+		refreshTokenRepo.save(newRefreshToken);
+
+		String newAccessToken = jwtUtils.generateAccessToken(usuario);
+		return (new LoginResponse(newAccessToken));
 	}
 }

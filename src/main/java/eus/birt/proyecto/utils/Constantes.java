@@ -15,5 +15,5 @@ public class Constantes {
 	public static final String EMAIL_VERIFICADO = "Email verificado correctamente. Ya puedes iniciar sesión en la aplicación.";
 	public static final String AUTH = "Authorization";
 	public static final String BEARER = "Bearer ";
-	public static final String LOGOUT = "Bearer ";
+//	public static final String LOGOUT = "Bearer ";
 }

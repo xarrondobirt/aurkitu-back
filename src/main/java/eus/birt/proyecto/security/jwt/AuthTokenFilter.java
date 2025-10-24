@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Filtro de autenticación que procesa tokens JWT en las solicitudes HTTP.
+ * Se ejecuta una vez por cada petición antes de llegar al controlador
+ */
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {

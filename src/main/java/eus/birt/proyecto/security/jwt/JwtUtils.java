@@ -16,6 +16,11 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Utilidad para la gestión de tokens JWT.
+ * Maneja tanto tokens de acceso como de refresco con diferentes tiempos de
+ * expiración.
+ */
 @Component
 @Slf4j
 public class JwtUtils {
@@ -30,10 +35,10 @@ public class JwtUtils {
 	private int jwtRefreshExpiration;
 
 	/**
-	 * Método para generar token JWT
+	 * Genera un token de acceso JWT para un usuario
 	 * 
-	 * @param usuario Usuario al que se asignará el token
-	 * @return Token JWT
+	 * @param usuario Entidad de usuario para la cual generar el token
+	 * @return Token JWT de acceso
 	 */
 	public String generateAccessToken(UsuarioEntity usuario) {
 		return Jwts.builder().subject(usuario.getEmail()).claim("userId", usuario.getId())
@@ -43,12 +48,25 @@ public class JwtUtils {
 
 	}
 
+	/**
+	 * Genera un token de refresco JWT para un usuario
+	 * 
+	 * @param usuario Entidad de usuario para la cual generar el token
+	 * @return Token JWT de refresco
+	 */
 	public String generateRefreshToken(UsuarioEntity usuario) {
 		return Jwts.builder().subject(usuario.getEmail()).claim("type", "refresh").issuedAt(new Date())
 				.expiration(new Date(System.currentTimeMillis() + jwtRefreshExpiration))
 				.signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).compact();
 	}
 
+	/**
+	 * Valida la integridad y expiración de un token JWT
+	 * 
+	 * @param authToken Token JWT a validar
+	 * @return true si el token es válido, false en caso contrario
+	 * @throws CustomResponseStatusException si el token es inválido o ha expirado
+	 */
 	public boolean validateJwtToken(String authToken) {
 		boolean bToken = false;
 		try {
@@ -61,6 +79,12 @@ public class JwtUtils {
 		return bToken;
 	}
 
+	/**
+	 * Extrae el token JWT del header Authorization de la solicitud HTTP
+	 * 
+	 * @param request Solicitud HTTP de la cual extraer el token
+	 * @return Token JWT sin el prefijo "Bearer", o null si no está presente
+	 */
 	public String extractToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader(Constantes.AUTH);
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(Constantes.BEARER)) {
@@ -69,6 +93,12 @@ public class JwtUtils {
 		return null;
 	}
 
+	/**
+	 * Extrae el ID de usuario del token JWT
+	 * 
+	 * @param token Token JWT del cual extraer el ID de usuario
+	 * @return ID de usuario contenido en el token
+	 */
 	public Integer getUserIdFromToken(String token) {
 		return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseSignedClaims(token)
 				.getPayload().get("userId", Integer.class); // Extrae el claim "userId"

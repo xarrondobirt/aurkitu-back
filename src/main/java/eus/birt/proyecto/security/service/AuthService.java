@@ -36,5 +36,12 @@ public interface AuthService {
 	 */
 	LoginResponse login(LoginRequest request);
 
+	/**
+	 * Cierra la sesión
+	 * 
+	 * @param authHeader Access token del usuario
+	 */
 	void logout(String authHeader);
+
+	LoginResponse refreshToken(String authHeader);
 }
