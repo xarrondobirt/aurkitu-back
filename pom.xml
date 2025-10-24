@@ -9,10 +9,10 @@
 		<version>3.5.6</version> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>birt</groupId>
-	<artifactId>proyecto</artifactId>
+	<artifactId>aurkitu</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proyecto</name>
-	<description>Spring Boot aplicacion backend para proyecto Birt DAM</description>
+	<description>Spring Boot para app de objetos perdidos Aurkitu para proyecto Birt DAM</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
