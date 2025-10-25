@@ -16,5 +16,4 @@ public enum HtmlTemplateEnum {
 	public String toString() {
 		return name().toLowerCase().replace("_", "-");
 	}
-
 }
