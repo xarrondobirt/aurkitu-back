@@ -17,7 +17,8 @@ public enum ErrorEnum {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Usuario no encontrado"),
 	USERNAME_ALREADY_VERIFIED(HttpStatus.CONFLICT, "Usuario ya verificado"),
 	VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "Código de verificación no encontrado"),
-	VERIFICATION_CODE_EXPIRED(HttpStatus.GONE, "Código de verificación caducado");
+	VERIFICATION_CODE_EXPIRED(HttpStatus.GONE, "Código de verificación caducado"),
+	JWT_AUTH_REQUERIDA(HttpStatus.UNAUTHORIZED, "JWT autorización requerida");
 
 	private final HttpStatus status;
 	private final String message;
