@@ -34,4 +34,12 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 	 * @return Un usuario si existe
 	 */
 	Optional<UsuarioEntity> findByUsername(String username);
+
+	/**
+	 * Busca un usuario por su email
+	 * 
+	 * @param email Email del usuario
+	 * @return Un usuario si existe
+	 */
+	Optional<UsuarioEntity> findByEmail(String email);
 }

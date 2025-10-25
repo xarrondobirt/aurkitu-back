@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.enums.HtmlTemplateEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
@@ -17,6 +18,7 @@ import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
+import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
@@ -52,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public RegistroUsuarioResponse registrarUsuario(UsuarioDTO usuarioDTO) {
+
 		log.info("AUTH - SERVICE - REGISTRO");
 
 		// Verificar si el email ya existe
@@ -78,7 +81,8 @@ public class AuthServiceImpl implements AuthService {
 		codVerificacionRepo.save(CodigoVerificacionEntity.builder().codigo(codigo).usuario(usuarioNuevo).build());
 
 		// Envío del código vía mail
-		mailService.enviarCodigoVerificacion(usuario.getEmail(), codigo);
+		mailService.enviarCodigo(usuario.getEmail(), codigo, HtmlTemplateEnum.VERIFICAR_EMAIL.toString(),
+				Constantes.ASUNTO_VERIFICACION);
 
 		return new RegistroUsuarioResponse(usuarioNuevo.getId(), Constantes.USUARIO_SIN_VERIFICAR);
 	}
@@ -86,6 +90,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public MensajeResponse verificarCodigo(RegistroUsuarioRequest request) {
+
 		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
 
 		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
@@ -110,12 +115,16 @@ public class AuthServiceImpl implements AuthService {
 		usuario.setVerificado(true);
 		usuarioRepo.save(usuario);
 
+		// Borrar el código de verificación después de usarlo
+		codVerificacionRepo.delete(codigo);
+
 		return new MensajeResponse(Constantes.EMAIL_VERIFICADO);
 	}
 
 	@Override
 	@Transactional
 	public LoginResponse login(LoginRequest request) {
+
 		log.info("AUTH - SERVICE - LOGIN");
 
 		// Validar credenciales
@@ -145,6 +154,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public void logout(String authHeader) {
+
 		log.info("AUTH - SERVICE - LOGOUT");
 
 		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
@@ -167,6 +177,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public LoginResponse refreshToken(String authHeader) {
+
 		log.info("AUTH - SERVICE - REFRESH TOKEN");
 
 		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
@@ -199,5 +210,71 @@ public class AuthServiceImpl implements AuthService {
 
 		String newAccessToken = jwtUtils.generateAccessToken(usuario);
 		return (new LoginResponse(newAccessToken));
+	}
+
+	@Override
+	@Transactional
+	public MensajeResponse recuperarPassword(String email) {
+
+		log.info("AUTH - SERVICE - RECUPERAR PASSWORD");
+
+		// Buscar usuario por email
+		UsuarioEntity usuario = usuarioRepo.findByEmail(email)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+
+		// Verificar que el usuario está verificado
+		if (!usuario.isVerificado()) {
+			throw new AurkituException(ErrorEnum.BAD_CREDENTIALS);
+		}
+
+		// Generar código de verificación
+		String codigo = GeneradorCodigos.generarCodigo(6);
+
+		// Guardar código en BD (reutilizando la misma tabla)
+		CodigoVerificacionEntity codigoVerificacion = new CodigoVerificacionEntity();
+		codigoVerificacion.setUsuario(usuario);
+		codigoVerificacion.setCodigo(codigo);
+		codVerificacionRepo.save(codigoVerificacion);
+
+		// Enviar email con el código
+		mailService.enviarCodigo(email, codigo, HtmlTemplateEnum.RECUPERAR_PASSWORD.toString(),
+				Constantes.ASUNTO_RESET_PASSWORD);
+
+		return new MensajeResponse(Constantes.EMAIL_RECUPERAR_PASSWORD);
+	}
+
+	@Override
+	@Transactional
+	public MensajeResponse resetPassword(ResetPasswordRequest request) {
+
+		log.info("AUTH - SERVICE - RESET PASSWORD");
+
+		// Validar que las contraseñas coincidan
+		if (!request.getNuevaPassword().equals(request.getRepitePassword())) {
+			throw new AurkituException(ErrorEnum.PASSWORD_NO_COINCIDEN);
+		}
+
+		// Buscar usuario
+		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
+				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+
+		// Buscar y validar código de verificación
+		CodigoVerificacionEntity codigo = codVerificacionRepo
+				.findByUsuarioIdAndCodigo(request.getIdUsuario(), request.getCodVerificacion())
+				.orElseThrow(() -> new AurkituException(ErrorEnum.VERIFICATION_CODE_NOT_FOUND));
+
+		// Verificar expiración
+		if (codigo.getExpirationDate().isBefore(Instant.now())) {
+			throw new AurkituException(ErrorEnum.VERIFICATION_CODE_EXPIRED);
+		}
+
+		// Actualizar contraseña
+		usuario.setPassword(passwordEncoder.encode(request.getNuevaPassword()));
+		usuarioRepo.save(usuario);
+
+		// Eliminar código usado
+		codVerificacionRepo.delete(codigo);
+
+		return new MensajeResponse(Constantes.PASSWORD_ACTUALIZADA);
 	}
 }

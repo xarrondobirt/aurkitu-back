@@ -3,6 +3,7 @@ package eus.birt.dam.aurkitu.security.service;
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
+import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
@@ -43,5 +44,27 @@ public interface AuthService {
 	 */
 	void logout(String authHeader);
 
+	/**
+	 * Actualiza el refresh token
+	 * 
+	 * @param authHeader Access token del usuario
+	 * @return Access token renovado
+	 */
 	LoginResponse refreshToken(String authHeader);
+
+	/**
+	 * Envía un código al usuario para recuperar la contrseña
+	 * 
+	 * @param email Email del usuario
+	 * @return Mensaje informativo
+	 */
+	MensajeResponse recuperarPassword(String email);
+
+	/**
+	 * Resetea la contraseña del usuario
+	 * 
+	 * @param request Datos para el reseteo de la contraseña
+	 * @return Mensaje informativo
+	 */
+	MensajeResponse resetPassword(ResetPasswordRequest request);
 }

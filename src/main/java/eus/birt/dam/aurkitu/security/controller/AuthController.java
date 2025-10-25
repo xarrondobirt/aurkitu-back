@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
+import eus.birt.dam.aurkitu.payload.request.RecuperarPasswordRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
+import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
@@ -104,5 +106,33 @@ public class AuthController {
 		String authHeader = request.getHeader(Constantes.AUTH);
 
 		return ResponseEntity.ok(authService.refreshToken(authHeader));
+	}
+
+	/**
+	 * Genera un código y lo envía por mail al usuario para recuperar la contraseña
+	 * 
+	 * @param request Datos del usuario que quiere recuperar la contraseña
+	 * @return Mensaje informativo
+	 */
+	@PostMapping("/recuperar-password")
+	public ResponseEntity<MensajeResponse> forgotPassword(@RequestBody RecuperarPasswordRequest request) {
+
+		log.info("AUTH - CONTROLLER - RECUPERAR PASSWORD");
+
+		return ResponseEntity.ok(authService.recuperarPassword(request.getEmail()));
+	}
+
+	/**
+	 * Restablece la contraseña del usuario
+	 * 
+	 * @param request Datos para restablecer la contraseña
+	 * @return Mensaje informativo
+	 */
+	@PostMapping("/reset-password")
+	public ResponseEntity<MensajeResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
+
+		log.info("AUTH - CONTROLLER - RESET PASSWORD");
+
+		return ResponseEntity.ok(authService.resetPassword(request));
 	}
 }

@@ -21,7 +21,8 @@ public enum ErrorEnum {
 	BAD_CREDENTIALS(HttpStatus.BAD_REQUEST, "Credenciales inválidas"),
 	SESION_ERROR(HttpStatus.UNAUTHORIZED, "Sesión no válida"),
 	REFRESH_TOKEN_INVALIDO(HttpStatus.UNAUTHORIZED, "Refresh token no válido"),
-	REFRESH_TOKEN_CADUCADO(HttpStatus.UNAUTHORIZED, "Refresh token caducado");
+	REFRESH_TOKEN_CADUCADO(HttpStatus.UNAUTHORIZED, "Refresh token caducado"),
+	PASSWORD_NO_COINCIDEN(HttpStatus.BAD_REQUEST, "Las contraseñas son diferentes");
 
 	private final HttpStatus status;
 	private final String message;

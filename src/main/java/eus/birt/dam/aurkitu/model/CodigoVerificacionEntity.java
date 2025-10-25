@@ -13,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,8 +40,7 @@ public class CodigoVerificacionEntity {
 	private UsuarioEntity usuario;
 
 	@NotBlank
-	@Size(max = 6)
-	@Column(name = "code")
+	@Column(name = "code", length = 6)
 	private String codigo;
 
 	@Nonnull

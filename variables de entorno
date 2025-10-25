@@ -1,0 +1,6 @@
+DBPASS=root
+DBURL=jdbc:postgresql://localhost:5432/aurkitu?ssl=false&sslmode=disable
+DBUSER=root
+JWTSECRET=4ed911faff9cd2ad7170726c9cfa626c
+MAILPASS=uiiv tvrb aykr xsqf
+MAILUSER=xarrondo@birt.eus

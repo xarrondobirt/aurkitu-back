@@ -6,11 +6,13 @@ package eus.birt.dam.aurkitu.mail.service;
 public interface MailService {
 
 	/**
-	 * Envía un mail con el código de verificación para completar el registro
+	 * Envía un mail con un código de verificación
 	 * 
-	 * @param email  Direeción de email
-	 * @param codigo Código de verificación generado
+	 * @param email    Direeción de email
+	 * @param codigo   Código de verificación generado
+	 * @param template HTML que se mostrará en el
+	 * @param asunto   Asunto del email
 	 */
-	void enviarCodigoVerificacion(String email, String codigo);
+	void enviarCodigo(String email, String codigo, String template, String asunto);
 
 }

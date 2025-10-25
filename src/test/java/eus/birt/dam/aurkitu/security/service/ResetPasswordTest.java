@@ -1,11 +1,7 @@
 package eus.birt.dam.aurkitu.security.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.Optional;
 
@@ -16,20 +12,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
-import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
-import eus.birt.dam.aurkitu.utils.Constantes;
 
 @ExtendWith(MockitoExtension.class)
-class VerificarMailTest {
+class ResetPasswordTest {
 
 	@Mock
 	private UsuarioRepository usuarioRepo;
@@ -37,86 +32,85 @@ class VerificarMailTest {
 	@Mock
 	private CodigoVerificacionRepository codVerificacionRepo;
 
+	@Mock
+	private PasswordEncoder passwordEncoder;
+
 	@InjectMocks
 	private AuthServiceImpl authService;
 
 	private UsuarioEntity usuarioEntity;
 	private CodigoVerificacionEntity codigoVerificacionEntity;
-	private RegistroUsuarioRequest registroRequest;
+	private ResetPasswordRequest resetRequest;
 
 	@BeforeEach
 	void setup() {
-
-		usuarioEntity = UsuarioEntity.builder().id(1).username("birt").email("birt@birt.eus").password("password123")
-				.verificado(false).build();
+		usuarioEntity = UsuarioEntity.builder().id(1).username("testuser").email("test@aurkitu.eus")
+				.password("oldPassword").verificado(true).build();
 
 		codigoVerificacionEntity = CodigoVerificacionEntity.builder().id(1).usuario(usuarioEntity).codigo("123456")
 				.build();
 
-		registroRequest = new RegistroUsuarioRequest();
-		registroRequest.setIdUsuario(1);
-		registroRequest.setCodigoVerificacion("123456");
+		resetRequest = new ResetPasswordRequest();
+		resetRequest.setIdUsuario(1);
+		resetRequest.setNuevaPassword("newPassword123");
+		resetRequest.setRepitePassword("newPassword123");
+		resetRequest.setCodVerificacion("123456");
 	}
 
 	@Test
-	void testVerificarCodigo_Success() {
+	void testResetPassword_Success() {
 
 		// Arrange
 		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(codVerificacionRepo.findByUsuarioIdAndCodigo(1, "123456"))
 				.thenReturn(Optional.of(codigoVerificacionEntity));
-		Mockito.when(usuarioRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
+		Mockito.when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
+		Mockito.when(usuarioRepo.save(Mockito.any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
 		// Act
-		MensajeResponse resultado = authService.verificarCodigo(registroRequest);
+		authService.resetPassword(resetRequest);
 
 		// Assert
-		assertNotNull(resultado);
-		assertEquals(Constantes.EMAIL_VERIFICADO, resultado.getMensaje());
-		assertTrue(usuarioEntity.isVerificado());
-
 		Mockito.verify(usuarioRepo).findById(1);
 		Mockito.verify(codVerificacionRepo).findByUsuarioIdAndCodigo(1, "123456");
+		Mockito.verify(passwordEncoder).encode("newPassword123");
 		Mockito.verify(usuarioRepo).save(usuarioEntity);
+		Mockito.verify(codVerificacionRepo).delete(codigoVerificacionEntity);
+		assertEquals("encodedNewPassword", usuarioEntity.getPassword());
 	}
 
 	@Test
-	void testVerificarCodigo_UsuarioNotFound() {
+	void testResetPassword_PasswordsNoCoinciden() {
+
+		// Arrange
+		resetRequest.setRepitePassword("differentPassword");
+
+		// Act & Assert
+		AurkituException exception = assertThrows(AurkituException.class,
+				() -> authService.resetPassword(resetRequest));
+
+		assertEquals(ErrorEnum.PASSWORD_NO_COINCIDEN.getStatus(), exception.getStatusCode());
+		Mockito.verify(usuarioRepo, Mockito.never()).findById(Mockito.anyInt());
+	}
+
+	@Test
+	void testResetPassword_UsuarioNoEncontrado() {
 
 		// Arrange
 		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> authService.verificarCodigo(registroRequest));
+				() -> authService.resetPassword(resetRequest));
 
 		assertEquals(ErrorEnum.USER_NOT_FOUND.getStatus(), exception.getStatusCode());
-
 		Mockito.verify(usuarioRepo).findById(1);
 		Mockito.verify(codVerificacionRepo, Mockito.never()).findByUsuarioIdAndCodigo(Mockito.anyInt(),
 				Mockito.anyString());
-		Mockito.verify(usuarioRepo, Mockito.never()).save(any(UsuarioEntity.class));
 	}
 
 	@Test
-	void testVerificarCodigo_UsuarioYaVerificado() {
-
-		// Arrange
-		usuarioEntity.setVerificado(true);
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
-
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class,
-				() -> authService.verificarCodigo(registroRequest));
-
-		assertEquals(ErrorEnum.USERNAME_ALREADY_VERIFIED.getStatus(), exception.getStatusCode());
-		Mockito.verify(usuarioRepo).findById(1);
-		Mockito.verify(codVerificacionRepo, Mockito.never()).findByUsuarioIdAndCodigo(Mockito.anyInt(), anyString());
-		Mockito.verify(usuarioRepo, Mockito.never()).save(any(UsuarioEntity.class));
-	}
-
-	@Test
-	void testVerificarCodigo_CodigoNotFound() {
+	void testResetPassword_CodigoNoEncontrado() {
 
 		// Arrange
 		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
@@ -124,11 +118,10 @@ class VerificarMailTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> authService.verificarCodigo(registroRequest));
+				() -> authService.resetPassword(resetRequest));
 
 		assertEquals(ErrorEnum.VERIFICATION_CODE_NOT_FOUND.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(1);
 		Mockito.verify(codVerificacionRepo).findByUsuarioIdAndCodigo(1, "123456");
-		Mockito.verify(usuarioRepo, Mockito.never()).save(any(UsuarioEntity.class));
 	}
 }
