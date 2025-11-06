@@ -118,13 +118,6 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Búsquedas geospaciales-->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<version>7.1.5.Final</version>
-			<type>pom</type>
-		</dependency>
 
 	</dependencies>
 

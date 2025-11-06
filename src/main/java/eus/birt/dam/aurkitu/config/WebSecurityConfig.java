@@ -5,10 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
@@ -45,5 +46,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 			log.warn("Intento de autenticación básica con usuario: {}", username);
 			throw new AurkituException(ErrorEnum.JWT_AUTH_REQUERIDA);
 		};
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedOrigins("http://localhost:8100")
+				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedHeaders("Content-Type", "Authorization", "Origin").allowCredentials(true).maxAge(3600);
 	}
 }

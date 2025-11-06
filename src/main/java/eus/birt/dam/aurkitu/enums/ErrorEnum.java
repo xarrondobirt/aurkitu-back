@@ -22,7 +22,7 @@ public enum ErrorEnum {
 	SESION_ERROR(HttpStatus.UNAUTHORIZED, "Sesión no válida"),
 	REFRESH_TOKEN_INVALIDO(HttpStatus.UNAUTHORIZED, "Refresh token no válido"),
 	REFRESH_TOKEN_CADUCADO(HttpStatus.UNAUTHORIZED, "Refresh token caducado"),
-	PASSWORD_NO_COINCIDEN(HttpStatus.BAD_REQUEST, "Las contraseñas son diferentes");
+	PASSWORD_NO_COINCIDEN(HttpStatus.BAD_REQUEST, "Las contraseñas son diferentes"),
 	JWT_AUTH_REQUERIDA(HttpStatus.UNAUTHORIZED, "JWT autorización requerida");
 
 	private final HttpStatus status;
