@@ -1,5 +1,7 @@
 package eus.birt.dam.aurkitu.mail.service.impl;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,9 @@ public class MailServiceImpl implements MailService {
 	private final TemplateEngine templateEngine;
 
 	@Override
-	public void enviarCodigoVerificacion(String email, String codigo) {
-		log.info("MAIL - SERVICE - ENVIAR CODIGO VERIFICACION");
+	public void enviarCodigo(String email, String codigo, String template, String asunto) {
+
+		log.info("MAIL - SERVICE - ENVIAR CÓDIGO");
 
 		try {
 			Context context = new Context();
@@ -36,12 +39,12 @@ public class MailServiceImpl implements MailService {
 			context.setVariable("email", email);
 			context.setVariable("codigo", codigo);
 
-			String htmlContent = templateEngine.process("emailVerification", context);
+			String htmlContent = templateEngine.process(template, context);
 
 			MimeMessage mensaje = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, "UTF-8");
+			MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, StandardCharsets.UTF_8.displayName());
 			helper.setTo(email);
-			helper.setSubject("Verifica tu cuenta - " + Constantes.APP_NAME);
+			helper.setSubject(asunto + Constantes.APP_NAME);
 			helper.setText(htmlContent, true);
 
 			mailSender.send(mensaje);

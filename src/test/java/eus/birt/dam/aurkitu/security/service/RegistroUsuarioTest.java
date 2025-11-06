@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.DigestUtils;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
@@ -22,11 +23,11 @@ import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
-import eus.birt.dam.aurkitu.security.service.impl.UsuarioServiceImpl;
+import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
 import eus.birt.dam.aurkitu.utils.Constantes;
 
 @ExtendWith(MockitoExtension.class)
-class UsuarioServiceTest {
+class RegistroUsuarioTest {
 
 	@Mock
 	private UsuarioRepository userRepo;
@@ -37,8 +38,11 @@ class UsuarioServiceTest {
 	@Mock
 	private MailService mailService;
 
+	@Mock
+	private PasswordEncoder passwordEncoder;
+
 	@InjectMocks
-	private UsuarioServiceImpl usuarioService;
+	private AuthServiceImpl authService;
 
 	private UsuarioDTO usuarioDTO;
 	private UsuarioEntity usuarioEntity;
@@ -63,7 +67,7 @@ class UsuarioServiceTest {
 		Mockito.when(userRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
 		// Act
-		RegistroUsuarioResponse resultado = usuarioService.registrarUsuario(usuarioDTO);
+		RegistroUsuarioResponse resultado = authService.registrarUsuario(usuarioDTO);
 
 		// Assert
 		assertNotNull(resultado);
@@ -81,7 +85,7 @@ class UsuarioServiceTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class, () -> {
-			usuarioService.registrarUsuario(usuarioDTO);
+			authService.registrarUsuario(usuarioDTO);
 		});
 
 		assertEquals(ErrorEnum.EMAIL_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
@@ -97,7 +101,7 @@ class UsuarioServiceTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> usuarioService.registrarUsuario(usuarioDTO));
+				() -> authService.registrarUsuario(usuarioDTO));
 
 		assertEquals(ErrorEnum.USERNAME_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
 		Mockito.verify(userRepo, Mockito.never()).save(any());

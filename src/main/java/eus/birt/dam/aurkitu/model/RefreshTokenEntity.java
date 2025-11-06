@@ -1,7 +1,6 @@
 package eus.birt.dam.aurkitu.model;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entidad que mapea la tabla codigos_verificacion
+ * Entidad que mapea la tabla usuario
  */
 @Getter
 @Setter
@@ -28,20 +27,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "codigos_verificacion")
-public class CodigoVerificacionEntity {
+@Table(name = "refresh_token")
+public class RefreshTokenEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JoinColumn(name = "usuario_id", referencedColumnName = "id")
 	private UsuarioEntity usuario;
 
 	@NotBlank
-	@Column(name = "code", length = 6)
-	private String codigo;
+	@Column(name = "hashed_token")
+	private String token;
 
 	@Nonnull
 	@Column(name = "create_date")
@@ -49,6 +48,14 @@ public class CodigoVerificacionEntity {
 
 	@Nonnull
 	@Column(name = "expiration_date")
-	private final Instant expirationDate = Instant.now().plus(1, ChronoUnit.HOURS);
+	private Instant expiracion;
 
+	/**
+	 * Método que comprueba si un refreshtoken está caducado
+	 * 
+	 * @return true si ha caducado, false en caso contrario
+	 */
+	public boolean isExpirado() {
+		return this.expiracion.isBefore(Instant.now());
+	}
 }

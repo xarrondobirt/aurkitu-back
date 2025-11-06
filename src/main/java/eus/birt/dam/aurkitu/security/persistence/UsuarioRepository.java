@@ -1,5 +1,7 @@
 package eus.birt.dam.aurkitu.security.persistence;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
@@ -24,4 +26,20 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 	 * @return true si existe el username, false en caso contrario
 	 */
 	boolean existsByUsername(String username);
+
+	/**
+	 * Busca un usuario por su username
+	 * 
+	 * @param username Nombre del usuario
+	 * @return Un usuario si existe
+	 */
+	Optional<UsuarioEntity> findByUsername(String username);
+
+	/**
+	 * Busca un usuario por su email
+	 * 
+	 * @param email Email del usuario
+	 * @return Un usuario si existe
+	 */
+	Optional<UsuarioEntity> findByEmail(String email);
 }

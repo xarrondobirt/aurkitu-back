@@ -13,4 +13,10 @@ public class Constantes {
 	public static final String USUARIO_SIN_VERIFICAR = "Usuario registrado correctamente. Revisa tu email para verificar la cuenta.";
 	public static final String APP_NAME = "AurkiTu";
 	public static final String EMAIL_VERIFICADO = "Email verificado correctamente. Ya puedes iniciar sesión en la aplicación.";
+	public static final String AUTH = "Authorization";
+	public static final String BEARER = "Bearer ";
+	public static final String ASUNTO_VERIFICACION = "Verifica tu cuenta - ";
+	public static final String ASUNTO_RESET_PASSWORD = "Restablece tu contraseña - ";
+	public static final String EMAIL_RECUPERAR_PASSWORD = "Si el email existe, se ha enviado un código de verificación";
+	public static final String PASSWORD_ACTUALIZADA = "Contraseña actualizada correctamente";
 }
