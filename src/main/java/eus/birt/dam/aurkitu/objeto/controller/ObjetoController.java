@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
-import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -29,12 +27,6 @@ public class ObjetoController {
 
 	private final UsuarioService usuarioService;
 
-	/**
-	 * Endpoint POST para el registro de usuario
-	 * 
-	 * @param usuarioDTO Request con los datos del usuario
-	 * @return Mensaje informativo
-	 */
 	@PostMapping("/guardar")
 	public ResponseEntity<RegistroUsuarioResponse> guardarObjeto(@Valid @RequestBody UsuarioDTO usuarioDTO) {
 		log.info("OBJETO - CONTROLLER - GUARDAR");
@@ -43,10 +35,4 @@ public class ObjetoController {
 
 	}
 
-	@PostMapping("/verificar-email")
-	public ResponseEntity<MensajeResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
-		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL");
-
-		return ResponseEntity.ok(usuarioService.verificarCodigo(request));
-	}
 }
