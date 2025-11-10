@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import org.locationtech.jts.geom.Point;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,19 +37,21 @@ public class ObjetoEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotBlank
-	private String estado;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "estado", referencedColumnName = "id")
+	private EstadoObjetoEntity estado;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", updatable = false, insertable = false)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UsuarioEntity usuario;
 
 	// Coordenadas. 4326 estándar GPS
-	@Nonnull
-	@Column(columnDefinition = "geography(Point, 4326)")
+	@NotNull
+	@Column(columnDefinition = "geometry(Point, 4326)")
+
 	private Point ubicacion;
 
-	@Nonnull
+	@NotNull
 	@Column(name = "radio_metros")
 	private Integer radio;
 
@@ -75,15 +77,15 @@ public class ObjetoEntity {
 	@Column(name = "factura_url")
 	private String factura;
 
-	@Nonnull
+	@NotNull
 	@Column(name = "fecha_perdida")
 	private Instant fechaPerdida;
 
-	@Nonnull
+	@NotNull
 	@Column(name = "create_date")
-	private Instant createDate;
+	private final Instant createDate = Instant.now();
 
-	@Nonnull
+	@NotNull
 	@Column(name = "last_update_date")
 	private Instant lastUpdateDate;
 }

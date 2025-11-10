@@ -10,4 +10,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TipoObjetoEnum {
 	DESCONOCIDO, SMARTPHONE, AURICULARES, BOLSO, CARTERA, LLAVES, GAFAS, PARAGUAS, DOCUMENTACION, PRENDA, OTROS;
+
+	@Override
+	public String toString() {
+		return this.name().toLowerCase();
+	}
 }

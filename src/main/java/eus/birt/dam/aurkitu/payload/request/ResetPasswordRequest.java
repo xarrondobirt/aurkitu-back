@@ -1,6 +1,6 @@
 package eus.birt.dam.aurkitu.payload.request;
 
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class ResetPasswordRequest {
 
-	@Size(min = 1, max = Integer.MAX_VALUE)
-	@Nonnull
+	@Min(value = 1, message = "El ID de usuario debe ser mayor a 0")
+	@NotNull
 	private Integer idUsuario;
 
 	@NotBlank

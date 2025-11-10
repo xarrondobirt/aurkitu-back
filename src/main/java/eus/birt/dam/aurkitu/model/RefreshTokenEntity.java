@@ -2,7 +2,6 @@ package eus.birt.dam.aurkitu.model;
 
 import java.time.Instant;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,18 +35,18 @@ public class RefreshTokenEntity {
 	private Integer id;
 
 	@OneToOne
-	@JoinColumn(name = "usuario_id", referencedColumnName = "id")
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UsuarioEntity usuario;
 
 	@NotBlank
 	@Column(name = "hashed_token")
 	private String token;
 
-	@Nonnull
+	@NotNull
 	@Column(name = "create_date")
 	private final Instant createDate = Instant.now();
 
-	@Nonnull
+	@NotNull
 	@Column(name = "expiration_date")
 	private Instant expiracion;
 

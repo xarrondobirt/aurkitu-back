@@ -121,11 +121,10 @@
 
 		<!-- Búsquedas geospaciales-->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<version>7.1.5.Final</version>
-			<type>pom</type>
-		</dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-spatial</artifactId>
+ 
+</dependency>
 
 	</dependencies>
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
+import eus.birt.dam.aurkitu.model.UsuarioEntity;
 
 /**
  * Repositorio para {@link RefreshTokenEntity}
@@ -18,5 +19,12 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
 	 * @return RefreshToken del usuario
 	 */
 	Optional<RefreshTokenEntity> findByUsuarioId(Integer idUser);
+
+	/**
+	 * Elimina los refresh token del usuario.
+	 * 
+	 * @param usuario Usuario al que hay que invalidar su refresh token
+	 */
+	void deleteByUsuario(UsuarioEntity usuario);
 
 }

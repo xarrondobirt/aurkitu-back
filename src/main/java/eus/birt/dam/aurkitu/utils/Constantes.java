@@ -19,4 +19,5 @@ public class Constantes {
 	public static final String ASUNTO_RESET_PASSWORD = "Restablece tu contraseña - ";
 	public static final String EMAIL_RECUPERAR_PASSWORD = "Si el email existe, se ha enviado un código de verificación";
 	public static final String PASSWORD_ACTUALIZADA = "Contraseña actualizada correctamente";
+	public static final String OBJETO_GUARDADO = "Objeto guardado correctamente";
 }

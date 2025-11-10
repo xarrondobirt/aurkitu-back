@@ -99,13 +99,13 @@ public class AuthController {
 	 * @return Token JWT actualizado.
 	 * @throws UnauthorizedException Si la actualización del token falla.
 	 */
-	@PostMapping("/refreshToken")
+	@PostMapping("/refresh-token")
 	public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
 		log.info("AUTH - CONTROLLER - REFRESH TOKEN");
 
-		String authHeader = request.getHeader(Constantes.AUTH);
+		String authReq = request.getHeader(Constantes.AUTH);
 
-		return ResponseEntity.ok(authService.refreshToken(authHeader));
+		return ResponseEntity.ok(authService.refreshToken(authReq));
 	}
 
 	/**

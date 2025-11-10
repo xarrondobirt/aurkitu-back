@@ -10,4 +10,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ColorEnum {
 	DESCONOCIDO, AMARILLO, NEGRO, BLANCO, ROJO, AZUL, VERDE, NARANJA, GRIS, MARRON, OTROS;
+
+	@Override
+	public String toString() {
+		return this.name().toLowerCase();
+	}
 }

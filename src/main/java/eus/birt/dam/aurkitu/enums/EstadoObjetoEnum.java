@@ -9,5 +9,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EstadoObjetoEnum {
-	PERDIDO
+	PERDIDO, ENCONTRADO, DEVUELTO;
+
+	@Override
+	public String toString() {
+		return this.name().toLowerCase();
+	}
 }

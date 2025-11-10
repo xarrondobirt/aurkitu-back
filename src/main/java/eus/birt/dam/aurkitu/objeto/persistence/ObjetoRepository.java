@@ -1,45 +1,12 @@
 package eus.birt.dam.aurkitu.objeto.persistence;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.model.ObjetoEntity;
 
 /**
- * Repositorio para gestionar entidades de usuarios
+ * Repositorio para gestionar entidades de objetos
  */
-public interface ObjetoRepository extends JpaRepository<UsuarioEntity, Integer> {
+public interface ObjetoRepository extends JpaRepository<ObjetoEntity, Integer> {
 
-	/**
-	 * Comprueba si existe un email
-	 * 
-	 * @param email Email que se va a buscar
-	 * @return true si existe el email, false en caso contrario
-	 */
-	boolean existsByEmail(String email);
-
-	/**
-	 * Comprueba si existe un username
-	 * 
-	 * @param username Nombre de usuario que se va a buscar
-	 * @return true si existe el username, false en caso contrario
-	 */
-	boolean existsByUsername(String username);
-
-	/**
-	 * Busca un usuario por su username
-	 * 
-	 * @param username Nombre del usuario
-	 * @return Un usuario si existe
-	 */
-	Optional<UsuarioEntity> findByUsername(String username);
-
-	/**
-	 * Busca un usuario por su email
-	 * 
-	 * @param email Email del usuario
-	 * @return Un usuario si existe
-	 */
-	Optional<UsuarioEntity> findByEmail(String email);
 }
