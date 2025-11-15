@@ -101,6 +101,7 @@ public class AuthController {
 	 */
 	@PostMapping("/refresh-token")
 	public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
+
 		log.info("AUTH - CONTROLLER - REFRESH TOKEN");
 
 		String authReq = request.getHeader(Constantes.AUTH);

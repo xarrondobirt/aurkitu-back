@@ -38,7 +38,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 		// Excluir endpoints de auth del filtro JWT
 		String path = request.getServletPath();
-		if (path.equals("/api/auth/refresh-token")) {
+		if (path.equals("/v1/auth/refresh-token")) {
 			chain.doFilter(request, response);
 			return;
 		}

@@ -40,7 +40,7 @@ public class ObjetoController {
 	 * @param request Solicitud HTTP para validación de token
 	 * @return ResponseEntity con la lista de tipos de objeto
 	 */
-	@GetMapping("/obtener-tipos-objeto")
+	@GetMapping("/obtener-tipos")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
 		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO");
