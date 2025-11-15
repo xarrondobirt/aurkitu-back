@@ -1,7 +1,8 @@
 package eus.birt.dam.aurkitu.payload.request;
 
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class RegistroUsuarioRequest {
 
-	@Nonnull
-	@Size(min = 1, max = Integer.MAX_VALUE)
+	@NotNull
+	@Min(value = 1, message = "El ID de usuario debe ser mayor a 0")
 	private Integer idUsuario;
 
 	@NotBlank

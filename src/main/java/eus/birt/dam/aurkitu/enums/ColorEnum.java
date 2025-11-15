@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Enum para estados de los objetos
+ * Enum para los colores de los objetos
  */
 @Getter
 @RequiredArgsConstructor
-public enum EstadoObjetoEnum {
-	PERDIDO, ENCONTRADO, DEVUELTO;
+public enum ColorEnum {
+	DESCONOCIDO, AMARILLO, NEGRO, BLANCO, ROJO, AZUL, VERDE, NARANJA, GRIS, MARRON, OTROS;
 
 	@Override
 	public String toString() {

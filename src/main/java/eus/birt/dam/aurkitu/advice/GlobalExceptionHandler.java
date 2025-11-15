@@ -25,13 +25,13 @@ public class GlobalExceptionHandler {
 	/**
 	 * Maneja excepciones de tipo {@link ResponseStatusException}
 	 * 
-	 * @param ex      La excepción de tipo {@link ResponseStatusException} que se ha
-	 *                producido.
+	 * @param ex      La excepción de tipo {@link ResponseStatusException} que se ha producido.
 	 * @param request La solicitud web que provocó la excepción.
 	 * @return JSON personalizado del error.
 	 */
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<APIError> handleResponseStatus(ResponseStatusException ex, HttpServletRequest request) {
+
 		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
@@ -42,13 +42,13 @@ public class GlobalExceptionHandler {
 	/**
 	 * Maneja excepciones de tipo {@link MethodArgumentNotValidException}
 	 * 
-	 * @param ex      La excepción de tipo {@link MethodArgumentNotValidException}
-	 *                que se ha producido.
+	 * @param ex      La excepción de tipo {@link MethodArgumentNotValidException} que se ha producido.
 	 * @param request La solicitud web que provocó la excepción.
 	 * @return JSON personalizado del error.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<APIError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+
 		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		// Coger solo el mensaje personalizado de las anotaciones de los parámetros
@@ -63,13 +63,13 @@ public class GlobalExceptionHandler {
 	/**
 	 * Maneja excepciones de tipo {@link RuntimeException}
 	 * 
-	 * @param ex      La excepción de tipo {@link RuntimeException} que se ha
-	 *                producido.
+	 * @param ex      La excepción de tipo {@link RuntimeException} que se ha producido.
 	 * @param request La solicitud web que provocó la excepción.
 	 * @return JSON personalizado del error.
 	 */
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<APIError> handleRuntime(RuntimeException ex, HttpServletRequest request) {
+
 		log.error(Constantes.ERROR_PATH, request.getRequestURI(), ex.getMessage(), ex);
 
 		APIError error = new APIError(HttpStatus.INTERNAL_SERVER_ERROR.value(),

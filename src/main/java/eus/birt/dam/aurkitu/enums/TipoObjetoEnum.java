@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Enum para estados de los objetos
+ * Enum para los tipo de objetos
  */
 @Getter
 @RequiredArgsConstructor
-public enum EstadoObjetoEnum {
-	PERDIDO, ENCONTRADO, DEVUELTO;
+public enum TipoObjetoEnum {
+	DESCONOCIDO, SMARTPHONE, AURICULARES, BOLSO, CARTERA, LLAVES, GAFAS, PARAGUAS, DOCUMENTACION, PRENDA, OTROS;
 
 	@Override
 	public String toString() {

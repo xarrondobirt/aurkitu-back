@@ -136,6 +136,9 @@ public class AuthServiceImpl implements AuthService {
 			throw new AurkituException(ErrorEnum.BAD_CREDENTIALS);
 		}
 
+		// Eliminar refresh tokens anteriores del usuario
+		refreshTokenRepo.deleteByUsuario(usuario);
+
 		// Generar access token
 		String accessToken = jwtUtils.generateAccessToken(usuario);
 

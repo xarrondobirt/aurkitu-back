@@ -10,6 +10,7 @@ import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.utils.Constantes;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -71,6 +72,10 @@ public class JwtUtils {
 		boolean bToken = false;
 		try {
 			Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseSignedClaims(authToken);
+		} catch (ExpiredJwtException e) {
+			log.error(ErrorEnum.ACCES_TOKEN_CADUCADO.getMessage(), e.getMessage());
+			throw new AurkituException(ErrorEnum.ACCES_TOKEN_CADUCADO);
+
 		} catch (JwtException e) {
 			log.error(ErrorEnum.SESION_ERROR.getMessage(), e.getMessage());
 			throw new AurkituException(ErrorEnum.SESION_ERROR);
@@ -102,5 +107,16 @@ public class JwtUtils {
 	public Integer getUserIdFromToken(String token) {
 		return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseSignedClaims(token)
 				.getPayload().get("userId", Integer.class); // Extrae el claim "userId"
+	}
+
+	public Integer getUserIdFromRequest(HttpServletRequest request) {
+		String authHeader = request.getHeader(Constantes.AUTH);
+
+		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
+			throw new AurkituException(ErrorEnum.SESION_ERROR);
+		}
+
+		String accessToken = authHeader.substring(7);
+		return this.getUserIdFromToken(accessToken);
 	}
 }
