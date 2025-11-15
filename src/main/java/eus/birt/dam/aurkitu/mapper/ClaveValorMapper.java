@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.model.ColorEntity;
+import eus.birt.dam.aurkitu.model.EstadoObjetoEntity;
 import eus.birt.dam.aurkitu.model.TipoObjetoEntity;
 
 /**
@@ -27,4 +28,9 @@ public abstract class ClaveValorMapper {
 	public abstract ClaveValorDTO colorTotoDTO(ColorEntity source);
 
 	public abstract List<ClaveValorDTO> colorToDTOList(List<ColorEntity> source);
+
+	@Mapping(target = "descripcion", source = "codigo")
+	public abstract ClaveValorDTO estadoTotoDTO(EstadoObjetoEntity source);
+
+	public abstract List<ClaveValorDTO> estadoToDTOList(List<EstadoObjetoEntity> source);
 }

@@ -87,4 +87,13 @@ public class ObjetoServiceImpl implements ObjetoService {
 		List<ColorEntity> listaColor = colorRepo.findAll();
 		return ClaveValorMapper.MAPPER.colorToDTOList(listaColor);
 	}
+
+	@Override
+	public List<ClaveValorDTO> obtenerEstadosObjeto() {
+
+		log.info("OBJETO - SERVICE - OBTENER ESTADOS");
+
+		List<EstadoObjetoEntity> listaEstados = estadoObjetoRepo.findAll();
+		return ClaveValorMapper.MAPPER.estadoToDTOList(listaEstados);
+	}
 }

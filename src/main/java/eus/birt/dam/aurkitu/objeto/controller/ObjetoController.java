@@ -34,6 +34,12 @@ public class ObjetoController {
 	private final ObjetoService objetoService;
 	private final JwtUtils jwtUtils;
 
+	/**
+	 * Obtiene la lista de tipos de objeto disponibles
+	 * 
+	 * @param request Solicitud HTTP para validación de token
+	 * @return ResponseEntity con la lista de tipos de objeto
+	 */
 	@GetMapping("/obtener-tipos-objeto")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
@@ -46,6 +52,12 @@ public class ObjetoController {
 
 	}
 
+	/**
+	 * Obtiene la lista de colores disponibles para objetos
+	 * 
+	 * @param request Solicitud HTTP para validación de token
+	 * @return ResponseEntity con la lista de colores
+	 */
 	@GetMapping("/obtener-colores")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerColores(HttpServletRequest request) {
 
@@ -55,6 +67,24 @@ public class ObjetoController {
 		jwtUtils.getUserIdFromRequest(request);
 
 		return new ResponseEntity<>(objetoService.obtenerColores(), HttpStatus.OK);
+
+	}
+
+	/**
+	 * Obtiene la lista de estados disponibles para objetos
+	 * 
+	 * @param request Solicitud HTTP para validación de token
+	 * @return ResponseEntity con la lista de estados de objeto
+	 */
+	@GetMapping("/obtener-estados")
+	public ResponseEntity<List<ClaveValorDTO>> obtenerEstados(HttpServletRequest request) {
+
+		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS");
+
+		// Comprobar usuario
+		jwtUtils.getUserIdFromRequest(request);
+
+		return new ResponseEntity<>(objetoService.obtenerEstadosObjeto(), HttpStatus.OK);
 
 	}
 
