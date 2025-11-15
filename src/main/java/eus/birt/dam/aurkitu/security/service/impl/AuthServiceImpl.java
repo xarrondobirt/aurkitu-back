@@ -57,12 +57,37 @@ public class AuthServiceImpl implements AuthService {
 
 		log.info("AUTH - SERVICE - REGISTRO");
 
-		// Verificar si el email ya existe
-		if (usuarioRepo.existsByEmail(usuarioDTO.getEmail())) {
-			throw new AurkituException(ErrorEnum.EMAIL_ALREADY_EXISTS);
+		// Verificar si el email ya existe y reenviar el código si se da el caso
+//		if (usuarioRepo.existsByEmail(usuarioDTO.getEmail())) {
+//			throw new AurkituException(ErrorEnum.EMAIL_ALREADY_EXISTS);
+//		}
+		Optional<UsuarioEntity> usuarioExistente = usuarioRepo.findByEmail(usuarioDTO.getEmail());
+		if (usuarioExistente.isPresent()) {
+			UsuarioEntity usuario = usuarioExistente.get();
+
+			// Si el usuario existe pero NO está verificado, reenviar código
+			if (!usuario.isVerificado()) {
+
+				// Eliminar códigos anteriores
+				codVerificacionRepo.deleteByUsuario(usuario);
+
+				// Generar y guardar nuevo código
+				String codigo = GeneradorCodigos.generarCodigo(6);
+				codVerificacionRepo.save(CodigoVerificacionEntity.builder().codigo(codigo).usuario(usuario).build());
+
+				// Reenviar email
+				mailService.enviarCodigo(usuario.getEmail(), codigo, HtmlTemplateEnum.VERIFICAR_EMAIL.toString(),
+						Constantes.ASUNTO_VERIFICACION);
+
+				return new RegistroUsuarioResponse(usuario.getId(), Constantes.USUARIO_SIN_VERIFICAR);
+			} else {
+
+				// Si ya está verificado, lanzar error
+				throw new AurkituException(ErrorEnum.EMAIL_ALREADY_EXISTS);
+			}
 		}
 
-		// Verificar si el username está disponible
+		// Usuario sin registrar
 		if (usuarioRepo.existsByUsername(usuarioDTO.getUsername())) {
 			throw new AurkituException(ErrorEnum.USERNAME_ALREADY_EXISTS);
 		}

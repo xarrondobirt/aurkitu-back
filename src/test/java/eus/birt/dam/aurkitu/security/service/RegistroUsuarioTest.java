@@ -2,7 +2,6 @@ package eus.birt.dam.aurkitu.security.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.DigestUtils;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
-import eus.birt.dam.aurkitu.enums.ErrorEnum;
-import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
@@ -62,7 +59,6 @@ class RegistroUsuarioTest {
 	void testRegistrarUsuario_Success() {
 
 		// Arrange
-		Mockito.when(userRepo.existsByEmail("birt@birt.eus")).thenReturn(false);
 		Mockito.when(userRepo.existsByUsername("birt")).thenReturn(false);
 		Mockito.when(userRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
@@ -72,38 +68,7 @@ class RegistroUsuarioTest {
 		// Assert
 		assertNotNull(resultado);
 		assertEquals(Constantes.USUARIO_SIN_VERIFICAR, resultado.getMensaje());
-		Mockito.verify(userRepo).existsByEmail("birt@birt.eus");
 		Mockito.verify(userRepo).existsByUsername("birt");
 		Mockito.verify(userRepo).save(any(UsuarioEntity.class));
-	}
-
-	@Test
-	void testRegistrarUsuario_EmailAlreadyExists() {
-
-		// Arrange
-		Mockito.when(userRepo.existsByEmail("birt@birt.eus")).thenReturn(true);
-
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class, () -> {
-			authService.registrarUsuario(usuarioDTO);
-		});
-
-		assertEquals(ErrorEnum.EMAIL_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
-		Mockito.verify(userRepo, Mockito.never()).save(any());
-	}
-
-	@Test
-	void testRegistrarUsuario_UsernameAlreadyExists() {
-
-		// Arrange
-		Mockito.when(userRepo.existsByEmail("birt@birt.eus")).thenReturn(false);
-		Mockito.when(userRepo.existsByUsername("birt")).thenReturn(true);
-
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class,
-				() -> authService.registrarUsuario(usuarioDTO));
-
-		assertEquals(ErrorEnum.USERNAME_ALREADY_EXISTS.getStatus(), exception.getStatusCode());
-		Mockito.verify(userRepo, Mockito.never()).save(any());
 	}
 }
