@@ -17,6 +17,7 @@ import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
+import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
@@ -176,7 +177,7 @@ public class AuthServiceImpl implements AuthService {
 
 		refreshTokenRepo.save(refreshToken);
 
-		return new LoginResponse(accessToken);
+		return new LoginResponse(accessToken, refreshToken.getToken());
 	}
 
 	@Override
@@ -204,31 +205,23 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public LoginResponse refreshToken(String authHeader) {
+	public LoginResponse refreshToken(RefreshTokenRequest refreshTokenReq) {
 
 		log.info("AUTH - SERVICE - REFRESH TOKEN");
 
-		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
-			throw new AurkituException(ErrorEnum.SESION_ERROR);
-		}
-
-		String accessToken = authHeader.substring(7);
-		Integer idUser = jwtUtils.getUserIdFromToken(accessToken);
-
 		// Buscar usuario y su refresh token en BD
-		RefreshTokenEntity refreshToken = refreshTokenRepo.findByUsuarioId(idUser)
+		RefreshTokenEntity refreshToken = refreshTokenRepo.findByToken(refreshTokenReq.getToken())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.REFRESH_TOKEN_INVALIDO));
 
 		// Verificar y eliminar el viejo
-		if (refreshToken.getExpiracion().isBefore(Instant.now())) {
+		if (refreshToken.isExpirado()) {
 			refreshTokenRepo.delete(refreshToken);
 			throw new AurkituException(ErrorEnum.REFRESH_TOKEN_CADUCADO);
 		}
 
 		refreshTokenRepo.delete(refreshToken);
 
-		UsuarioEntity usuario = usuarioRepo.findById(idUser)
-				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+		UsuarioEntity usuario = refreshToken.getUsuario();
 
 		RefreshTokenEntity newRefreshToken = new RefreshTokenEntity();
 		newRefreshToken.setUsuario(usuario);
@@ -237,7 +230,7 @@ public class AuthServiceImpl implements AuthService {
 		refreshTokenRepo.save(newRefreshToken);
 
 		String newAccessToken = jwtUtils.generateAccessToken(usuario);
-		return (new LoginResponse(newAccessToken));
+		return (new LoginResponse(newAccessToken, newRefreshToken.getToken()));
 	}
 
 	@Override

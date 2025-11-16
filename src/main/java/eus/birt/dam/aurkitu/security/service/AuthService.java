@@ -2,6 +2,7 @@ package eus.birt.dam.aurkitu.security.service;
 
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
+import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
@@ -13,6 +14,7 @@ import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
  * 
  */
 public interface AuthService {
+
 	/**
 	 * Registra un usuario en la aplicación
 	 * 
@@ -45,12 +47,12 @@ public interface AuthService {
 	void logout(String authHeader);
 
 	/**
-	 * Actualiza el refresh token
+	 * Actualiza el token
 	 * 
-	 * @param authHeader Access token del usuario
+	 * @param refreshTokenReq Refresh token del usuario
 	 * @return Access token renovado
 	 */
-	LoginResponse refreshToken(String authHeader);
+	LoginResponse refreshToken(RefreshTokenRequest refreshTokenReq);
 
 	/**
 	 * Envía un código al usuario para recuperar la contrseña
