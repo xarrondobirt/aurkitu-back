@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
+import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
+import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,6 +99,7 @@ public class ObjetoController {
 	@PostMapping("/guardar")
 	public ResponseEntity<MensajeResponse> guardarObjeto(HttpServletRequest request,
 			@Valid @RequestBody ObjetoDTO objetoDTO) {
+
 		log.info("OBJETO - CONTROLLER - GUARDAR");
 
 		// Comprobar usuario
@@ -104,5 +107,23 @@ public class ObjetoController {
 
 		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario), HttpStatus.OK);
 
+	}
+
+	/**
+	 * Busca objetos aplicando múltiples filtros
+	 * 
+	 * @param request Solicitud HTTP para validación de token
+	 * @param filtros Objeto con todos los criterios de búsqueda aplicables
+	 * @return ResponseEntity con la lista de objetos que coinciden con los filtros
+	 */
+	@PostMapping("/buscar")
+	public ResponseEntity<List<BuscarObjetoResponse>> buscarObjetos(HttpServletRequest request,
+			@Valid @RequestBody BuscarObjetoRequest filtros) {
+
+		log.info("OBJETO - CONTROLLER - BUSCAR");
+
+		jwtUtils.getUserIdFromRequest(request);
+
+		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
 	}
 }

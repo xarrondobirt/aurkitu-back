@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class UbicacionDTO {
 
-	@NotNull(message = "La latitud es obligatoria")
-	private Double latitud;
-
 	@NotNull(message = "La longitud es obligatoria")
 	private Double longitud;
+
+	@NotNull(message = "La latitud es obligatoria")
+	private Double latitud;
 
 }

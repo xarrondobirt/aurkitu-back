@@ -4,6 +4,8 @@ import java.util.List;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
+import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 
 /**
@@ -41,5 +43,13 @@ public interface ObjetoService {
 	 * @return Lista de DTOs clave-valor con los estados de objeto
 	 */
 	List<ClaveValorDTO> obtenerEstadosObjeto();
+
+	/**
+	 * Busca objetos aplicando múltiples filtros
+	 * 
+	 * @param filtros Objeto con todos los criterios de búsqueda aplicables
+	 * @return Lista de objetos que coinciden con los filtros
+	 */
+	List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros);
 
 }
