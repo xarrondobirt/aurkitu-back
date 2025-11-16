@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.payload.request.LoginRequest;
 import eus.birt.dam.aurkitu.payload.request.RecuperarPasswordRequest;
+import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
@@ -43,6 +44,7 @@ public class AuthController {
 	 */
 	@PostMapping("/registro")
 	public ResponseEntity<RegistroUsuarioResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+
 		log.info("AUTH - CONTROLLER - REGISTRO");
 
 		return new ResponseEntity<>(authService.registrarUsuario(usuarioDTO), HttpStatus.OK);
@@ -57,6 +59,7 @@ public class AuthController {
 	 */
 	@PostMapping("/verificar-email")
 	public ResponseEntity<MensajeResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
+
 		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL");
 
 		return ResponseEntity.ok(authService.verificarCodigo(request));
@@ -70,6 +73,7 @@ public class AuthController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+
 		log.info("AUTH - CONTROLLER - LOGIN");
 
 		LoginResponse response = authService.login(loginRequest);
@@ -85,6 +89,7 @@ public class AuthController {
 	 */
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
+
 		log.info("AUTH - CONTROLLER - LOGOUT");
 
 		String authHeader = request.getHeader(Constantes.AUTH);
@@ -100,13 +105,11 @@ public class AuthController {
 	 * @throws UnauthorizedException Si la actualización del token falla.
 	 */
 	@PostMapping("/refresh-token")
-	public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
+	public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenReq) {
 
 		log.info("AUTH - CONTROLLER - REFRESH TOKEN");
 
-		String authReq = request.getHeader(Constantes.AUTH);
-
-		return ResponseEntity.ok(authService.refreshToken(authReq));
+		return ResponseEntity.ok(authService.refreshToken(refreshTokenReq));
 	}
 
 	/**

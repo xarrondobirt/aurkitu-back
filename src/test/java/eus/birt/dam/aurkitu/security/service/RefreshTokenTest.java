@@ -3,9 +3,10 @@ package eus.birt.dam.aurkitu.security.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import eus.birt.dam.aurkitu.security.persistence.RefreshTokenRepository;
@@ -30,10 +32,10 @@ import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
 class RefreshTokenTest {
 
 	@Mock
-	private UsuarioRepository usuarioRepo;
+	private RefreshTokenRepository refreshTokenRepo;
 
 	@Mock
-	private RefreshTokenRepository refreshTokenRepo;
+	private UsuarioRepository usuarioRepo;
 
 	@Mock
 	private JwtUtils jwtUtils;
@@ -41,115 +43,81 @@ class RefreshTokenTest {
 	@InjectMocks
 	private AuthServiceImpl authService;
 
-	private UsuarioEntity usuarioEntity;
+	private RefreshTokenRequest refreshTokenRequest;
 	private RefreshTokenEntity refreshTokenEntity;
-	private final String validAccessToken = "valid.access.token";
-	private final String authHeader = "Bearer " + validAccessToken;
+	private UsuarioEntity usuarioEntity;
 
 	@BeforeEach
 	void setup() {
-		usuarioEntity = UsuarioEntity.builder().id(1).username("birt").email("birt@birt.eus").password("password123")
-				.verificado(true).build();
+		refreshTokenRequest = new RefreshTokenRequest();
+		refreshTokenRequest.setToken("valid-refresh-token");
 
-		refreshTokenEntity = RefreshTokenEntity.builder().id(1).usuario(usuarioEntity).token("old-refresh-token")
-				.expiracion(Instant.now().plus(1, ChronoUnit.HOURS)).build();
+		usuarioEntity = UsuarioEntity.builder().id(1).username("testuser").email("test@test.com").build();
+
+		refreshTokenEntity = RefreshTokenEntity.builder().id(1).token("valid-refresh-token").usuario(usuarioEntity)
+				.expiracion(Instant.now().plusMillis(3600000)).build();
 	}
 
 	@Test
 	void testRefreshToken_Success() {
 
 		// Arrange
-		Mockito.when(jwtUtils.getUserIdFromToken(validAccessToken)).thenReturn(1);
-		Mockito.when(refreshTokenRepo.findByUsuarioId(1)).thenReturn(Optional.of(refreshTokenEntity));
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
-		Mockito.when(jwtUtils.generateAccessToken(usuarioEntity)).thenReturn("new-access-token");
-		Mockito.when(refreshTokenRepo.save(Mockito.any(RefreshTokenEntity.class)))
-				.thenAnswer(invocation -> invocation.getArgument(0));
+		String newAccessToken = "new-access-token";
+
+		Mockito.when(refreshTokenRepo.findByToken("valid-refresh-token")).thenReturn(Optional.of(refreshTokenEntity));
+		Mockito.when(jwtUtils.generateAccessToken(usuarioEntity)).thenReturn(newAccessToken);
+		Mockito.when(refreshTokenRepo.save(Mockito.any(RefreshTokenEntity.class))).thenAnswer(invocation -> {
+			RefreshTokenEntity savedToken = invocation.getArgument(0);
+			savedToken.setId(2);
+			return savedToken;
+		});
 
 		// Act
-		LoginResponse resultado = authService.refreshToken(authHeader);
+		LoginResponse resultado = authService.refreshToken(refreshTokenRequest);
 
 		// Assert
 		assertNotNull(resultado);
-		assertEquals("new-access-token", resultado.getAccessToken());
+		assertEquals(newAccessToken, resultado.getAccessToken());
+		assertNotNull(resultado.getRefreshToken());
 
-		Mockito.verify(jwtUtils).getUserIdFromToken(validAccessToken);
-		Mockito.verify(refreshTokenRepo).findByUsuarioId(1);
 		Mockito.verify(refreshTokenRepo).delete(refreshTokenEntity);
-		Mockito.verify(usuarioRepo).findById(1);
-		Mockito.verify(jwtUtils).generateAccessToken(usuarioEntity);
 		Mockito.verify(refreshTokenRepo).save(Mockito.any(RefreshTokenEntity.class));
 	}
 
 	@Test
-	void testRefreshToken_HeaderNull() {
+	void testRefreshToken_RefreshTokenInvalido() {
 
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class, () -> authService.refreshToken(null));
+		// Arrange
+		Mockito.when(refreshTokenRepo.findByToken("invalid-token")).thenReturn(Optional.empty());
 
-		assertEquals(ErrorEnum.SESION_ERROR.getStatus(), exception.getStatusCode());
-	}
-
-	@Test
-	void testRefreshToken_HeaderSinBearer() {
+		refreshTokenRequest.setToken("invalid-token");
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> authService.refreshToken("Basic token"));
-
-		assertEquals(ErrorEnum.SESION_ERROR.getStatus(), exception.getStatusCode());
-	}
-
-	@Test
-	void testRefreshToken_RefreshTokenNoEncontrado() {
-
-		// Arrange
-		Mockito.when(jwtUtils.getUserIdFromToken(validAccessToken)).thenReturn(1);
-		Mockito.when(refreshTokenRepo.findByUsuarioId(1)).thenReturn(Optional.empty());
-
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class, () -> authService.refreshToken(authHeader));
+				() -> authService.refreshToken(refreshTokenRequest));
 
 		assertEquals(ErrorEnum.REFRESH_TOKEN_INVALIDO.getStatus(), exception.getStatusCode());
-		Mockito.verify(jwtUtils).getUserIdFromToken(validAccessToken);
-		Mockito.verify(refreshTokenRepo).findByUsuarioId(1);
-		Mockito.verify(refreshTokenRepo, Mockito.never()).delete(Mockito.any());
+		Mockito.verify(refreshTokenRepo, never()).delete(any());
+		Mockito.verify(refreshTokenRepo, never()).save(any());
 	}
 
 	@Test
 	void testRefreshToken_RefreshTokenExpirado() {
-		// Arrange
 
-		refreshTokenEntity.setExpiracion(Instant.now().minus(1, ChronoUnit.HOURS));
-		Mockito.when(jwtUtils.getUserIdFromToken(validAccessToken)).thenReturn(1);
-		Mockito.when(refreshTokenRepo.findByUsuarioId(1)).thenReturn(Optional.of(refreshTokenEntity));
+		// Arrange
+		refreshTokenEntity.setExpiracion(Instant.now().minusMillis(3600000));
+
+		Mockito.when(refreshTokenRepo.findByToken("expired-token")).thenReturn(Optional.of(refreshTokenEntity));
+
+		refreshTokenRequest.setToken("expired-token");
 
 		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class, () -> authService.refreshToken(authHeader));
+		AurkituException exception = assertThrows(AurkituException.class,
+				() -> authService.refreshToken(refreshTokenRequest));
 
 		assertEquals(ErrorEnum.REFRESH_TOKEN_CADUCADO.getStatus(), exception.getStatusCode());
-		Mockito.verify(jwtUtils).getUserIdFromToken(validAccessToken);
-		Mockito.verify(refreshTokenRepo).findByUsuarioId(1);
 		Mockito.verify(refreshTokenRepo).delete(refreshTokenEntity);
-		Mockito.verify(usuarioRepo, Mockito.never()).findById(Mockito.anyInt());
-	}
-
-	@Test
-	void testRefreshToken_UsuarioNoEncontrado() {
-
-		// Arrange
-		Mockito.when(jwtUtils.getUserIdFromToken(validAccessToken)).thenReturn(1);
-		Mockito.when(refreshTokenRepo.findByUsuarioId(1)).thenReturn(Optional.of(refreshTokenEntity));
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.empty());
-
-		// Act & Assert
-		AurkituException exception = assertThrows(AurkituException.class, () -> authService.refreshToken(authHeader));
-
-		assertEquals(ErrorEnum.USER_NOT_FOUND.getStatus(), exception.getStatusCode());
-		Mockito.verify(jwtUtils).getUserIdFromToken(validAccessToken);
-		Mockito.verify(refreshTokenRepo).findByUsuarioId(1);
-		Mockito.verify(refreshTokenRepo).delete(refreshTokenEntity);
-		Mockito.verify(usuarioRepo).findById(1);
-		Mockito.verify(refreshTokenRepo, Mockito.never()).save(Mockito.any());
+		Mockito.verify(refreshTokenRepo, never()).save(any());
+		Mockito.verify(jwtUtils, never()).generateAccessToken(any());
 	}
 }
