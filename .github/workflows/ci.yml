@@ -1,0 +1,46 @@
+# Nombre del workflow que aparecerá en la pestaña "Actions" de GitHub
+name: CI - Build & Test Backend
+
+# Define los disparadores (triggers)
+# Esto ejecutará el workflow en CADA push a 'develop'
+# y en CADA Pull Request que apunte a 'develop'
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  # Definimos un único "job" (trabajo) llamado 'build-and-test'
+  build-and-test:
+    # El trabajo se ejecutará en un servidor virtual de Ubuntu (el estándar)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Descargar el código de tu repositorio
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Paso 2: Configurar el entorno Java (JDK)
+      # Ajustado a Java 21 según tu pom.xml
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          # Especifica la versión de Java
+          java-version: '21'
+          # Indica la distribución (Temurin es la estándar recomendada para OpenJDK)
+          distribution: 'temurin'
+          # Activa la caché para las dependencias de Maven (acelera builds futuros)
+          cache: 'maven'
+
+      # Paso 3: Construir el proyecto y ejecutar tests con Maven
+      # El comando 'mvn -B package' hace lo siguiente:
+      # 1. Compila el código.
+      # 2. Ejecuta los tests unitarios (usando tu H2 en memoria).
+      # 3. Empaqueta la app en un archivo .jar (en la carpeta target/).
+      #    Esa carpeta target está en la máquina ubuntu-latest que hemos levantado para hacer todo esto ... y se destruye al acabar. 
+      # -B significa "Batch mode" (menos logs ruidosos).
+      - name: Build and Test with Maven
+        run: mvn -B package
