@@ -1,9 +1,12 @@
 # Nombre del workflow que aparecerá en la pestaña "Actions" de GitHub
-name: CI - Build & Test Backend
+name: CI - Build-Test-Package Backend & subir imagen Back a GHCR
+
+# uses son las diferentes FUNCIONES de GH Actions
+# with para ejecutar las funciones con ciertos parámetros
 
 # Define los disparadores (triggers)
-# Esto ejecutará el workflow en CADA push a 'develop'
-# y en CADA Pull Request que apunte a 'develop'
+# Esto ejecutará el workflow en CADA push a 'develop' (se hará build y se publicará imagen)
+# y en CADA Pull Request que apunte a 'develop' (solo se hará build, no sea que haya que cambiar cosas antes del merge)
 on:
   push:
     branches:
@@ -12,19 +15,25 @@ on:
     branches:
       - develop
 
+#Cada vez que arranca un JOB en GH Actions se asigna una credencial temporal dentro del context secrets: secrets.GITHUB_TOKEN
+#Con el ppio del mínimo privilegio siempre en mente, le decimos a GH Actions que nos dé un token con solo
+# ciertos permisos:
+permissions:
+  contents: read #Permite "leer" el código (hacer git clone)
+  packages: write #Permite "escribir" (subir) paquetes a GHCR
 jobs:
-  # Definimos un único "job" (trabajo) llamado 'build-and-test'
-  build-and-test:
+  # Definimos un único "job" (trabajo) llamado 'build-and-publisj'
+  build-and-publish:
     # El trabajo se ejecutará en un servidor virtual de Ubuntu (el estándar)
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Descargar el código de tu repositorio
+      # Paso 1: Descargar el código de tu repositorio (para eso necesito el permiso contents)
       - name: Checkout code
         uses: actions/checkout@v4
 
       # Paso 2: Configurar el entorno Java (JDK)
-      # Ajustado a Java 21 según tu pom.xml
+      # Ajustado a Java 21 según nuestro pom.xml
       - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
@@ -38,9 +47,45 @@ jobs:
       # Paso 3: Construir el proyecto y ejecutar tests con Maven
       # El comando 'mvn -B package' hace lo siguiente:
       # 1. Compila el código.
-      # 2. Ejecuta los tests unitarios (usando tu H2 en memoria).
+      # 2. Ejecuta los tests unitarios (usando H2 en memoria, porque está config. así en pom.xml).
       # 3. Empaqueta la app en un archivo .jar (en la carpeta target/).
-      #    Esa carpeta target está en la máquina ubuntu-latest que hemos levantado para hacer todo esto ... y se destruye al acabar. 
+      #    Esa carpeta target está en la máquina ubuntu-latest que hemos levantado para hacer todo esto ... y se destruye al acabar.
       # -B significa "Batch mode" (menos logs ruidosos).
       - name: Build and Test with Maven
         run: mvn -B package
+
+      # Se crea la imagen y se sube al registro ...
+      # 1. Configurar QEMU (necesario para builds multi-arquitectura, creando una imagen que funcione en x86_64 (Intel y AMD) y en AMR (Raspi, M1-M3 apple ...)
+      # aunque nuestro server no es ARM, no cuesta mucho y se recomienda ...
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 2. Configurar Docker Buildx (el constructor moderno de Docker)
+      # frente a buid clásico: lee el Dockerfile y paraleliza todas las tareas que puede, aprovecha cachés de ejecuciones anteriores de GH Actions (para ir más rápido),
+      # sube la imagen "transaccionalmente" y así no se sube nada a medias
+      # se combina con QEMU para hacer imagen multiarquitectura
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Iniciar sesión en GitHub Container Registry (GHCR)
+      # Usamos la variable automática ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }} # Context "github" (un JSON gigante con todos los datos de lo que está haciéndose en GH). actor es el usuario de GH que inicia el workflow
+          password: ${{ secrets.GITHUB_TOKEN }} # La credencial
+
+      # 4. Construir la imagen y subirla (Push)
+      # Solo hacemos push si es un commit a develop (no en PRs)
+      # Esto evita llenar el registro con imágenes de pruebas de PRs
+      # repository_owner es xarrondo!
+      # se crea la imagen con latest y con un SHA específico por Si alguien te dice "la app falla en producción", puedes mirar qué versión está desplegada (ej. a1b2c3d) e ir exactamente a ese código en Git
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # es la raíz del repo: ahí está el Dockefile, y dentro de este se busca la carpeta target con el jar
+          push: ${{ github.event_name == 'push' }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/aurkitu-back:latest 
+            ghcr.io/${{ github.repository_owner }}/aurkitu-back:${{ github.sha }}
