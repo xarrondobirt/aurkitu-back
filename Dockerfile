@@ -27,4 +27,4 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 
 # El comando que arranca la aplicación, y el usuario que la arranca es spring (por el USER spring:spring)
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
