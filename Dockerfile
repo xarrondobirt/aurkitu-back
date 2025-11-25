@@ -15,6 +15,7 @@ WORKDIR /app
 # Esto permite que la app cree carpetas como ./datos/log sin errores.
 RUN chown -R spring:spring /app
 
+# Cambiamos al usuario spring
 USER spring:spring
 
 # Exponemos el puerto 8080 (el que usa Spring Boot por defecto)
