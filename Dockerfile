@@ -1,6 +1,9 @@
 # Usamos una imagen base ligera de Java 21 (igual que en el CI)
 FROM eclipse-temurin:21-jre-alpine
 
+#Línea absurda para forzar la reconstrucción de la imagen y hacer pruebas
+LABEL description="Backend de Aurkitu"
+
 # Creamos un usuario no-root por seguridad
 # Si una vulnerabilidad del back permite ejecutar código remoto y no ponemos un user específico, tendría permisos de root
 # Docker no mapea nombres de usuario, mapea números (UIDs). Este usuario tendrá que escribir en uploads (imágenes, docs, etc)
