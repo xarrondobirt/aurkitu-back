@@ -1,0 +1,51 @@
+name: CD - Deploy Backend
+
+# SE ACTIVA: Cuando el CI (Build & Test) termina bien en 'develop'
+on:
+  workflow_run:
+    workflows: ["CI - Build-Test-Package Backend & subir imagen Back a GHCR"]
+    types:
+      - completed
+    branches:
+      - develop
+
+jobs:
+  deploy-server:
+    # Solo si el CI fue bien
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # IMPORTANTE: Esto le dice que use el servidor de despliegue, no el de GitHub
+    runs-on: self-hosted
+
+    steps:
+      # 1. Login para poder descargar la imagen privada
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Comandos que se ejecutan DENTRO de tu servidor
+      - name: Debug Identity
+        run: |
+          echo "Ejecutando un job por el usuario: $(whoami)"
+          echo "Dentro de la carpeta: $(pwd)"
+
+      - name: Deploy new version
+        run: |
+          echo "Recibida orden de despliegue desde el repo aurkitu-back ..."
+          
+          # Asegúrate de que esta es la ruta donde está tu docker-compose.yml
+          cd /opt/aurkitu
+          
+          # Descargar última versión
+          docker compose pull backend
+          
+          # Recrear contenedor
+          docker compose up -d backend
+          
+          # Limpiar imágenes viejas
+          docker image prune -f
+          
+          echo "Despliegue completado."
