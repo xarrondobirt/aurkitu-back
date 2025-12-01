@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.DigestUtils;
 
+import eus.birt.dam.aurkitu.common.mail.service.MailService;
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
-import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;

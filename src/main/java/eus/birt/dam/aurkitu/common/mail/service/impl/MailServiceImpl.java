@@ -1,4 +1,4 @@
-package eus.birt.dam.aurkitu.mail.service.impl;
+package eus.birt.dam.aurkitu.common.mail.service.impl;
 
 import java.nio.charset.StandardCharsets;
 
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import eus.birt.dam.aurkitu.common.mail.service.MailService;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
-import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.utils.Constantes;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

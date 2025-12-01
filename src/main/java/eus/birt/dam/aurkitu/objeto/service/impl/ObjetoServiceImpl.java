@@ -3,7 +3,9 @@ package eus.birt.dam.aurkitu.objeto.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import eus.birt.dam.aurkitu.common.file.service.FileStorageService;
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
@@ -41,10 +43,12 @@ public class ObjetoServiceImpl implements ObjetoService {
 	private final ColorRepository colorRepo;
 	private final UsuarioRepository usuarioRepo;
 	private final EstadoObjetoRepository estadoObjetoRepo;
+	private final FileStorageService fileStorageService;
 
 	@Override
 	@Transactional
-	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario) {
+	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto,
+			MultipartFile factura) {
 
 		log.info("OBJETO - SERVICE - GUARDAR");
 
@@ -60,7 +64,18 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 		ObjetoEntity objeto = ObjetoMapper.MAPPER.toEntity(objetoDTO, color, tipoObj, usuario);
 
-		EstadoObjetoEntity estado = estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal())
+		// Subir ficheros
+		if (foto != null) {
+			String fotoUrl = fileStorageService.guardarFoto(foto);
+			objeto.setFoto(fotoUrl);
+		}
+
+		if (factura != null) {
+			String facturaUrl = fileStorageService.guardarDocumento(factura);
+			objeto.setFactura(facturaUrl);
+		}
+
+		EstadoObjetoEntity estado = estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal() + 1)
 				.orElseThrow(() -> new AurkituException(ErrorEnum.ESTADO_NO_ENCONTRADO));
 
 		objeto.setEstado(estado);

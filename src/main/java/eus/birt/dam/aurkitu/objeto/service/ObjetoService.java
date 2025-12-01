@@ -2,6 +2,8 @@ package eus.birt.dam.aurkitu.objeto.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
@@ -17,9 +19,11 @@ public interface ObjetoService {
 	 * 
 	 * @param objetoDTO DTO con los datos del objeto a guardar
 	 * @param idUsuario ID del usuario que realiza la operación
+	 * @param foto      fichero de la foto
+	 * @param factura   fichero de la factura
 	 * @return Respuesta con el resultado de la operación
 	 */
-	MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario);
+	MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto, MultipartFile factura);
 
 	/**
 	 * Obtiene la lista de tipos de objeto disponibles
