@@ -38,7 +38,7 @@ public class ObjetoEntity {
 	private Integer id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "estado", referencedColumnName = "id")
+	@JoinColumn(name = "estado_id", referencedColumnName = "id")
 	private EstadoObjetoEntity estado;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,6 @@ public class ObjetoEntity {
 	// Coordenadas. 4326 estándar GPS
 	@NotNull
 	@Column(columnDefinition = "geometry(Point, 4326)")
-
 	private Point ubicacion;
 
 	@NotNull

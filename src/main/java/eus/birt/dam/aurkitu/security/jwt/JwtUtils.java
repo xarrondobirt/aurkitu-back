@@ -71,7 +71,9 @@ public class JwtUtils {
 	public boolean validateJwtToken(String authToken) {
 		boolean bToken = false;
 		try {
+
 			Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build().parseSignedClaims(authToken);
+			bToken = true;
 		} catch (ExpiredJwtException e) {
 			log.error(ErrorEnum.ACCES_TOKEN_CADUCADO.getMessage(), e.getMessage());
 			throw new AurkituException(ErrorEnum.ACCES_TOKEN_CADUCADO);

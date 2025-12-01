@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import eus.birt.dam.aurkitu.common.mail.service.MailService;
 import eus.birt.dam.aurkitu.dto.UsuarioDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.enums.HtmlTemplateEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
-import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.RefreshTokenEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;

@@ -3,13 +3,16 @@ package eus.birt.dam.aurkitu.objeto.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
@@ -92,17 +95,21 @@ public class ObjetoController {
 	 * Endpoint para guardar un objeto perdido
 	 * 
 	 * @param objetoDTO DTO con la información del objeto
+	 * @param foto      fichero con la foto
+	 * @param factura   fichero con la factura
 	 * @return Mensaje informativo para el usuario
 	 */
-	@PostMapping("/guardar")
+	@PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<MensajeResponse> guardarObjeto(HttpServletRequest request,
-			@Valid @RequestBody ObjetoDTO objetoDTO) {
+			@Valid @RequestBody ObjetoDTO objetoDTO, @RequestPart(value = "foto", required = false) MultipartFile foto,
+			@RequestPart(value = "factura", required = false) MultipartFile factura) {
+
 		log.info("OBJETO - CONTROLLER - GUARDAR");
 
 		// Comprobar usuario
 		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario), HttpStatus.OK);
+		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario, foto, factura), HttpStatus.OK);
 
 	}
 }
