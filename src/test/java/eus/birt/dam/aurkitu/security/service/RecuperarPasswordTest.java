@@ -14,10 +14,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import eus.birt.dam.aurkitu.common.mail.service.MailService;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.enums.HtmlTemplateEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
-import eus.birt.dam.aurkitu.mail.service.MailService;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;

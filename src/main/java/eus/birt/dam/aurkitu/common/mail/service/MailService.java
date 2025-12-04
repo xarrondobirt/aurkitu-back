@@ -1,4 +1,4 @@
-package eus.birt.dam.aurkitu.mail.service;
+package eus.birt.dam.aurkitu.common.mail.service;
 
 /**
  * Interfaz que define los métodos para el envío de mails

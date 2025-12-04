@@ -95,12 +95,12 @@ class GuardarObjetoTest {
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.of(tipoObjetoEntity));
 		Mockito.when(colorRepo.findById(objetoDTO.getIdColor())).thenReturn(Optional.of(colorEntity));
-		Mockito.when(estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal()))
+		Mockito.when(estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal() + 1))
 				.thenReturn(Optional.of(estadoObjetoEntity));
 		Mockito.when(objetoRepo.save(Mockito.any(ObjetoEntity.class))).thenReturn(objetoEntity);
 
 		// Act
-		MensajeResponse resultado = objetoService.guardarObjeto(objetoDTO, idUsuario);
+		MensajeResponse resultado = objetoService.guardarObjeto(objetoDTO, idUsuario, null, null);
 
 		// Assert
 		assertNotNull(resultado);
@@ -109,7 +109,7 @@ class GuardarObjetoTest {
 		Mockito.verify(usuarioRepo).findById(idUsuario);
 		Mockito.verify(tipoObjetoRepo).findById(objetoDTO.getIdTipoObjeto());
 		Mockito.verify(colorRepo).findById(objetoDTO.getIdColor());
-		Mockito.verify(estadoObjetoRepo).findById(EstadoObjetoEnum.PERDIDO.ordinal());
+		Mockito.verify(estadoObjetoRepo).findById(EstadoObjetoEnum.PERDIDO.ordinal() + 1);
 		Mockito.verify(objetoRepo).save(Mockito.any(ObjetoEntity.class));
 	}
 
@@ -123,7 +123,7 @@ class GuardarObjetoTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario));
+				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
 
 		assertEquals(ErrorEnum.USER_NOT_FOUND.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -141,7 +141,7 @@ class GuardarObjetoTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario));
+				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
 
 		assertEquals(ErrorEnum.TIPO_OBJETO_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -161,7 +161,7 @@ class GuardarObjetoTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario));
+				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
 
 		assertEquals(ErrorEnum.COLOR_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -179,17 +179,17 @@ class GuardarObjetoTest {
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.of(tipoObjetoEntity));
 		Mockito.when(colorRepo.findById(objetoDTO.getIdColor())).thenReturn(Optional.of(colorEntity));
-		Mockito.when(estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal())).thenReturn(Optional.empty());
+		Mockito.when(estadoObjetoRepo.findById(EstadoObjetoEnum.PERDIDO.ordinal() + 1)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario));
+				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
 
 		assertEquals(ErrorEnum.ESTADO_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
 		Mockito.verify(tipoObjetoRepo).findById(objetoDTO.getIdTipoObjeto());
 		Mockito.verify(colorRepo).findById(objetoDTO.getIdColor());
-		Mockito.verify(estadoObjetoRepo).findById(EstadoObjetoEnum.PERDIDO.ordinal());
+		Mockito.verify(estadoObjetoRepo).findById(EstadoObjetoEnum.PERDIDO.ordinal() + 1);
 		Mockito.verifyNoInteractions(objetoRepo);
 	}
 }
