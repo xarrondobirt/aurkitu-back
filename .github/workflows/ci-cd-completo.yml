@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - develop
+      - chore/investigando-csrf-cors-security
   pull_request:
     branches:
       - develop
