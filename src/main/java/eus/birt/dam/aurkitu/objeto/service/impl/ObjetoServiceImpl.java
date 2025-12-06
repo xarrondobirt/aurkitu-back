@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import eus.birt.dam.aurkitu.common.file.service.FileStorageService;
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
@@ -47,13 +48,13 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 	@Override
 	@Transactional
-	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto,
+	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto,
 			MultipartFile factura) {
 
 		log.info("OBJETO - SERVICE - GUARDAR");
 
 		// Validaciones
-		UsuarioEntity usuario = usuarioRepo.findById(idUsuario)
+		UsuarioEntity usuario = usuarioRepo.findById(sesion.getId())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
 
 		TipoObjetoEntity tipoObj = tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
@@ -49,7 +50,7 @@ public class ObjetoController {
 		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO");
 
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		return new ResponseEntity<>(objetoService.obtenerTiposObjeto(), HttpStatus.OK);
 
@@ -67,7 +68,7 @@ public class ObjetoController {
 		log.info("OBJETO - CONTROLLER - OBTENER COLORES");
 
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		return new ResponseEntity<>(objetoService.obtenerColores(), HttpStatus.OK);
 
@@ -85,7 +86,7 @@ public class ObjetoController {
 		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS");
 
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		return new ResponseEntity<>(objetoService.obtenerEstadosObjeto(), HttpStatus.OK);
 
@@ -107,9 +108,9 @@ public class ObjetoController {
 		log.info("OBJETO - CONTROLLER - GUARDAR");
 
 		// Comprobar usuario
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario, foto, factura), HttpStatus.OK);
+		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, sesion, foto, factura), HttpStatus.OK);
 
 	}
 }

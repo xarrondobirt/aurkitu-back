@@ -28,7 +28,9 @@ public enum ErrorEnum {
 	COLOR_NO_ENCONTRADO(HttpStatus.NOT_FOUND, "Color no encontrado"),
 	ACCES_TOKEN_CADUCADO(HttpStatus.UNAUTHORIZED, "Sesión caducada"),
 	ESTADO_NO_ENCONTRADO(HttpStatus.NOT_FOUND, "Estado no encontrado"),
-	SUBIR_ARCHIVO(HttpStatus.INTERNAL_SERVER_ERROR, "Error al subir el archivo");
+	SUBIR_ARCHIVO(HttpStatus.INTERNAL_SERVER_ERROR, "Error al subir el archivo"),
+	OBJETO_NO_ENCONTRADO(HttpStatus.NOT_FOUND, "Objeto no encontrado"),
+	CONVERSACION_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "Conversación no encontrada");
 
 	private final HttpStatus status;
 	private final String message;

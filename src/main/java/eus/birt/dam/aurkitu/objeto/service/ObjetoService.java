@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 
 /**
@@ -23,7 +24,7 @@ public interface ObjetoService {
 	 * @param factura   fichero de la factura
 	 * @return Respuesta con el resultado de la operación
 	 */
-	MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto, MultipartFile factura);
+	MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto, MultipartFile factura);
 
 	/**
 	 * Obtiene la lista de tipos de objeto disponibles
