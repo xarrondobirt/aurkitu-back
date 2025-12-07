@@ -36,42 +36,60 @@ public class MensajeController {
 	private final MensajeService mensajeService;
 	private final JwtUtils jwtUtils;
 
+	/**
+	 * Envía un mensaje entre usuarios en una conversación
+	 * 
+	 * @param msgRequest objeto con los datos del mensaje a enviar
+	 * @param request    objeto HttpServletRequest para obtener la sesión del usuario
+	 * @return ResponseEntity con la respuesta del mensaje enviado
+	 */
 	@PostMapping("/enviar")
 	public ResponseEntity<MensajeResponse> enviarMensaje(@RequestBody EnviarMensajeRequest msgRequest,
 			HttpServletRequest request) {
 
 		log.info("MENSAJE - CONTROLLER - ENVIAR MENSAJE");
-//		Integer remitente = jwtUtils.getUserIdFromRequest(request);
-		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
-//		Usuario destinatario = authService.buscarUsuarioPorId(request.getDestinatarioId());
 
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 		MensajeResponse mensaje = mensajeService.enviarMensaje(sesion, msgRequest);
 
 		return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
 	}
 
+	/**
+	 * Obtiene todas las conversaciones del usuario autenticado
+	 * 
+	 * @param request objeto HttpServletRequest para obtener la sesión del usuario
+	 * @return ResponseEntity con la lista de conversaciones del usuario
+	 */
 	@GetMapping("/conversaciones")
 	public ResponseEntity<List<ConversacionResponse>> obtenerConversaciones(HttpServletRequest request) {
 
 		log.info("MENSAJE - CONTROLLER - OBTENER CONVERSACIONES");
 
-//		Integer usuario = jwtUtils.getUserIdFromRequest(request);
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 		List<ConversacionResponse> conversaciones = mensajeService.obtenerConversacionesUsuario(sesion);
 
 		return new ResponseEntity<>(conversaciones, HttpStatus.OK);
 	}
 
+	/**
+	 * Obtiene los mensajes de una conversación específica y los marca como leídos
+	 * 
+	 * @param idConversacion identificador de la conversación
+	 * @param request        objeto HttpServletRequest para obtener la sesión del usuario
+	 * @return ResponseEntity con la lista de mensajes de la conversación
+	 */
 	@GetMapping("/conversacion/{idConversacion}/mensajes")
-	public ResponseEntity<List<MensajeDTO>> obtenerYMarcarMensajes(@PathVariable Integer idConversacion,
+	public ResponseEntity<List<MensajeDTO>> obtenerMensajes(@PathVariable Integer idConversacion,
 			HttpServletRequest request) {
+
+		log.info("MENSAJE - CONTROLLER - OBTENER MENSAJES");
 
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		// Este método obtiene Y marca como leídos
+		// Este método obtiene y marca como leídos
 		List<MensajeDTO> mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
 
-//		return ResponseEntity.ok(mensajes);
 		return new ResponseEntity<>(mensajes, HttpStatus.OK);
 	}
 }

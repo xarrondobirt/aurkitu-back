@@ -18,11 +18,9 @@ import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 public abstract class ConversacionMapper {
 
 	public static final ConversacionMapper MAPPER = Mappers.getMapper(ConversacionMapper.class);
-//	public static final MensajeMapper MENSAJE_MAPPER = Mappers.getMapper(MensajeMapper.class);
 	public static final SesionMapper SESION_MAPPER = Mappers.getMapper(SesionMapper.class);
 
 	@Mapping(target = "participante", expression = "java(obtenerOtroParticipante(source, sesion))")
-//	@Mapping(target = "mensajes", expression = "java(MENSAJE_MAPPER.toListDTO(source.getMensajes))")
 	@Mapping(target = "idObjeto", source = "source.objeto.id")
 	@Mapping(target = "mensajesSinLeer", expression = "java(tieneMensajesSinLeer(source))")
 	public abstract ConversacionResponse toResponse(ConversacionEntity source, @Context SesionDTO sesion);
@@ -30,6 +28,13 @@ public abstract class ConversacionMapper {
 	public abstract List<ConversacionResponse> toListResponse(List<ConversacionEntity> source,
 			@Context SesionDTO sesion);
 
+	/**
+	 * Obtiene el otro participante de una conversación dado un participante actual
+	 * 
+	 * @param conversacion entidad de la conversación con ambos participantes
+	 * @param sesion       sesión del participante actual
+	 * @return sesión del otro participante de la conversación
+	 */
 	protected SesionDTO obtenerOtroParticipante(ConversacionEntity conversacion, SesionDTO sesion) {
 
 		if (conversacion.getParticipante1().getId().equals(sesion.getId())) {
@@ -39,6 +44,12 @@ public abstract class ConversacionMapper {
 		}
 	}
 
+	/**
+	 * Verifica si una conversación tiene mensajes sin leer
+	 * 
+	 * @param conversacion entidad de la conversación a verificar
+	 * @return true si hay al menos un mensaje sin leer, false en caso contrario
+	 */
 	protected boolean tieneMensajesSinLeer(ConversacionEntity conversacion) {
 		return conversacion.getMensajes().stream().anyMatch(m -> !m.isLeido());
 	}

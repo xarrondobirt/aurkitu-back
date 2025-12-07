@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public final class ConversacionResponse {
 
 	private Integer id;
 	private SesionDTO participante;
 	private Integer idObjeto;
-//	private List<MensajeDTO> mensajes = new ArrayList<>();
 	private Instant createDate;
 	private Instant lastUpdateDate;
 	private boolean mensajesSinLeer;

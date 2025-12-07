@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,8 +45,8 @@ public class ConversacionEntity {
 	@JoinColumn(name = "participante2_id", nullable = false)
 	private UsuarioEntity participante2;
 
-	@OneToMany(mappedBy = "conversacion")
-	@OrderBy("fechaEnvio ASC")
+	@OneToMany(mappedBy = "conversacion", fetch = FetchType.EAGER)
+	@OrderBy("create_date ASC")
 	@Builder.Default
 	private List<MensajeEntity> mensajes = new ArrayList<>();
 

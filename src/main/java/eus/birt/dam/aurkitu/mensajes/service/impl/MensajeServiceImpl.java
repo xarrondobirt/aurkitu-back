@@ -75,6 +75,14 @@ public class MensajeServiceImpl implements MensajeService {
 		return new MensajeResponse(Constantes.MENSAJE_ENVIADO);
 	}
 
+	/**
+	 * Obtiene o crea una conversación entre dos usuarios sobre un objeto específico
+	 * 
+	 * @param usuario1 primer usuario participante
+	 * @param usuario2 segundo usuario participante
+	 * @param objeto   objeto sobre el que trata la conversación
+	 * @return conversación existente o nueva conversación creada
+	 */
 	private ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2,
 			ObjetoEntity objeto) {
 
@@ -110,6 +118,7 @@ public class MensajeServiceImpl implements MensajeService {
 	}
 
 	@Override
+	@Transactional(rollbackOn = Exception.class)
 	public List<MensajeDTO> obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
 
 		log.info("MENSAJE - SERVICE - OBTENER MENSAJES");
@@ -118,14 +127,14 @@ public class MensajeServiceImpl implements MensajeService {
 		ConversacionEntity conversacion = conversacionRepo.findById(idConversacion)
 				.orElseThrow(() -> new AurkituException(ErrorEnum.CONVERSACION_NO_ENCONTRADA));
 
-		// Marcar como leídos SOLO los mensajes donde el usuario NO es el remitente
+		// Marcar como leídos solo los mensajes donde el usuario no es el remitente
 		List<MensajeEntity> mensajes = conversacion.getMensajes().stream()
 				.filter(m -> !m.isLeido() && !m.getRemitente().getId().equals(sesion.getId())).toList();
 
 		mensajes.forEach(m -> m.setLeido(true));
 		mensajeRepo.saveAll(mensajes);
 
-		return MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes());
+		return MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
 
 	}
 }
