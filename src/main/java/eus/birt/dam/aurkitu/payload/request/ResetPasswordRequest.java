@@ -1,7 +1,7 @@
 package eus.birt.dam.aurkitu.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Solicitud para restablecer contraseña con código de verificación")
 public final class ResetPasswordRequest {
 
-	@Min(value = 1, message = "El ID de usuario debe ser mayor a 0")
-	@NotNull
-	@Schema(description = "ID del usuario que restablece la contraseña")
-	private Integer idUsuario;
+	@Email
+	@NotBlank
+	@Schema(description = "Email del usuario que restablece la contraseña")
+	private String email;
 
 	@NotBlank
 	@Schema(description = "Nueva contraseña del usuario")

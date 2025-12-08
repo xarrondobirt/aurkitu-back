@@ -276,12 +276,17 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		// Buscar usuario
-		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
+//		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
+//				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+		UsuarioEntity usuario = usuarioRepo.findByEmail(request.getEmail())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
 
 		// Buscar y validar código de verificación
+//		CodigoVerificacionEntity codigo = codVerificacionRepo
+//				.findByUsuarioIdAndCodigo(request.getIdUsuario(), request.getCodVerificacion())
+//				.orElseThrow(() -> new AurkituException(ErrorEnum.VERIFICATION_CODE_NOT_FOUND));
 		CodigoVerificacionEntity codigo = codVerificacionRepo
-				.findByUsuarioIdAndCodigo(request.getIdUsuario(), request.getCodVerificacion())
+				.findByUsuarioIdAndCodigo(usuario.getId(), request.getCodVerificacion())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.VERIFICATION_CODE_NOT_FOUND));
 
 		// Verificar expiración
