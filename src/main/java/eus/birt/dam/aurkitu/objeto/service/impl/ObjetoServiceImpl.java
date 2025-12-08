@@ -23,7 +23,7 @@ import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.TipoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
 import jakarta.transaction.Transactional;
@@ -47,7 +47,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 	@Override
 	@Transactional
-	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto,
+	public MensajeInfoResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto,
 			MultipartFile factura) {
 
 //		log.info("OBJETO - SERVICE - GUARDAR");
@@ -81,7 +81,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 		objeto.setEstado(estado);
 		objetoRepo.save(objeto);
 
-		return new MensajeResponse(Constantes.OBJETO_GUARDADO);
+		return new MensajeInfoResponse(Constantes.OBJETO_GUARDADO);
 
 	}
 

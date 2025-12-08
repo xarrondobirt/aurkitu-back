@@ -15,10 +15,12 @@ import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.service.AuthService;
 import eus.birt.dam.aurkitu.utils.Constantes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "01 - Autenticación", description = "Endpoints para registro, login y gestión de tokens")
 public class AuthController {
 
 	private final AuthService authService;
@@ -42,6 +45,7 @@ public class AuthController {
 	 * @param usuarioDTO Request con los datos del usuario
 	 * @return Mensaje informativo
 	 */
+	@Operation(summary = "Registrar nuevo usuario", description = "Crea un nuevo usuario en el sistema. Se enviará un código de verificación por email.")
 	@PostMapping("/registro")
 	public ResponseEntity<RegistroUsuarioResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
 
@@ -58,8 +62,9 @@ public class AuthController {
 	 * @param request Datos con el idUsuario y el código de verificación
 	 * @return Mensaje informativo
 	 */
+	@Operation(summary = "Verificar email", description = "Verifica el email del usuario usando el código enviado")
 	@PostMapping("/verificar-email")
-	public ResponseEntity<MensajeResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
+	public ResponseEntity<MensajeInfoResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
 
 		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL - id: {} - codigo: {}", request.getIdUsuario(),
 				request.getCodigoVerificacion());
@@ -73,6 +78,7 @@ public class AuthController {
 	 * @param loginRequest Datos del usuario para iniciar sesión
 	 * @return AccessToken generado
 	 */
+	@Operation(summary = "Iniciar sesión", description = "Autentica al usuario y devuelve tokens JWT")
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -89,6 +95,7 @@ public class AuthController {
 	 * @param request Solicitud HTTP que contiene el header de autorización
 	 * @return ResponseEntity con estado OK (200)
 	 */
+	@Operation(summary = "Cerrar sesión", description = "Invalida el token JWT del usuario")
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 
@@ -107,6 +114,7 @@ public class AuthController {
 	 * @return Token JWT actualizado.
 	 * @throws UnauthorizedException Si la actualización del token falla.
 	 */
+	@Operation(summary = "Refrescar token", description = "Obtiene un nuevo access token usando el refresh token")
 	@PostMapping("/refresh-token")
 	public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenReq) {
 
@@ -121,8 +129,9 @@ public class AuthController {
 	 * @param request Datos del usuario que quiere recuperar la contraseña
 	 * @return Mensaje informativo
 	 */
+	@Operation(summary = "Recuperar contraseña", description = "Envía un código por email para recuperar la contraseña")
 	@PostMapping("/recuperar-password")
-	public ResponseEntity<MensajeResponse> forgotPassword(@RequestBody RecuperarPasswordRequest request) {
+	public ResponseEntity<MensajeInfoResponse> forgotPassword(@RequestBody RecuperarPasswordRequest request) {
 
 		log.info("AUTH - CONTROLLER - RECUPERAR PASSWORD - email: {}", request.getEmail());
 
@@ -135,8 +144,9 @@ public class AuthController {
 	 * @param request Datos para restablecer la contraseña
 	 * @return Mensaje informativo
 	 */
+	@Operation(summary = "Restablecer contraseña", description = "Cambia la contraseña usando el código de verificación")
 	@PostMapping("/reset-password")
-	public ResponseEntity<MensajeResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
+	public ResponseEntity<MensajeInfoResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
 
 		log.info("AUTH - CONTROLLER - RESET PASSWORD - id: {} - codigo: {}", request.getIdUsuario(),
 				request.getCodVerificacion());

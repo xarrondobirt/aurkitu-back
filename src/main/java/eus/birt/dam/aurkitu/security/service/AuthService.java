@@ -6,7 +6,7 @@ import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 
 /**
@@ -29,7 +29,7 @@ public interface AuthService {
 	 * @param request Objeto con el idUsuario y el código de verificación
 	 * @return Mensaje informativo.
 	 */
-	MensajeResponse verificarCodigo(RegistroUsuarioRequest request);
+	MensajeInfoResponse verificarCodigo(RegistroUsuarioRequest request);
 
 	/**
 	 * Inicio sesión del usuario
@@ -60,7 +60,7 @@ public interface AuthService {
 	 * @param email Email del usuario
 	 * @return Mensaje informativo
 	 */
-	MensajeResponse recuperarPassword(String email);
+	MensajeInfoResponse recuperarPassword(String email);
 
 	/**
 	 * Resetea la contraseña del usuario
@@ -68,5 +68,5 @@ public interface AuthService {
 	 * @param request Datos para el reseteo de la contraseña
 	 * @return Mensaje informativo
 	 */
-	MensajeResponse resetPassword(ResetPasswordRequest request);
+	MensajeInfoResponse resetPassword(ResetPasswordRequest request);
 }

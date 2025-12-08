@@ -20,7 +20,7 @@ import eus.birt.dam.aurkitu.enums.HtmlTemplateEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
@@ -59,7 +59,7 @@ class RecuperarPasswordTest {
 				.thenAnswer(invocation -> invocation.getArgument(0));
 
 		// Act
-		MensajeResponse resultado = authService.recuperarPassword(email);
+		MensajeInfoResponse resultado = authService.recuperarPassword(email);
 
 		// Assert
 		assertNotNull(resultado);
@@ -120,7 +120,7 @@ class RecuperarPasswordTest {
 		});
 
 		// Act
-		MensajeResponse resultado = authService.recuperarPassword(email);
+		MensajeInfoResponse resultado = authService.recuperarPassword(email);
 
 		// Assert
 		assertNotNull(resultado);

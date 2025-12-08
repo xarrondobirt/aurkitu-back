@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "02 - Objetos", description = "Gestión de objetos perdidos/encontrados")
 public class ObjetoController {
 
 	private final ObjetoService objetoService;
@@ -43,6 +46,7 @@ public class ObjetoController {
 	 * @param request Solicitud HTTP para validación de token
 	 * @return ResponseEntity con la lista de tipos de objeto
 	 */
+	@Operation(summary = "Obtener tipos de objeto", description = "Devuelve la lista de tipos de objeto disponibles en el sistema")
 	@GetMapping("/obtener-tipos")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
@@ -61,6 +65,7 @@ public class ObjetoController {
 	 * @param request Solicitud HTTP para validación de token
 	 * @return ResponseEntity con la lista de colores
 	 */
+	@Operation(summary = "Obtener colores disponibles", description = "Devuelve la lista de colores disponibles para los objetos")
 	@GetMapping("/obtener-colores")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerColores(HttpServletRequest request) {
 
@@ -79,6 +84,7 @@ public class ObjetoController {
 	 * @param request Solicitud HTTP para validación de token
 	 * @return ResponseEntity con la lista de estados de objeto
 	 */
+	@Operation(summary = "Obtener estados de objeto", description = "Devuelve la lista de estados disponibles para objetos")
 	@GetMapping("/obtener-estados")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerEstados(HttpServletRequest request) {
 
@@ -99,8 +105,9 @@ public class ObjetoController {
 	 * @param factura   fichero con la factura
 	 * @return Mensaje informativo para el usuario
 	 */
+	@Operation(summary = "Guardar objeto", description = "Registra un objeto perdido")
 	@PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<MensajeResponse> guardarObjeto(HttpServletRequest request,
+	public ResponseEntity<MensajeInfoResponse> guardarObjeto(HttpServletRequest request,
 			@Valid @RequestBody ObjetoDTO objetoDTO, @RequestPart(value = "foto", required = false) MultipartFile foto,
 			@RequestPart(value = "factura", required = false) MultipartFile factura) {
 
