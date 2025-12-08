@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-  <!-- INCLUYE LOS CONVERSORES DE SPRING BOOT -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-	 
-	  <property name="APP_NAME" value="proy01" />
-	  <property name="COMPONENT_NAME" value="applicacion" />
-	 <property name="LOG_PATTERN" value="%clr([%d{ISO8601}][%p][${APP_NAME}][%c{1}] %m){green:INFO, red:ERROR}%n" />
-	  <property name="LOG_PATH" value="./datos/log" />
-	 <appender name="Console"
-        class="ch.qos.logback.core.ConsoleAppender">        
-       	<encoder>
-      		<pattern>
-      		 ${LOG_PATTERN}  
-    		</pattern>
-    	</encoder>
-    </appender> 
-    
-     <appender name="File-Rolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${COMPONENT_NAME}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${COMPONENT_NAME}.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <!--  Size in a Day -->
-            <totalSizeCap>1GB</totalSizeCap>
-            <maxHistory>60</maxHistory>
-        </rollingPolicy>
-        
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    
-    </appender>
-    <appender name="Async" class="ch.qos.logback.classic.AsyncAppender">
-    	<appender-ref ref="File-Rolling" />
-  	</appender>
-    
-    <root level="info">
-        <appender-ref ref="Console" />
-        <appender-ref ref="Async" />      
-    </root>
+	<!-- INCLUYE LOS CONVERSORES DE SPRING BOOT -->
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+	<property name="APP_NAME" value="proy01" />
+	<property name="COMPONENT_NAME" value="applicacion" />
+	<property name="LOG_PATTERN"
+		value="%clr([%d{ISO8601}][%p][${APP_NAME}][%c{1}] %m){green:INFO, red:ERROR}%n" />
+	<property name="LOG_PATH" value="./datos/log" />
+	<appender name="Console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				${LOG_PATTERN}
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="File-Rolling"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/${COMPONENT_NAME}.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>
+				${LOG_PATH}/${COMPONENT_NAME}.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<!--  Size in a Day -->
+			<totalSizeCap>1GB</totalSizeCap>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+
+	</appender>
+	<appender name="Async" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="File-Rolling" />
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="Console" />
+		<appender-ref ref="Async" />
+	</root>
 </configuration>  

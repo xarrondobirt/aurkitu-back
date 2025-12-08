@@ -31,7 +31,7 @@ public class MailServiceImpl implements MailService {
 	@Override
 	public void enviarCodigo(String email, String codigo, String template, String asunto) {
 
-		log.info("MAIL - SERVICE - ENVIAR CÓDIGO");
+//		log.info("MAIL - SERVICE - ENVIAR CÓDIGO");
 
 		try {
 			Context context = new Context();
@@ -48,6 +48,7 @@ public class MailServiceImpl implements MailService {
 			helper.setText(htmlContent, true);
 
 			mailSender.send(mensaje);
+			log.info("Email enviado a {}", email);
 
 		} catch (MessagingException e) {
 			log.error("Error enviando email a {}: {}", email, e.getMessage());

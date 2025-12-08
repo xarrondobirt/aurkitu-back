@@ -45,7 +45,8 @@ public class AuthController {
 	@PostMapping("/registro")
 	public ResponseEntity<RegistroUsuarioResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
 
-		log.info("AUTH - CONTROLLER - REGISTRO");
+		log.info("AUTH - CONTROLLER - REGISTRO - email: {} - username: {}", usuarioDTO.getEmail(),
+				usuarioDTO.getUsername());
 
 		return new ResponseEntity<>(authService.registrarUsuario(usuarioDTO), HttpStatus.OK);
 
@@ -60,7 +61,8 @@ public class AuthController {
 	@PostMapping("/verificar-email")
 	public ResponseEntity<MensajeResponse> verificarEmail(@Valid @RequestBody RegistroUsuarioRequest request) {
 
-		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL");
+		log.info("AUTH - CONTROLLER - VERIFICAR EMAIL - id: {} - codigo: {}", request.getIdUsuario(),
+				request.getCodigoVerificacion());
 
 		return ResponseEntity.ok(authService.verificarCodigo(request));
 	}
@@ -74,7 +76,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
-		log.info("AUTH - CONTROLLER - LOGIN");
+		log.info("AUTH - CONTROLLER - LOGIN - username: {}", loginRequest.getUsername());
 
 		LoginResponse response = authService.login(loginRequest);
 
@@ -90,9 +92,10 @@ public class AuthController {
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(HttpServletRequest request) {
 
-		log.info("AUTH - CONTROLLER - LOGOUT");
-
 		String authHeader = request.getHeader(Constantes.AUTH);
+
+		log.info("AUTH - CONTROLLER - LOGOUT - header: {}", authHeader);
+
 		authService.logout(authHeader);
 		return ResponseEntity.ok().build();
 	}
@@ -107,7 +110,7 @@ public class AuthController {
 	@PostMapping("/refresh-token")
 	public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenReq) {
 
-		log.info("AUTH - CONTROLLER - REFRESH TOKEN");
+		log.info("AUTH - CONTROLLER - REFRESH TOKEN - token: {}", refreshTokenReq.getToken());
 
 		return ResponseEntity.ok(authService.refreshToken(refreshTokenReq));
 	}
@@ -121,7 +124,7 @@ public class AuthController {
 	@PostMapping("/recuperar-password")
 	public ResponseEntity<MensajeResponse> forgotPassword(@RequestBody RecuperarPasswordRequest request) {
 
-		log.info("AUTH - CONTROLLER - RECUPERAR PASSWORD");
+		log.info("AUTH - CONTROLLER - RECUPERAR PASSWORD - email: {}", request.getEmail());
 
 		return ResponseEntity.ok(authService.recuperarPassword(request.getEmail()));
 	}
@@ -135,7 +138,8 @@ public class AuthController {
 	@PostMapping("/reset-password")
 	public ResponseEntity<MensajeResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
 
-		log.info("AUTH - CONTROLLER - RESET PASSWORD");
+		log.info("AUTH - CONTROLLER - RESET PASSWORD - id: {} - codigo: {}", request.getIdUsuario(),
+				request.getCodVerificacion());
 
 		return ResponseEntity.ok(authService.resetPassword(request));
 	}
