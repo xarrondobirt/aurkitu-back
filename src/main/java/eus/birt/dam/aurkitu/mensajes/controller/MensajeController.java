@@ -19,6 +19,8 @@ import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "03 - Mensajes", description = "Gestión de mensajes y conversaciones entre usuarios")
 public class MensajeController {
 
 	private final MensajeService mensajeService;
@@ -43,6 +46,7 @@ public class MensajeController {
 	 * @param request    objeto HttpServletRequest para obtener la sesión del usuario
 	 * @return ResponseEntity con la respuesta del mensaje enviado
 	 */
+	@Operation(summary = "Enviar mensaje", description = "Envía un mensaje entre usuarios")
 	@PostMapping("/enviar")
 	public ResponseEntity<MensajeResponse> enviarMensaje(@RequestBody EnviarMensajeRequest msgRequest,
 			HttpServletRequest request) {
@@ -61,6 +65,7 @@ public class MensajeController {
 	 * @param request objeto HttpServletRequest para obtener la sesión del usuario
 	 * @return ResponseEntity con la lista de conversaciones del usuario
 	 */
+	@Operation(summary = "Obtener conversaciones", description = "Obtiene todas las conversaciones del usuario autenticado")
 	@GetMapping("/conversaciones")
 	public ResponseEntity<List<ConversacionResponse>> obtenerConversaciones(HttpServletRequest request) {
 
@@ -78,6 +83,7 @@ public class MensajeController {
 	 * @param request        objeto HttpServletRequest para obtener la sesión del usuario
 	 * @return ResponseEntity con la lista de mensajes de la conversación
 	 */
+	@Operation(summary = "Obtener mensajes de conversación", description = "Obtiene los mensajes de una conversación específica y los marca como leídos")
 	@GetMapping("/conversacion/{idConversacion}/mensajes")
 	public ResponseEntity<List<MensajeDTO>> obtenerMensajes(@PathVariable Integer idConversacion,
 			HttpServletRequest request) {
