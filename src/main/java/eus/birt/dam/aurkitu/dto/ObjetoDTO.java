@@ -37,9 +37,9 @@ public final class ObjetoDTO {
 	@NotNull(message = "El color es obligatorio")
 	private Integer idColor;
 
-	private String foto;
+//	private String foto;
 
-	private String factura;
+//	private String factura;
 
 	@NotNull(message = "La fecha de pérdida es obligatoria")
 	private Instant fechaPerdida;
