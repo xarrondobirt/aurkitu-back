@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public RegistroUsuarioResponse registrarUsuario(UsuarioDTO usuarioDTO) {
 
-		log.info("AUTH - SERVICE - REGISTRO");
+//		log.info("AUTH - SERVICE - REGISTRO");
 
 		// Verificar si el email ya existe y reenviar el código si se da el caso
 //		if (usuarioRepo.existsByEmail(usuarioDTO.getEmail())) {
@@ -117,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public MensajeResponse verificarCodigo(RegistroUsuarioRequest request) {
 
-		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
+//		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
 
 		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
@@ -151,7 +151,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public LoginResponse login(LoginRequest request) {
 
-		log.info("AUTH - SERVICE - LOGIN");
+//		log.info("AUTH - SERVICE - LOGIN");
 
 		// Validar credenciales
 		UsuarioEntity usuario = usuarioRepo.findByUsername(request.getUsername())
@@ -184,7 +184,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public void logout(String authHeader) {
 
-		log.info("AUTH - SERVICE - LOGOUT");
+//		log.info("AUTH - SERVICE - LOGOUT");
 
 		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
 			throw new AurkituException(ErrorEnum.SESION_ERROR);
@@ -207,7 +207,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public LoginResponse refreshToken(RefreshTokenRequest refreshTokenReq) {
 
-		log.info("AUTH - SERVICE - REFRESH TOKEN");
+//		log.info("AUTH - SERVICE - REFRESH TOKEN");
 
 		// Buscar usuario y su refresh token en BD
 		RefreshTokenEntity refreshToken = refreshTokenRepo.findByToken(refreshTokenReq.getToken())
@@ -237,7 +237,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public MensajeResponse recuperarPassword(String email) {
 
-		log.info("AUTH - SERVICE - RECUPERAR PASSWORD");
+//		log.info("AUTH - SERVICE - RECUPERAR PASSWORD");
 
 		// Buscar usuario por email
 		UsuarioEntity usuario = usuarioRepo.findByEmail(email)
@@ -268,7 +268,7 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public MensajeResponse resetPassword(ResetPasswordRequest request) {
 
-		log.info("AUTH - SERVICE - RESET PASSWORD");
+//		log.info("AUTH - SERVICE - RESET PASSWORD");
 
 		// Validar que las contraseñas coincidan
 		if (!request.getNuevaPassword().equals(request.getRepitePassword())) {

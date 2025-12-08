@@ -50,7 +50,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, Integer idUsuario, MultipartFile foto,
 			MultipartFile factura) {
 
-		log.info("OBJETO - SERVICE - GUARDAR");
+//		log.info("OBJETO - SERVICE - GUARDAR");
 
 		// Validaciones
 		UsuarioEntity usuario = usuarioRepo.findById(idUsuario)
@@ -88,7 +88,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	public List<ClaveValorDTO> obtenerTiposObjeto() {
 
-		log.info("OBJETO - SERVICE - OBTENER TIPOS OBJETO");
+//		log.info("OBJETO - SERVICE - OBTENER TIPOS OBJETO");
 
 		List<TipoObjetoEntity> listaTiposObj = tipoObjetoRepo.findAll();
 		return ClaveValorMapper.MAPPER.tipoObjetoToDTOList(listaTiposObj);
@@ -97,7 +97,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	public List<ClaveValorDTO> obtenerColores() {
 
-		log.info("OBJETO - SERVICE - OBTENER COLORES");
+//		log.info("OBJETO - SERVICE - OBTENER COLORES");
 
 		List<ColorEntity> listaColor = colorRepo.findAll();
 		return ClaveValorMapper.MAPPER.colorToDTOList(listaColor);
@@ -106,7 +106,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	public List<ClaveValorDTO> obtenerEstadosObjeto() {
 
-		log.info("OBJETO - SERVICE - OBTENER ESTADOS");
+//		log.info("OBJETO - SERVICE - OBTENER ESTADOS");
 
 		List<EstadoObjetoEntity> listaEstados = estadoObjetoRepo.findAll();
 		return ClaveValorMapper.MAPPER.estadoToDTOList(listaEstados);

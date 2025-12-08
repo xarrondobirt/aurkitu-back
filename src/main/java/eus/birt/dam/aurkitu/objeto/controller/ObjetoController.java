@@ -46,10 +46,10 @@ public class ObjetoController {
 	@GetMapping("/obtener-tipos")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
-		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO");
-
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+
+		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO - header: {}", idUsuario);
 
 		return new ResponseEntity<>(objetoService.obtenerTiposObjeto(), HttpStatus.OK);
 
@@ -64,10 +64,10 @@ public class ObjetoController {
 	@GetMapping("/obtener-colores")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerColores(HttpServletRequest request) {
 
-		log.info("OBJETO - CONTROLLER - OBTENER COLORES");
-
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+
+		log.info("OBJETO - CONTROLLER - OBTENER COLORES - header: {}", idUsuario);
 
 		return new ResponseEntity<>(objetoService.obtenerColores(), HttpStatus.OK);
 
@@ -82,10 +82,10 @@ public class ObjetoController {
 	@GetMapping("/obtener-estados")
 	public ResponseEntity<List<ClaveValorDTO>> obtenerEstados(HttpServletRequest request) {
 
-		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS");
-
 		// Comprobar usuario
-		jwtUtils.getUserIdFromRequest(request);
+		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+
+		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS - header: {}", idUsuario);
 
 		return new ResponseEntity<>(objetoService.obtenerEstadosObjeto(), HttpStatus.OK);
 
@@ -104,10 +104,12 @@ public class ObjetoController {
 			@Valid @RequestBody ObjetoDTO objetoDTO, @RequestPart(value = "foto", required = false) MultipartFile foto,
 			@RequestPart(value = "factura", required = false) MultipartFile factura) {
 
-		log.info("OBJETO - CONTROLLER - GUARDAR");
-
 		// Comprobar usuario
 		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+
+		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
+				objetoDTO.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
+				factura != null ? factura.getOriginalFilename() : "sin factura");
 
 		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario, foto, factura), HttpStatus.OK);
 

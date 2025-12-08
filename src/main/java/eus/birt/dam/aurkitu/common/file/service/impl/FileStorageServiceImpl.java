@@ -49,6 +49,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 	 * @throws AurkituException Si ocurre un error al guardar el archivo
 	 */
 	private String guardarArchivo(MultipartFile archivo, String directorio) {
+
 		try {
 			String nombreArchivo = UUID.randomUUID() + "_" + archivo.getOriginalFilename();
 			Path ruta = Paths.get(directorio, nombreArchivo);
