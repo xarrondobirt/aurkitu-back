@@ -47,12 +47,12 @@ public class MensajeController {
 	public ResponseEntity<MensajeResponse> enviarMensaje(@RequestBody EnviarMensajeRequest msgRequest,
 			HttpServletRequest request) {
 
-		log.info("MENSAJE - CONTROLLER - ENVIAR MENSAJE");
-
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
-		MensajeResponse mensaje = mensajeService.enviarMensaje(sesion, msgRequest);
 
-		return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
+		log.info("MENSAJE - CONTROLLER - ENVIAR MENSAJE - header: {} - mensaje: {}", sesion.toString(),
+				msgRequest.toString());
+
+		return new ResponseEntity<>(mensajeService.enviarMensaje(sesion, msgRequest), HttpStatus.CREATED);
 	}
 
 	/**
@@ -64,12 +64,11 @@ public class MensajeController {
 	@GetMapping("/conversaciones")
 	public ResponseEntity<List<ConversacionResponse>> obtenerConversaciones(HttpServletRequest request) {
 
-		log.info("MENSAJE - CONTROLLER - OBTENER CONVERSACIONES");
-
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
-		List<ConversacionResponse> conversaciones = mensajeService.obtenerConversacionesUsuario(sesion);
 
-		return new ResponseEntity<>(conversaciones, HttpStatus.OK);
+		log.info("MENSAJE - CONTROLLER - OBTENER CONVERSACIONES - header: {}", sesion.toString());
+
+		return new ResponseEntity<>(mensajeService.obtenerConversacionesUsuario(sesion), HttpStatus.OK);
 	}
 
 	/**
@@ -83,9 +82,10 @@ public class MensajeController {
 	public ResponseEntity<List<MensajeDTO>> obtenerMensajes(@PathVariable Integer idConversacion,
 			HttpServletRequest request) {
 
-		log.info("MENSAJE - CONTROLLER - OBTENER MENSAJES");
-
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
+
+		log.info("MENSAJE - CONTROLLER - OBTENER MENSAJES - header: {} - idConversacion: {}", sesion.toString(),
+				idConversacion);
 
 		// Este método obtiene y marca como leídos
 		List<MensajeDTO> mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
