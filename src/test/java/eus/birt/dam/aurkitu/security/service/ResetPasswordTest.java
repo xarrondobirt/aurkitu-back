@@ -51,7 +51,7 @@ class ResetPasswordTest {
 				.build();
 
 		resetRequest = new ResetPasswordRequest();
-		resetRequest.setIdUsuario(1);
+		resetRequest.setEmail("birt@birt.eus");
 		resetRequest.setNuevaPassword("newPassword123");
 		resetRequest.setRepitePassword("newPassword123");
 		resetRequest.setCodVerificacion("123456");
@@ -61,7 +61,7 @@ class ResetPasswordTest {
 	void testResetPassword_Success() {
 
 		// Arrange
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
+		Mockito.when(usuarioRepo.findByEmail(resetRequest.getEmail())).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(codVerificacionRepo.findByUsuarioIdAndCodigo(1, "123456"))
 				.thenReturn(Optional.of(codigoVerificacionEntity));
 		Mockito.when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
@@ -71,7 +71,7 @@ class ResetPasswordTest {
 		authService.resetPassword(resetRequest);
 
 		// Assert
-		Mockito.verify(usuarioRepo).findById(1);
+		Mockito.verify(usuarioRepo).findByEmail(resetRequest.getEmail());
 		Mockito.verify(codVerificacionRepo).findByUsuarioIdAndCodigo(1, "123456");
 		Mockito.verify(passwordEncoder).encode("newPassword123");
 		Mockito.verify(usuarioRepo).save(usuarioEntity);
@@ -97,14 +97,14 @@ class ResetPasswordTest {
 	void testResetPassword_UsuarioNoEncontrado() {
 
 		// Arrange
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.empty());
+		Mockito.when(usuarioRepo.findByEmail(resetRequest.getEmail())).thenReturn(Optional.empty());
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
 				() -> authService.resetPassword(resetRequest));
 
 		assertEquals(ErrorEnum.USER_NOT_FOUND.getStatus(), exception.getStatusCode());
-		Mockito.verify(usuarioRepo).findById(1);
+		Mockito.verify(usuarioRepo).findByEmail(resetRequest.getEmail());
 		Mockito.verify(codVerificacionRepo, Mockito.never()).findByUsuarioIdAndCodigo(Mockito.anyInt(),
 				Mockito.anyString());
 	}
@@ -113,7 +113,7 @@ class ResetPasswordTest {
 	void testResetPassword_CodigoNoEncontrado() {
 
 		// Arrange
-		Mockito.when(usuarioRepo.findById(1)).thenReturn(Optional.of(usuarioEntity));
+		Mockito.when(usuarioRepo.findByEmail(resetRequest.getEmail())).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(codVerificacionRepo.findByUsuarioIdAndCodigo(1, "123456")).thenReturn(Optional.empty());
 
 		// Act & Assert
@@ -121,7 +121,7 @@ class ResetPasswordTest {
 				() -> authService.resetPassword(resetRequest));
 
 		assertEquals(ErrorEnum.VERIFICATION_CODE_NOT_FOUND.getStatus(), exception.getStatusCode());
-		Mockito.verify(usuarioRepo).findById(1);
+		Mockito.verify(usuarioRepo).findByEmail(resetRequest.getEmail());
 		Mockito.verify(codVerificacionRepo).findByUsuarioIdAndCodigo(1, "123456");
 	}
 }

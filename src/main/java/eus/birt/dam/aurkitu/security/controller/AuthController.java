@@ -148,7 +148,7 @@ public class AuthController {
 	@PostMapping("/reset-password")
 	public ResponseEntity<MensajeInfoResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
 
-		log.info("AUTH - CONTROLLER - RESET PASSWORD - id: {} - codigo: {}", request.getIdUsuario(),
+		log.info("AUTH - CONTROLLER - RESET PASSWORD - email: {} - codigo: {}", request.getEmail(),
 				request.getCodVerificacion());
 
 		return ResponseEntity.ok(authService.resetPassword(request));
