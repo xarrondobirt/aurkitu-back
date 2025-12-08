@@ -21,7 +21,7 @@ import eus.birt.dam.aurkitu.payload.request.RefreshTokenRequest;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
 import eus.birt.dam.aurkitu.payload.request.ResetPasswordRequest;
 import eus.birt.dam.aurkitu.payload.response.LoginResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.payload.response.RegistroUsuarioResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
@@ -115,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public MensajeResponse verificarCodigo(RegistroUsuarioRequest request) {
+	public MensajeInfoResponse verificarCodigo(RegistroUsuarioRequest request) {
 
 //		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
 
@@ -144,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
 		// Borrar el código de verificación después de usarlo
 		codVerificacionRepo.delete(codigo);
 
-		return new MensajeResponse(Constantes.EMAIL_VERIFICADO);
+		return new MensajeInfoResponse(Constantes.EMAIL_VERIFICADO);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public MensajeResponse recuperarPassword(String email) {
+	public MensajeInfoResponse recuperarPassword(String email) {
 
 //		log.info("AUTH - SERVICE - RECUPERAR PASSWORD");
 
@@ -261,12 +261,12 @@ public class AuthServiceImpl implements AuthService {
 		mailService.enviarCodigo(email, codigo, HtmlTemplateEnum.RECUPERAR_PASSWORD.toString(),
 				Constantes.ASUNTO_RESET_PASSWORD);
 
-		return new MensajeResponse(Constantes.EMAIL_RECUPERAR_PASSWORD);
+		return new MensajeInfoResponse(Constantes.EMAIL_RECUPERAR_PASSWORD);
 	}
 
 	@Override
 	@Transactional
-	public MensajeResponse resetPassword(ResetPasswordRequest request) {
+	public MensajeInfoResponse resetPassword(ResetPasswordRequest request) {
 
 //		log.info("AUTH - SERVICE - RESET PASSWORD");
 
@@ -296,6 +296,6 @@ public class AuthServiceImpl implements AuthService {
 		// Eliminar código usado
 		codVerificacionRepo.delete(codigo);
 
-		return new MensajeResponse(Constantes.PASSWORD_ACTUALIZADA);
+		return new MensajeInfoResponse(Constantes.PASSWORD_ACTUALIZADA);
 	}
 }

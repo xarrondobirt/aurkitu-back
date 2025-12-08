@@ -29,7 +29,7 @@ import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.TipoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.service.impl.ObjetoServiceImpl;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
 
@@ -100,7 +100,7 @@ class GuardarObjetoTest {
 		Mockito.when(objetoRepo.save(Mockito.any(ObjetoEntity.class))).thenReturn(objetoEntity);
 
 		// Act
-		MensajeResponse resultado = objetoService.guardarObjeto(objetoDTO, idUsuario, null, null);
+		MensajeInfoResponse resultado = objetoService.guardarObjeto(objetoDTO, idUsuario, null, null);
 
 		// Assert
 		assertNotNull(resultado);

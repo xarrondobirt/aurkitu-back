@@ -22,7 +22,7 @@ import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.CodigoVerificacionEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.request.RegistroUsuarioRequest;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.CodigoVerificacionRepository;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.security.service.impl.AuthServiceImpl;
@@ -68,7 +68,7 @@ class VerificarMailTest {
 		Mockito.when(usuarioRepo.save(any(UsuarioEntity.class))).thenReturn(usuarioEntity);
 
 		// Act
-		MensajeResponse resultado = authService.verificarCodigo(registroRequest);
+		MensajeInfoResponse resultado = authService.verificarCodigo(registroRequest);
 
 		// Assert
 		assertNotNull(resultado);

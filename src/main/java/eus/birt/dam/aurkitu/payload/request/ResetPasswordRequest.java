@@ -1,5 +1,6 @@
 package eus.birt.dam.aurkitu.payload.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,20 +15,25 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Solicitud para restablecer contraseña con código de verificación")
 public final class ResetPasswordRequest {
 
 	@Min(value = 1, message = "El ID de usuario debe ser mayor a 0")
 	@NotNull
+	@Schema(description = "ID del usuario que restablece la contraseña")
 	private Integer idUsuario;
 
 	@NotBlank
+	@Schema(description = "Nueva contraseña del usuario")
 	private String nuevaPassword;
 
 	@NotBlank
+	@Schema(description = "Confirmación de la nueva contraseña")
 	private String repitePassword;
 
 	@NotNull
 	@Size(min = 6, max = 6)
+	@Schema(description = "Código de verificación de 6 dígitos")
 	private String codVerificacion;
 
 }
