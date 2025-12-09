@@ -46,9 +46,9 @@ public final class ObjetoDTO {
 	@Schema(description = "ID del color predominante")
 	private Integer idColor;
 
-	private String foto;
+//	private String foto;
 
-	private String factura;
+//	private String factura;
 
 	@NotNull(message = "La fecha de pérdida es obligatoria")
 	@Schema(description = "Fecha y hora en que se perdió el objeto")

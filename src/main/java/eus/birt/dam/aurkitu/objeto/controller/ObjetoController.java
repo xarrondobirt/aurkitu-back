@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,13 +106,15 @@ public class ObjetoController {
 	 */
 	@Operation(summary = "Guardar objeto", description = "Registra un objeto perdido")
 	@PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<MensajeInfoResponse> guardarObjeto(HttpServletRequest request,
-			@Valid @RequestBody ObjetoDTO objetoDTO, @RequestPart(value = "foto", required = false) MultipartFile foto,
+	public ResponseEntity<MensajeResponse> guardarObjeto(HttpServletRequest request,
+			@Valid @RequestPart("objeto") ObjetoDTO objeto,
+			@RequestPart(value = "foto", required = false) MultipartFile foto,
 			@RequestPart(value = "factura", required = false) MultipartFile factura) {
 
 		// Comprobar usuario
 		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
 
+		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
 		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
 				objetoDTO.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
 				factura != null ? factura.getOriginalFilename() : "sin factura");
