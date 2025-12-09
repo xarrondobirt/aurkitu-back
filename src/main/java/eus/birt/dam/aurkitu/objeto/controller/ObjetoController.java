@@ -106,7 +106,7 @@ public class ObjetoController {
 	 */
 	@Operation(summary = "Guardar objeto", description = "Registra un objeto perdido")
 	@PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<MensajeResponse> guardarObjeto(HttpServletRequest request,
+	public ResponseEntity<MensajeInfoResponse> guardarObjeto(HttpServletRequest request,
 			@Valid @RequestPart("objeto") ObjetoDTO objeto,
 			@RequestPart(value = "foto", required = false) MultipartFile foto,
 			@RequestPart(value = "factura", required = false) MultipartFile factura) {
@@ -114,12 +114,11 @@ public class ObjetoController {
 		// Comprobar usuario
 		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
 		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
-				objetoDTO.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
+				objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
 				factura != null ? factura.getOriginalFilename() : "sin factura");
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, idUsuario, foto, factura), HttpStatus.OK);
+		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
 
 	}
 }
