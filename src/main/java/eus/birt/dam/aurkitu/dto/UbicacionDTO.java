@@ -23,4 +23,7 @@ public final class UbicacionDTO {
 	@Schema(description = "Coordenada de longitud")
 	private Double longitud;
 
+	@NotNull(message = "La latitud es obligatoria")
+	private Double latitud;
+
 }

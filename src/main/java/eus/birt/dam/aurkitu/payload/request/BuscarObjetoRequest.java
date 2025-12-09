@@ -1,0 +1,30 @@
+package eus.birt.dam.aurkitu.payload.request;
+
+import java.time.Instant;
+
+import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
+import eus.birt.dam.aurkitu.dto.UbicacionDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Clase que se usa como request para la búsqueda de objetos
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public final class BuscarObjetoRequest {
+
+	private ClaveValorDTO estado;
+	private UbicacionDTO ubicacion;
+	private Integer radio;
+	private ClaveValorDTO tipoObjeto;
+	private String descripcion;
+	private String marca;
+	private String numSerie;
+	private ClaveValorDTO color;
+	private Instant fechaDesde;
+	private Instant fechaHasta;
+
+}

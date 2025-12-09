@@ -29,4 +29,13 @@ public abstract class UbicacionMapper {
 
 		return point;
 	}
+
+	public UbicacionDTO toDTO(Point point) {
+
+		if (point == null) {
+			return null;
+		}
+
+		return new UbicacionDTO(point.getX(), point.getY());
+	}
 }

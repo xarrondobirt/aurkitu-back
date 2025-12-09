@@ -47,4 +47,12 @@ public interface ObjetoService {
 	 */
 	List<ClaveValorDTO> obtenerEstadosObjeto();
 
+	/**
+	 * Busca objetos aplicando múltiples filtros
+	 * 
+	 * @param filtros Objeto con todos los criterios de búsqueda aplicables
+	 * @return Lista de objetos que coinciden con los filtros
+	 */
+	List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros);
+
 }

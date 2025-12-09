@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EstadoObjetoEnum {
-	PERDIDO, ENCONTRADO, DEVUELTO;
+	DESCONOCIDO, PERDIDO, ENCONTRADO, DEVUELTO;
 
 	@Override
 	public String toString() {

@@ -121,4 +121,22 @@ public class ObjetoController {
 		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
 
 	}
+
+	/**
+	 * Busca objetos aplicando múltiples filtros
+	 * 
+	 * @param request Solicitud HTTP para validación de token
+	 * @param filtros Objeto con todos los criterios de búsqueda aplicables
+	 * @return ResponseEntity con la lista de objetos que coinciden con los filtros
+	 */
+	@PostMapping("/buscar")
+	public ResponseEntity<List<BuscarObjetoResponse>> buscarObjetos(HttpServletRequest request,
+			@Valid @RequestBody BuscarObjetoRequest filtros) {
+
+		log.info("OBJETO - CONTROLLER - BUSCAR");
+
+		jwtUtils.getUserIdFromRequest(request);
+
+		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
+	}
 }
