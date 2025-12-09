@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
+import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 
 /**

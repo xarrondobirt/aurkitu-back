@@ -28,6 +28,8 @@ import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.TipoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
+import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
+import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
@@ -123,7 +125,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Transactional
 	public List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros) {
 
-		log.info("OBJETO - SERVICE - BUSCAR");
+//		log.info("OBJETO - SERVICE - BUSCAR");
 
 		Specification<ObjetoEntity> spec = this.crearQuery(filtros);
 
