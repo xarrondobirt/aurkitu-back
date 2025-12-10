@@ -25,7 +25,7 @@ public final class BuscarObjetoResponse {
 	private Instant fechaPerdida;
 	private String foto;
 	private String factura;
-	private ClaveValorDTO tipoObjeto;
+	private ClaveValorDTO tipo;
 	private ClaveValorDTO color;
 	private ClaveValorDTO estado;
 	private Instant createDate;

@@ -21,7 +21,6 @@ public abstract class ObjetoMapper {
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "usuario", source = "usuario")
-	@Mapping(target = "tipoObjeto", source = "tipoObjeto")
 	@Mapping(target = "color", source = "color")
 	@Mapping(target = "ubicacion", expression = "java(UBICACION_MAPPER.toPoint(source.getUbicacion()))")
 	@Mapping(target = "radio", source = "source.radio", defaultValue = "0")

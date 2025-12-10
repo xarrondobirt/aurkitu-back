@@ -20,7 +20,7 @@ public abstract class BuscarObjetoMapper {
 	public static final ClaveValorMapper CLAVE_VALOR_MAPPER = Mappers.getMapper(ClaveValorMapper.class);
 
 	@Mapping(target = "ubicacion", expression = "java(UBICACION_MAPPER.toDTO(source.getUbicacion()))")
-	@Mapping(target = "tipoObjeto", expression = "java(CLAVE_VALOR_MAPPER.tipoObjetoToDTO(source.getTipoObjeto()))")
+	@Mapping(target = "tipo", expression = "java(CLAVE_VALOR_MAPPER.tipoObjetoToDTO(source.getTipo()))")
 	@Mapping(target = "color", expression = "java(CLAVE_VALOR_MAPPER.colorTotoDTO(source.getColor()))")
 	@Mapping(target = "estado", expression = "java(CLAVE_VALOR_MAPPER.estadoTotoDTO(source.getEstado()))")
 	public abstract BuscarObjetoResponse toResponse(ObjetoEntity source);

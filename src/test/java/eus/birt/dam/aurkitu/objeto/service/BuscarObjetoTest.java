@@ -118,7 +118,7 @@ class BuscarObjetoTest {
 
 		// Arrange
 		ClaveValorDTO tipoObjeto = new ClaveValorDTO(1, "MOVIL");
-		request.setTipoObjeto(tipoObjeto);
+		request.setTipo(tipoObjeto);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
@@ -219,7 +219,7 @@ class BuscarObjetoTest {
 		request.setDescripcion("samsung");
 		request.setMarca("Samsung");
 		ClaveValorDTO tipo = new ClaveValorDTO(1, "MOVIL");
-		request.setTipoObjeto(tipo);
+		request.setTipo(tipo);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
