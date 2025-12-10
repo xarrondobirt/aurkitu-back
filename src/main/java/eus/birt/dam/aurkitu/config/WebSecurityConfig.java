@@ -84,6 +84,7 @@ public class WebSecurityConfig {
                 "http://localhost:8100",
                 // CAPACITOR (Móviles nativos)
                 "http://localhost",
+                "https://localhost", //Es el que usa el emulador en Android Studio (Pixel con Android 13)
                 "capacitor://localhost"
         ));
 
