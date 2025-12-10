@@ -164,10 +164,10 @@ public class ObjetoServiceImpl implements ObjetoService {
 			}
 
 			// Filtro por tipo de objeto
-			if (filtros.getTipoObjeto() != null) {
-				predicates.add(cb.equal(
-						root.get(FiltroBusquedaEnum.TIPO_OBJETO.toString()).get(FiltroBusquedaEnum.ID.toString()),
-						filtros.getTipoObjeto().getId()));
+			if (filtros.getTipo() != null) {
+				predicates.add(
+						cb.equal(root.get(FiltroBusquedaEnum.TIPO.toString()).get(FiltroBusquedaEnum.ID.toString()),
+								filtros.getTipo().getId()));
 			}
 
 			// Filtro por color

@@ -56,7 +56,7 @@ public class ObjetoEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tipo", referencedColumnName = "id")
-	private TipoObjetoEntity tipoObjeto;
+	private TipoObjetoEntity tipo;
 
 	@NotBlank
 	private String descripcion;

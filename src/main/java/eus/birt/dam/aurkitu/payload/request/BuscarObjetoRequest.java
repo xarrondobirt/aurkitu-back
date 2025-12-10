@@ -19,7 +19,7 @@ public final class BuscarObjetoRequest {
 	private ClaveValorDTO estado;
 	private UbicacionDTO ubicacion;
 	private Integer radio;
-	private ClaveValorDTO tipoObjeto;
+	private ClaveValorDTO tipo;
 	private String descripcion;
 	private String marca;
 	private String numSerie;

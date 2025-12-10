@@ -82,7 +82,7 @@ class GuardarObjetoTest {
 				.build();
 
 		objetoEntity = ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").usuario(usuarioEntity)
-				.tipoObjeto(tipoObjetoEntity).color(colorEntity).estado(estadoObjetoEntity).radio(500)
+				.tipo(tipoObjetoEntity).color(colorEntity).estado(estadoObjetoEntity).radio(500)
 				.fechaPerdida(Instant.now()).build();
 	}
 

@@ -118,7 +118,7 @@ public class ObjetoController {
 		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
 
 		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
-				objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
+				idUsuario, objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
 				factura != null ? factura.getOriginalFilename() : "sin factura");
 
 		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
@@ -136,9 +136,9 @@ public class ObjetoController {
 	public ResponseEntity<List<BuscarObjetoResponse>> buscarObjetos(HttpServletRequest request,
 			@Valid @RequestBody BuscarObjetoRequest filtros) {
 
-		log.info("OBJETO - CONTROLLER - BUSCAR");
+		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
 
-		jwtUtils.getUserIdFromRequest(request);
+		log.info("OBJETO - CONTROLLER - BUSCAR - header: {} - filtros: {}", idUsuario, filtros.toString());
 
 		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
 	}
