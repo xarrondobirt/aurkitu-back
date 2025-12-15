@@ -102,7 +102,7 @@ class GuardarObjetoTest {
 		Mockito.when(objetoRepo.save(Mockito.any(ObjetoEntity.class))).thenReturn(objetoEntity);
 
 		// Act
-		MensajeResponse resultado = objetoService.guardarObjeto(objetoDTO, sesion, null, null);
+		MensajeInfoResponse resultado = objetoService.guardarObjeto(objetoDTO, sesion, null, null);
 
 		// Assert
 		assertNotNull(resultado);

@@ -17,7 +17,7 @@ import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,7 +48,7 @@ public class MensajeController {
 	 */
 	@Operation(summary = "Enviar mensaje", description = "Envía un mensaje entre usuarios")
 	@PostMapping("/enviar")
-	public ResponseEntity<MensajeResponse> enviarMensaje(@RequestBody EnviarMensajeRequest msgRequest,
+	public ResponseEntity<MensajeInfoResponse> enviarMensaje(@RequestBody EnviarMensajeRequest msgRequest,
 			HttpServletRequest request) {
 
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);

@@ -57,7 +57,7 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 	@Override
 	@Transactional
-	public MensajeResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto,
+	public MensajeInfoResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto,
 			MultipartFile factura) {
 
 //		log.info("OBJETO - SERVICE - GUARDAR");

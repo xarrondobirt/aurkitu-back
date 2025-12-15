@@ -23,7 +23,7 @@ import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
 import jakarta.transaction.Transactional;
@@ -45,7 +45,7 @@ public class MensajeServiceImpl implements MensajeService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public MensajeResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest) {
+	public MensajeInfoResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest) {
 
 //		log.info("MENSAJE - SERVICE - ENVIAR MENSAJE");
 
@@ -72,7 +72,7 @@ public class MensajeServiceImpl implements MensajeService {
 		conversacionRepo.save(conversacion);
 		mensajeRepo.save(mensaje);
 
-		return new MensajeResponse(Constantes.MENSAJE_ENVIADO);
+		return new MensajeInfoResponse(Constantes.MENSAJE_ENVIADO);
 	}
 
 	/**

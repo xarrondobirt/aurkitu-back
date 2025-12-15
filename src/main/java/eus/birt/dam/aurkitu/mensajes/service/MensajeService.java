@@ -6,7 +6,7 @@ import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 
 /**
  * Interfaz que define las operaciones relacionadas con los mensajes entre usuarios
@@ -21,7 +21,7 @@ public interface MensajeService {
 	 * @param msgRequest datos del mensaje a enviar
 	 * @return respuesta con los datos del mensaje enviado
 	 */
-	MensajeResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest);
+	MensajeInfoResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest);
 
 	/**
 	 * Obtiene todas las conversaciones en las que participa un usuario

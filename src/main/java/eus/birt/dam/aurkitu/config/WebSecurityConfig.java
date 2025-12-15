@@ -72,7 +72,7 @@ public class WebSecurityConfig {
 	 * Aquí definimos quién tiene permiso para hablar con el Backend.
 	 */
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		// LISTA DE ORÍGENES PERMITIDOS

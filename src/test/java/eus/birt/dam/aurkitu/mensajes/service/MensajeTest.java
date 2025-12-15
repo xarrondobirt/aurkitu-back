@@ -29,7 +29,7 @@ import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
-import eus.birt.dam.aurkitu.payload.response.MensajeResponse;
+import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
 
@@ -89,7 +89,7 @@ class MensajeTest {
 		Mockito.when(mensajeRepo.save(Mockito.any(MensajeEntity.class))).thenReturn(mensaje);
 
 		// Act
-		MensajeResponse resultado = mensajeService.enviarMensaje(sesion, request);
+		MensajeInfoResponse resultado = mensajeService.enviarMensaje(sesion, request);
 
 		// Assert
 		assertNotNull(resultado);

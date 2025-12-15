@@ -54,9 +54,9 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
 		// Comprobar usuario
-		jwtUtils.getSesionFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO - header: {}", idUsuario);
+		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO - header: {}", sesion.toString());
 
 		return new ResponseEntity<>(objetoService.obtenerTiposObjeto(), HttpStatus.OK);
 
@@ -73,9 +73,9 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerColores(HttpServletRequest request) {
 
 		// Comprobar usuario
-		jwtUtils.getSesionFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		log.info("OBJETO - CONTROLLER - OBTENER COLORES - header: {}", idUsuario);
+		log.info("OBJETO - CONTROLLER - OBTENER COLORES - header: {}", sesion.toString());
 
 		return new ResponseEntity<>(objetoService.obtenerColores(), HttpStatus.OK);
 
@@ -92,9 +92,9 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerEstados(HttpServletRequest request) {
 
 		// Comprobar usuario
-		jwtUtils.getSesionFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS - header: {}", idUsuario);
+		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS - header: {}", sesion.toString());
 
 		return new ResponseEntity<>(objetoService.obtenerEstadosObjeto(), HttpStatus.OK);
 
@@ -118,12 +118,11 @@ public class ObjetoController {
 		// Comprobar usuario
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, sesion, foto, factura), HttpStatus.OK);
-		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
-				idUsuario, objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
+		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", sesion.toString(),
+				objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
 				factura != null ? factura.getOriginalFilename() : "sin factura");
 
-		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, idUsuario, foto, factura), HttpStatus.OK);
+		return new ResponseEntity<>(objetoService.guardarObjeto(objeto, sesion, foto, factura), HttpStatus.OK);
 
 	}
 
@@ -138,9 +137,9 @@ public class ObjetoController {
 	public ResponseEntity<List<BuscarObjetoResponse>> buscarObjetos(HttpServletRequest request,
 			@Valid @RequestBody BuscarObjetoRequest filtros) {
 
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
-		log.info("OBJETO - CONTROLLER - BUSCAR - header: {} - filtros: {}", idUsuario, filtros.toString());
+		log.info("OBJETO - CONTROLLER - BUSCAR - header: {} - filtros: {}", sesion.toString(), filtros.toString());
 
 		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
 	}
