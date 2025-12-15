@@ -66,6 +66,7 @@ public class MensajeServiceImpl implements MensajeService {
 		mensaje.setRemitente(remitente);
 		mensaje.setContenido(msgRequest.getContenido());
 		mensaje.setCreateDate(Instant.now());
+		mensaje.setLastUpdateDate(Instant.now());
 
 		// Actualizar timestamp de conversación
 		conversacion.setLastUpdateDate(Instant.now());
