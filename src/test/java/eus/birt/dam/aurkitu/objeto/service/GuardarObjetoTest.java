@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
@@ -91,6 +92,7 @@ class GuardarObjetoTest {
 
 		// Arrange
 		Integer idUsuario = 1;
+		SesionDTO sesion = SesionDTO.builder().id(idUsuario).build();
 
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.of(tipoObjetoEntity));
@@ -100,7 +102,7 @@ class GuardarObjetoTest {
 		Mockito.when(objetoRepo.save(Mockito.any(ObjetoEntity.class))).thenReturn(objetoEntity);
 
 		// Act
-		MensajeInfoResponse resultado = objetoService.guardarObjeto(objetoDTO, idUsuario, null, null);
+		MensajeResponse resultado = objetoService.guardarObjeto(objetoDTO, sesion, null, null);
 
 		// Assert
 		assertNotNull(resultado);
@@ -118,12 +120,13 @@ class GuardarObjetoTest {
 
 		// Arrange
 		Integer idUsuario = 999;
+		SesionDTO sesion = SesionDTO.builder().id(idUsuario).build();
 
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.empty());
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
+				() -> objetoService.guardarObjeto(objetoDTO, sesion, null, null));
 
 		assertEquals(ErrorEnum.USER_NOT_FOUND.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -135,13 +138,14 @@ class GuardarObjetoTest {
 
 		// Arrange
 		Integer idUsuario = 1;
+		SesionDTO sesion = SesionDTO.builder().id(idUsuario).build();
 
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.empty());
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
+				() -> objetoService.guardarObjeto(objetoDTO, sesion, null, null));
 
 		assertEquals(ErrorEnum.TIPO_OBJETO_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -154,6 +158,7 @@ class GuardarObjetoTest {
 
 		// Arrange
 		Integer idUsuario = 1;
+		SesionDTO sesion = SesionDTO.builder().id(idUsuario).build();
 
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.of(tipoObjetoEntity));
@@ -161,7 +166,7 @@ class GuardarObjetoTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
+				() -> objetoService.guardarObjeto(objetoDTO, sesion, null, null));
 
 		assertEquals(ErrorEnum.COLOR_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);
@@ -175,6 +180,7 @@ class GuardarObjetoTest {
 
 		// Arrange
 		Integer idUsuario = 1;
+		SesionDTO sesion = SesionDTO.builder().id(idUsuario).build();
 
 		Mockito.when(usuarioRepo.findById(idUsuario)).thenReturn(Optional.of(usuarioEntity));
 		Mockito.when(tipoObjetoRepo.findById(objetoDTO.getIdTipoObjeto())).thenReturn(Optional.of(tipoObjetoEntity));
@@ -183,7 +189,7 @@ class GuardarObjetoTest {
 
 		// Act & Assert
 		AurkituException exception = assertThrows(AurkituException.class,
-				() -> objetoService.guardarObjeto(objetoDTO, idUsuario, null, null));
+				() -> objetoService.guardarObjeto(objetoDTO, sesion, null, null));
 
 		assertEquals(ErrorEnum.ESTADO_NO_ENCONTRADO.getStatus(), exception.getStatusCode());
 		Mockito.verify(usuarioRepo).findById(idUsuario);

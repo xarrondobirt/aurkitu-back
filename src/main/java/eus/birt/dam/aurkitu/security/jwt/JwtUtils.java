@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.utils.Constantes;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -111,14 +113,31 @@ public class JwtUtils {
 				.getPayload().get("userId", Integer.class); // Extrae el claim "userId"
 	}
 
-	public Integer getUserIdFromRequest(HttpServletRequest request) {
+//	public Integer getUserIdFromRequest(HttpServletRequest request) {
+//		String authHeader = request.getHeader(Constantes.AUTH);
+//
+//		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
+//			throw new AurkituException(ErrorEnum.SESION_ERROR);
+//		}
+//
+//		String accessToken = authHeader.substring(7);
+//		return this.getUserIdFromToken(accessToken);
+//	}
+	public SesionDTO getSesionFromRequest(HttpServletRequest request) {
 		String authHeader = request.getHeader(Constantes.AUTH);
 
 		if (authHeader == null || !authHeader.startsWith(Constantes.BEARER)) {
 			throw new AurkituException(ErrorEnum.SESION_ERROR);
 		}
 
-		String accessToken = authHeader.substring(7);
-		return this.getUserIdFromToken(accessToken);
+		String token = authHeader.substring(7);
+		Claims claims = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build()
+				.parseSignedClaims(token).getPayload();
+
+		SesionDTO sesion = new SesionDTO();
+		sesion.setId(claims.get("userId", Integer.class));
+		sesion.setUsername(claims.get("username", String.class));
+
+		return sesion;
 	}
 }

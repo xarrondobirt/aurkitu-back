@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
 import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
 import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
@@ -53,7 +54,7 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerTiposObjeto(HttpServletRequest request) {
 
 		// Comprobar usuario
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		log.info("OBJETO - CONTROLLER - OBTENER TIPOS OBJETO - header: {}", idUsuario);
 
@@ -72,7 +73,7 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerColores(HttpServletRequest request) {
 
 		// Comprobar usuario
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		log.info("OBJETO - CONTROLLER - OBTENER COLORES - header: {}", idUsuario);
 
@@ -91,7 +92,7 @@ public class ObjetoController {
 	public ResponseEntity<List<ClaveValorDTO>> obtenerEstados(HttpServletRequest request) {
 
 		// Comprobar usuario
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		jwtUtils.getSesionFromRequest(request);
 
 		log.info("OBJETO - CONTROLLER - OBTENER ESTADOS - header: {}", idUsuario);
 
@@ -115,8 +116,9 @@ public class ObjetoController {
 			@RequestPart(value = "factura", required = false) MultipartFile factura) {
 
 		// Comprobar usuario
-		Integer idUsuario = jwtUtils.getUserIdFromRequest(request);
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
 
+		return new ResponseEntity<>(objetoService.guardarObjeto(objetoDTO, sesion, foto, factura), HttpStatus.OK);
 		log.info("OBJETO - CONTROLLER - GUARDAR - header: {} - objeto: {} - foto: {} - factura: {}", idUsuario,
 				idUsuario, objeto.toString(), foto != null ? foto.getOriginalFilename() : "sin foto",
 				factura != null ? factura.getOriginalFilename() : "sin factura");
