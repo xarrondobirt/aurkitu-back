@@ -31,4 +31,7 @@ public final class MensajeDTO {
 
 	@Schema(description = "Fecha y hora de creación del mensaje")
 	private Instant createDate;
+
+	@Schema(description = "Fecha y hora de la última modificación del mensaje")
+	private Instant lastUpdateDate;
 }

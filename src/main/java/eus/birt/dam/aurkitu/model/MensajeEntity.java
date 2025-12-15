@@ -26,7 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "mensajes")
+@Table(name = "mensaje")
 public class MensajeEntity {
 
 	@Id
@@ -50,5 +50,8 @@ public class MensajeEntity {
 
 	@Column(name = "create_date")
 	private Instant createDate;
+
+	@Column(name = "last_update_date")
+	private Instant lastUpdateDate;
 
 }
