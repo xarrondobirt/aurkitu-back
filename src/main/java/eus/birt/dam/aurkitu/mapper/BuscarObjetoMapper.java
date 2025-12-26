@@ -18,11 +18,13 @@ public abstract class BuscarObjetoMapper {
 	public static final BuscarObjetoMapper MAPPER = Mappers.getMapper(BuscarObjetoMapper.class);
 	public static final UbicacionMapper UBICACION_MAPPER = Mappers.getMapper(UbicacionMapper.class);
 	public static final ClaveValorMapper CLAVE_VALOR_MAPPER = Mappers.getMapper(ClaveValorMapper.class);
+	public static final SesionMapper SESION_MAPPER = Mappers.getMapper(SesionMapper.class);
 
 	@Mapping(target = "ubicacion", expression = "java(UBICACION_MAPPER.toDTO(source.getUbicacion()))")
 	@Mapping(target = "tipo", expression = "java(CLAVE_VALOR_MAPPER.tipoObjetoToDTO(source.getTipo()))")
 	@Mapping(target = "color", expression = "java(CLAVE_VALOR_MAPPER.colorTotoDTO(source.getColor()))")
 	@Mapping(target = "estado", expression = "java(CLAVE_VALOR_MAPPER.estadoTotoDTO(source.getEstado()))")
+	@Mapping(target = "usuario", expression = "java(SESION_MAPPER.toDTO(source.getUsuario()))")
 	public abstract BuscarObjetoResponse toResponse(ObjetoEntity source);
 
 	public abstract List<BuscarObjetoResponse> toResponseList(List<ObjetoEntity> source);

@@ -44,10 +44,10 @@ class BuscarObjetoTest {
 	void setup() {
 		request = new BuscarObjetoRequest();
 		objetosMock = Arrays.asList(
-				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").numSerie("SN123")
-						.fechaPerdida(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
+				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").serie("SN123")
+						.fecha(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
 				ObjetoEntity.builder().id(2).descripcion("Cartera de cuero marrón").marca("Desconocida")
-						.fechaPerdida(Instant.now().minus(1, ChronoUnit.DAYS)).build());
+						.fecha(Instant.now().minus(1, ChronoUnit.DAYS)).build());
 		spec = Mockito.argThat(specification -> true);
 	}
 
@@ -101,7 +101,7 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_FiltroPorNumSerie() {
 
 		// Arrange
-		request.setNumSerie("SN123");
+		request.setSerie("SN123");
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
@@ -110,7 +110,7 @@ class BuscarObjetoTest {
 		// Assert
 		assertNotNull(resultado);
 		assertEquals(1, resultado.size());
-		assertEquals("SN123", resultado.getFirst().getNumSerie());
+		assertEquals("SN123", resultado.getFirst().getSerie());
 	}
 
 	@Test
@@ -166,9 +166,7 @@ class BuscarObjetoTest {
 
 		// Arrange
 		Instant fechaDesde = Instant.now().minus(3, ChronoUnit.DAYS);
-		Instant fechaHasta = Instant.now().minus(1, ChronoUnit.DAYS);
-		request.setFechaDesde(fechaDesde);
-		request.setFechaHasta(fechaHasta);
+		request.setFecha(fechaDesde);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(objetosMock);
 
 		// Act

@@ -3,6 +3,7 @@ package eus.birt.dam.aurkitu.payload.response;
 import java.time.Instant;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.dto.UbicacionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,10 +20,10 @@ public final class BuscarObjetoResponse {
 	private Integer id;
 	private String descripcion;
 	private String marca;
-	private String numSerie;
+	private String serie;
 	private UbicacionDTO ubicacion;
 	private Integer radio;
-	private Instant fechaPerdida;
+	private Instant fecha;
 	private String foto;
 	private String factura;
 	private ClaveValorDTO tipo;
@@ -30,5 +31,6 @@ public final class BuscarObjetoResponse {
 	private ClaveValorDTO estado;
 	private Instant createDate;
 	private Instant lastUpdateDate;
+	private SesionDTO usuario;
 
 }

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum FiltroBusquedaEnum {
-	ID, UBICACION, TIPO, COLOR, ESTADO, FECHA_PERDIDA, DESCRIPCION, MARCA, NUM_SERIE;
+	ID, UBICACION, TIPO, COLOR, ESTADO, FECHA, DESCRIPCION, MARCA, SERIE;
 
 	@Override
 	public String toString() {
