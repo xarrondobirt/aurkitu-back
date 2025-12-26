@@ -1,5 +1,7 @@
 package eus.birt.dam.aurkitu.objeto.service.impl;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +62,6 @@ public class ObjetoServiceImpl implements ObjetoService {
 	public MensajeInfoResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto,
 			MultipartFile factura) {
 
-//		log.info("OBJETO - SERVICE - GUARDAR");
-
 		// Validaciones
 		UsuarioEntity usuario = usuarioRepo.findById(sesion.getId())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
@@ -98,16 +98,12 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	public List<ClaveValorDTO> obtenerTiposObjeto() {
 
-//		log.info("OBJETO - SERVICE - OBTENER TIPOS OBJETO");
-
 		List<TipoObjetoEntity> listaTiposObj = tipoObjetoRepo.findAll();
 		return ClaveValorMapper.MAPPER.tipoObjetoToDTOList(listaTiposObj);
 	}
 
 	@Override
 	public List<ClaveValorDTO> obtenerColores() {
-
-//		log.info("OBJETO - SERVICE - OBTENER COLORES");
 
 		List<ColorEntity> listaColor = colorRepo.findAll();
 		return ClaveValorMapper.MAPPER.colorToDTOList(listaColor);
@@ -116,8 +112,6 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	public List<ClaveValorDTO> obtenerEstadosObjeto() {
 
-//		log.info("OBJETO - SERVICE - OBTENER ESTADOS");
-
 		List<EstadoObjetoEntity> listaEstados = estadoObjetoRepo.findAll();
 		return ClaveValorMapper.MAPPER.estadoToDTOList(listaEstados);
 	}
@@ -125,8 +119,6 @@ public class ObjetoServiceImpl implements ObjetoService {
 	@Override
 	@Transactional
 	public List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros) {
-
-//		log.info("OBJETO - SERVICE - BUSCAR");
 
 		Specification<ObjetoEntity> spec = this.crearQuery(filtros);
 
@@ -186,13 +178,22 @@ public class ObjetoServiceImpl implements ObjetoService {
 			}
 
 			// Filtro por fecha de pérdida (rango)
-			if (filtros.getFechaDesde() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
-						filtros.getFechaDesde()));
-			}
-			if (filtros.getFechaHasta() != null) {
-				predicates.add(cb.lessThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
-						filtros.getFechaHasta()));
+//			if (filtros.getFechaDesde() != null) {
+//				predicates.add(cb.greaterThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
+//						filtros.getFechaDesde()));
+//			}
+//			if (filtros.getFechaHasta() != null) {
+//				predicates.add(cb.lessThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
+//						filtros.getFechaHasta()));
+//			}
+
+			if (filtros.getFecha() != null) {
+
+				Instant inicioDia = filtros.getFecha().truncatedTo(ChronoUnit.DAYS);
+
+				Instant finDia = inicioDia.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MILLIS);
+
+				predicates.add(cb.between(root.get(FiltroBusquedaEnum.FECHA.toString()), inicioDia, finDia));
 			}
 
 			// Filtro por descripción
@@ -208,8 +209,8 @@ public class ObjetoServiceImpl implements ObjetoService {
 			}
 
 			// Filtro por número de serie
-			if (filtros.getNumSerie() != null && !filtros.getNumSerie().trim().isEmpty()) {
-				predicates.add(cb.equal(root.get(FiltroBusquedaEnum.NUM_SERIE.toString()), filtros.getNumSerie()));
+			if (filtros.getSerie() != null && !filtros.getSerie().trim().isEmpty()) {
+				predicates.add(cb.equal(root.get(FiltroBusquedaEnum.SERIE.toString()), filtros.getSerie()));
 			}
 
 			return cb.and(predicates.toArray(new Predicate[0]));

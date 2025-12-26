@@ -64,7 +64,7 @@ public class ObjetoEntity {
 	private String marca;
 
 	@Column(name = "numero_serie")
-	private String numSerie;
+	private String serie;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "color", referencedColumnName = "id")
@@ -78,7 +78,7 @@ public class ObjetoEntity {
 
 	@NotNull
 	@Column(name = "fecha_perdida")
-	private Instant fechaPerdida;
+	private Instant fecha;
 
 	@NotNull
 	@Column(name = "create_date")

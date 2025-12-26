@@ -28,9 +28,9 @@ public final class BuscarObjetoRequest {
 	private ClaveValorDTO tipo;
 	private String descripcion;
 	private String marca;
-	private String numSerie;
+	private String serie;
 	private ClaveValorDTO color;
-	private Instant fechaDesde;
-	private Instant fechaHasta;
+	private Instant fecha;
+	// private Instant fechaHasta;
 
 }
