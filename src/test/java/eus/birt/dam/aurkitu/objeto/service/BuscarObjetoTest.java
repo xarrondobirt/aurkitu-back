@@ -44,10 +44,10 @@ class BuscarObjetoTest {
 	void setup() {
 		request = new BuscarObjetoRequest();
 		objetosMock = Arrays.asList(
-				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").numSerie("SN123")
-						.fechaPerdida(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
+				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").serie("SN123")
+						.fecha(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
 				ObjetoEntity.builder().id(2).descripcion("Cartera de cuero marrón").marca("Desconocida")
-						.fechaPerdida(Instant.now().minus(1, ChronoUnit.DAYS)).build());
+						.fecha(Instant.now().minus(1, ChronoUnit.DAYS)).build());
 		spec = Mockito.argThat(specification -> true);
 	}
 
