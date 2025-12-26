@@ -40,18 +40,14 @@ public final class ObjetoDTO {
 	private String marca;
 
 	@Schema(description = "Número de serie")
-	private String numSerie;
+	private String serie;
 
 	@NotNull(message = "El color es obligatorio")
 	@Schema(description = "ID del color predominante")
 	private Integer idColor;
 
-//	private String foto;
-
-//	private String factura;
-
 	@NotNull(message = "La fecha de pérdida es obligatoria")
 	@Schema(description = "Fecha y hora en que se perdió el objeto")
-	private Instant fechaPerdida;
+	private Instant fecha;
 
 }

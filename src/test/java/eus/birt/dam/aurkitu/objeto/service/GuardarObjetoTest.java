@@ -70,7 +70,7 @@ class GuardarObjetoTest {
 		objetoDTO.setIdTipoObjeto(1);
 		objetoDTO.setIdColor(2);
 		objetoDTO.setDescripcion("Móvil Samsung negro");
-		objetoDTO.setFechaPerdida(Instant.now());
+		objetoDTO.setFecha(Instant.now());
 
 		// Configurar entidades
 		usuarioEntity = UsuarioEntity.builder().id(1).username("testuser").build();
