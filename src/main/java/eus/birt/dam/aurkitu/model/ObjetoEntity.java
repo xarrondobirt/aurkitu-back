@@ -54,7 +54,7 @@ public class ObjetoEntity {
 	@Column(name = "radio_metros")
 	private Integer radio;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tipo", referencedColumnName = "id")
 	private TipoObjetoEntity tipo;
 
