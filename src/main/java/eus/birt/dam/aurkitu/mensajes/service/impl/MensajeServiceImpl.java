@@ -47,8 +47,6 @@ public class MensajeServiceImpl implements MensajeService {
 	@Transactional(rollbackOn = Exception.class)
 	public MensajeInfoResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest) {
 
-//		log.info("MENSAJE - SERVICE - ENVIAR MENSAJE");
-
 		// Obtener usuarios participantes
 		UsuarioEntity remitente = usuarioRepo.findById(sesion.getId())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
@@ -106,8 +104,6 @@ public class MensajeServiceImpl implements MensajeService {
 	@Override
 	public List<ConversacionResponse> obtenerConversacionesUsuario(SesionDTO sesion) {
 
-//		log.info("MENSAJE - SERVICE - OBTENER CONVERSACIONES");
-
 		Set<ConversacionEntity> conversaciones = conversacionRepo.findByParticipante1IdOrParticipante2Id(sesion.getId(),
 				sesion.getId());
 
@@ -121,8 +117,6 @@ public class MensajeServiceImpl implements MensajeService {
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public List<MensajeDTO> obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
-
-//		log.info("MENSAJE - SERVICE - OBTENER MENSAJES");
 
 		// Obtener conversación
 		ConversacionEntity conversacion = conversacionRepo.findById(idConversacion)

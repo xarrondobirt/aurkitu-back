@@ -22,7 +22,8 @@ public abstract class ConversacionMapper {
 
 	@Mapping(target = "participante", expression = "java(obtenerOtroParticipante(source, sesion))")
 	@Mapping(target = "idObjeto", source = "source.objeto.id")
-	@Mapping(target = "mensajesSinLeer", expression = "java(tieneMensajesSinLeer(source))")
+	@Mapping(target = "mensajesSinLeer", expression = "java(tieneMensajesSinLeer(source, sesion))")
+	@Mapping(target = "tipoObjeto", source = "source.objeto.tipo.codigo")
 	public abstract ConversacionResponse toResponse(ConversacionEntity source, @Context SesionDTO sesion);
 
 	public abstract List<ConversacionResponse> toListResponse(List<ConversacionEntity> source,
@@ -48,9 +49,12 @@ public abstract class ConversacionMapper {
 	 * Verifica si una conversación tiene mensajes sin leer
 	 * 
 	 * @param conversacion entidad de la conversación a verificar
+	 * @param sesion       sesión del participante actual
 	 * @return true si hay al menos un mensaje sin leer, false en caso contrario
 	 */
-	protected boolean tieneMensajesSinLeer(ConversacionEntity conversacion) {
-		return conversacion.getMensajes().stream().anyMatch(m -> !m.isLeido());
+	protected boolean tieneMensajesSinLeer(ConversacionEntity conversacion, SesionDTO sesion) {
+
+		return conversacion.getMensajes().stream()
+				.anyMatch(m -> !m.isLeido() && !m.getRemitente().getId().equals(sesion.getId()));
 	}
 }
