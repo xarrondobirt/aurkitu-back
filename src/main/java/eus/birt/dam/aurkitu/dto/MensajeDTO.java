@@ -5,6 +5,7 @@ import java.time.Instant;
 import eus.birt.dam.aurkitu.model.MensajeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,11 +15,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Schema(description = "DTO que representa un mensaje en una conversación")
 public final class MensajeDTO {
 
 	@Schema(description = "ID único del mensaje")
-	private Long id;
+	private Integer id;
 
 	@Schema(description = "Información del usuario que envió el mensaje")
 	private SesionDTO remitente;

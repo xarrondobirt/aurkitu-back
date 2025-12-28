@@ -9,6 +9,7 @@ import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
 import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 
 /**
@@ -56,5 +57,15 @@ public interface ObjetoService {
 	 * @return Lista de objetos que coinciden con los filtros
 	 */
 	List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros);
+
+	/**
+	 * Establece un chat entre 2 usuarios para un objeto
+	 * 
+	 * @param sesion    sesión del usuario conectado
+	 * @param idUsuario id del usuario con el que se establece el chat
+	 * @param idObjeto  id del objeto por el que se establece el chat
+	 * @return conversacion con la lista de mensajes de la conversación
+	 */
+	ConversacionDetalleResponse verChat(SesionDTO sesion, Integer idUsuario, Integer idObjeto);
 
 }

@@ -12,16 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +86,7 @@ public class MensajeController {
 	 */
 	@Operation(summary = "Obtener mensajes de conversación", description = "Obtiene los mensajes de una conversación específica y los marca como leídos")
 	@GetMapping("/conversacion/{idConversacion}/mensajes")
-	public ResponseEntity<List<MensajeDTO>> obtenerMensajes(@PathVariable Integer idConversacion,
+	public ResponseEntity<ConversacionDetalleResponse> obtenerMensajes(@PathVariable @NotNull Integer idConversacion,
 			HttpServletRequest request) {
 
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
@@ -94,7 +95,7 @@ public class MensajeController {
 				idConversacion);
 
 		// Este método obtiene y marca como leídos
-		List<MensajeDTO> mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
+		ConversacionDetalleResponse mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
 
 		return new ResponseEntity<>(mensajes, HttpStatus.OK);
 	}

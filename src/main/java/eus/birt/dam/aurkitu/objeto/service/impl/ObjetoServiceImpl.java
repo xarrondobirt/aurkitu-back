@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eus.birt.dam.aurkitu.common.file.service.FileStorageService;
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
+import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.ObjetoDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
@@ -20,9 +21,14 @@ import eus.birt.dam.aurkitu.enums.FiltroBusquedaEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mapper.BuscarObjetoMapper;
 import eus.birt.dam.aurkitu.mapper.ClaveValorMapper;
+import eus.birt.dam.aurkitu.mapper.MensajeMapper;
 import eus.birt.dam.aurkitu.mapper.ObjetoMapper;
+import eus.birt.dam.aurkitu.mensajes.persistence.MensajeRepository;
+import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.model.ColorEntity;
+import eus.birt.dam.aurkitu.model.ConversacionEntity;
 import eus.birt.dam.aurkitu.model.EstadoObjetoEntity;
+import eus.birt.dam.aurkitu.model.MensajeEntity;
 import eus.birt.dam.aurkitu.model.ObjetoEntity;
 import eus.birt.dam.aurkitu.model.TipoObjetoEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
@@ -33,6 +39,7 @@ import eus.birt.dam.aurkitu.objeto.persistence.TipoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
 import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
 import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
 import eus.birt.dam.aurkitu.utils.Constantes;
@@ -56,9 +63,11 @@ public class ObjetoServiceImpl implements ObjetoService {
 	private final UsuarioRepository usuarioRepo;
 	private final EstadoObjetoRepository estadoObjetoRepo;
 	private final FileStorageService fileStorageService;
+	private final MensajeService mensajeService;
+	private final MensajeRepository mensajeRepo;
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public MensajeInfoResponse guardarObjeto(ObjetoDTO objetoDTO, SesionDTO sesion, MultipartFile foto,
 			MultipartFile factura) {
 
@@ -117,7 +126,6 @@ public class ObjetoServiceImpl implements ObjetoService {
 	}
 
 	@Override
-	@Transactional
 	public List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros) {
 
 		Specification<ObjetoEntity> spec = this.crearQuery(filtros);
@@ -215,5 +223,34 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 			return cb.and(predicates.toArray(new Predicate[0]));
 		};
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public ConversacionDetalleResponse verChat(SesionDTO sesion, Integer idUsuario, Integer idObjeto) {
+
+		UsuarioEntity remitente = usuarioRepo.findById(sesion.getId())
+				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+
+		UsuarioEntity destinatario = usuarioRepo.findById(idUsuario)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
+
+		ObjetoEntity objeto = objetoRepo.findById(idObjeto)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.OBJETO_NO_ENCONTRADO));
+
+		ConversacionEntity conversacion = mensajeService.obtenerCrearConversacion(remitente, destinatario, objeto);
+
+		// Marcar como leídos solo los mensajes donde el usuario no es el remitente
+		List<MensajeEntity> mensajes = conversacion.getMensajes().stream()
+				.filter(m -> !m.isLeido() && !m.getRemitente().getId().equals(sesion.getId())).toList();
+
+		mensajes.forEach(m -> m.setLeido(true));
+		mensajeRepo.saveAll(mensajes);
+
+		List<MensajeDTO> listaMensajes = MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
+
+		return ConversacionDetalleResponse.builder().idConversacion(conversacion.getId()).mensajes(listaMensajes)
+				.build();
+
 	}
 }
