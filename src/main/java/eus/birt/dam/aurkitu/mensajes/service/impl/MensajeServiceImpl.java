@@ -22,6 +22,7 @@ import eus.birt.dam.aurkitu.model.ObjetoEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
@@ -74,15 +75,8 @@ public class MensajeServiceImpl implements MensajeService {
 		return new MensajeInfoResponse(Constantes.MENSAJE_ENVIADO);
 	}
 
-	/**
-	 * Obtiene o crea una conversación entre dos usuarios sobre un objeto específico
-	 * 
-	 * @param usuario1 primer usuario participante
-	 * @param usuario2 segundo usuario participante
-	 * @param objeto   objeto sobre el que trata la conversación
-	 * @return conversación existente o nueva conversación creada
-	 */
-	private ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2,
+	@Override
+	public ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2,
 			ObjetoEntity objeto) {
 
 		// Buscar conversación específica
@@ -116,7 +110,7 @@ public class MensajeServiceImpl implements MensajeService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public List<MensajeDTO> obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
+	public ConversacionDetalleResponse obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
 
 		// Obtener conversación
 		ConversacionEntity conversacion = conversacionRepo.findById(idConversacion)
@@ -129,7 +123,9 @@ public class MensajeServiceImpl implements MensajeService {
 		mensajes.forEach(m -> m.setLeido(true));
 		mensajeRepo.saveAll(mensajes);
 
-		return MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
+		List<MensajeDTO> listaMensajes = MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
+
+		return ConversacionDetalleResponse.builder().idConversacion(idConversacion).mensajes(listaMensajes).build();
 
 	}
 }

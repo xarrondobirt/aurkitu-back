@@ -2,9 +2,12 @@ package eus.birt.dam.aurkitu.mensajes.service;
 
 import java.util.List;
 
-import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
+import eus.birt.dam.aurkitu.model.ConversacionEntity;
+import eus.birt.dam.aurkitu.model.ObjetoEntity;
+import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 
@@ -36,8 +39,18 @@ public interface MensajeService {
 	 * 
 	 * @param idConversacion identificador de la conversación
 	 * @param sesion         sesión del usuario que solicita los mensajes
-	 * @return lista de mensajes de la conversación
+	 * @return id de la conversacion con la lista de mensajes de la conversación
 	 */
-	List<MensajeDTO> obtenerMensajes(Integer idConversacion, SesionDTO sesion);
+	ConversacionDetalleResponse obtenerMensajes(Integer idConversacion, SesionDTO sesion);
+
+	/**
+	 * Obtiene o crea una conversación entre dos usuarios sobre un objeto específico
+	 * 
+	 * @param usuario1 primer usuario participante
+	 * @param usuario2 segundo usuario participante
+	 * @param objeto   objeto sobre el que trata la conversación
+	 * @return conversación existente o nueva conversación creada
+	 */
+	ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2, ObjetoEntity objeto);
 
 }

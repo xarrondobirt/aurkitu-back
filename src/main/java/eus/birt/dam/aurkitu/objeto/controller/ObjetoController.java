@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,12 +21,14 @@ import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.objeto.service.ObjetoService;
 import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
 import eus.birt.dam.aurkitu.payload.response.BuscarObjetoResponse;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -134,6 +137,7 @@ public class ObjetoController {
 	 * @return ResponseEntity con la lista de objetos que coinciden con los filtros
 	 */
 	@PostMapping("/buscar")
+	@Operation(summary = "Buscar objetos", description = "Busca objetos perdidos con filtros")
 	public ResponseEntity<List<BuscarObjetoResponse>> buscarObjetos(HttpServletRequest request,
 			@Valid @RequestBody BuscarObjetoRequest filtros) {
 
@@ -142,5 +146,27 @@ public class ObjetoController {
 		log.info("OBJETO - CONTROLLER - BUSCAR - header: {} - filtros: {}", sesion.toString(), filtros.toString());
 
 		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
+	}
+
+	/**
+	 * Muestra la pantalla de chat entre usuarios para un objeto
+	 * 
+	 * @param idUsuario identificador del usuario con el que se establece el chat
+	 * @param idObjeto  identificador del objeto sobre el que se establece el chat
+	 * @return ResponseEntity con la lista de mensajes del chat
+	 */
+	@Operation(summary = "Ver chat", description = "Muestra la pantalla de chat entre usuarios para un objeto")
+	@GetMapping("/ver-chat")
+	public ResponseEntity<ConversacionDetalleResponse> verChat(HttpServletRequest request,
+			@RequestParam @NotNull Integer idUsuario, @RequestParam @NotNull Integer idObjeto) {
+
+		// Comprobar usuario
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
+
+		log.info("OBJETO - CONTROLLER - VER CHAT - header: {} - idUsuario: {} - idObjeto: {}", sesion.toString(),
+				idUsuario, idObjeto);
+
+		return new ResponseEntity<>(objetoService.verChat(sesion, idUsuario, idObjeto), HttpStatus.OK);
+
 	}
 }

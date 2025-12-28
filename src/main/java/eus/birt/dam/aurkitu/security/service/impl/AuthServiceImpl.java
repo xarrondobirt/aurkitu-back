@@ -53,15 +53,9 @@ public class AuthServiceImpl implements AuthService {
 	private int refreshTokenDurationMs;
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public RegistroUsuarioResponse registrarUsuario(UsuarioDTO usuarioDTO) {
 
-//		log.info("AUTH - SERVICE - REGISTRO");
-
-		// Verificar si el email ya existe y reenviar el código si se da el caso
-//		if (usuarioRepo.existsByEmail(usuarioDTO.getEmail())) {
-//			throw new AurkituException(ErrorEnum.EMAIL_ALREADY_EXISTS);
-//		}
 		Optional<UsuarioEntity> usuarioExistente = usuarioRepo.findByEmail(usuarioDTO.getEmail());
 		if (usuarioExistente.isPresent()) {
 			UsuarioEntity usuario = usuarioExistente.get();
@@ -114,10 +108,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public MensajeInfoResponse verificarCodigo(RegistroUsuarioRequest request) {
-
-//		log.info("AUTH - SERVICE - VERIFICAR CODIGO");
 
 		UsuarioEntity usuario = usuarioRepo.findById(request.getIdUsuario())
 				.orElseThrow(() -> new AurkituException(ErrorEnum.USER_NOT_FOUND));
@@ -148,10 +140,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public LoginResponse login(LoginRequest request) {
-
-//		log.info("AUTH - SERVICE - LOGIN");
 
 		// Validar credenciales
 		UsuarioEntity usuario = usuarioRepo.findByUsername(request.getUsername())
