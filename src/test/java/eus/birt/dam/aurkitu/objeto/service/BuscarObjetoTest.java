@@ -149,8 +149,8 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_FiltroPorEstado() {
 
 		// Arrange
-		ClaveValorDTO estado = new ClaveValorDTO(1, "PERDIDO");
-		request.setEstado(estado);
+//		ClaveValorDTO estado = new ClaveValorDTO(1, "PERDIDO");
+//		request.setEstado(estado);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act

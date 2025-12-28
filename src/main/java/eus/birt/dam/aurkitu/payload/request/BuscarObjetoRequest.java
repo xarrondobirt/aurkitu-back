@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class BuscarObjetoRequest {
 
-	private ClaveValorDTO estado;
+//	private ClaveValorDTO estado;
 
 	@NotNull(message = "La ubicación es obligatoria")
 	private UbicacionDTO ubicacion;

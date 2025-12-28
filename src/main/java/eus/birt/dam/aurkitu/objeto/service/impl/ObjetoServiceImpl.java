@@ -147,6 +147,11 @@ public class ObjetoServiceImpl implements ObjetoService {
 		return (root, query, cb) -> {
 			List<Predicate> predicates = new ArrayList<>();
 
+			// Filtro fijo por estado: Siempre mostrar solo objetos PERDIDOS
+			predicates
+					.add(cb.equal(root.get(FiltroBusquedaEnum.ESTADO.toString()).get(FiltroBusquedaEnum.ID.toString()),
+							EstadoObjetoEnum.PERDIDO.ordinal() + 1));
+
 			// Filtro por ubicación y radio
 			if (filtros.getUbicacion() != null) {
 
@@ -179,11 +184,11 @@ public class ObjetoServiceImpl implements ObjetoService {
 			}
 
 			// Filtro por estado
-			if (filtros.getEstado() != null) {
-				predicates.add(
-						cb.equal(root.get(FiltroBusquedaEnum.ESTADO.toString()).get(FiltroBusquedaEnum.ID.toString()),
-								filtros.getEstado().getId()));
-			}
+//			if (filtros.getEstado() != null) {
+//				predicates.add(
+//						cb.equal(root.get(FiltroBusquedaEnum.ESTADO.toString()).get(FiltroBusquedaEnum.ID.toString()),
+//								filtros.getEstado().getId()));
+//			}
 
 			// Filtro por fecha de pérdida (rango)
 //			if (filtros.getFechaDesde() != null) {
