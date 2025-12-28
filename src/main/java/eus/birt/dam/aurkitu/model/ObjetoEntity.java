@@ -37,11 +37,11 @@ public class ObjetoEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "estado_id", referencedColumnName = "id")
 	private EstadoObjetoEntity estado;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UsuarioEntity usuario;
 
@@ -66,7 +66,7 @@ public class ObjetoEntity {
 	@Column(name = "numero_serie")
 	private String serie;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "color", referencedColumnName = "id")
 	private ColorEntity color;
 
