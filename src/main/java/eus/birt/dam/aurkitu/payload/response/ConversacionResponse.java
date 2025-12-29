@@ -39,4 +39,7 @@ public final class ConversacionResponse {
 
 	@Schema(description = "Indica si hay mensajes nuevos sin leer en la conversación")
 	private boolean mensajesSinLeer;
+
+	@Schema(description = "Muestra el botón de cerrar caso")
+	private boolean btnCerrarCaso;
 }

@@ -1,6 +1,7 @@
 package eus.birt.dam.aurkitu.mapper;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -24,6 +25,7 @@ public abstract class ConversacionMapper {
 	@Mapping(target = "idObjeto", source = "source.objeto.id")
 	@Mapping(target = "mensajesSinLeer", expression = "java(tieneMensajesSinLeer(source, sesion))")
 	@Mapping(target = "tipoObjeto", source = "source.objeto.tipo.codigo")
+	@Mapping(target = "btnCerrarCaso", expression = "java(mostrarBtnCerrarCaso(source, sesion))")
 	public abstract ConversacionResponse toResponse(ConversacionEntity source, @Context SesionDTO sesion);
 
 	public abstract List<ConversacionResponse> toListResponse(List<ConversacionEntity> source,
@@ -56,5 +58,17 @@ public abstract class ConversacionMapper {
 
 		return conversacion.getMensajes().stream()
 				.anyMatch(m -> !m.isLeido() && !m.getRemitente().getId().equals(sesion.getId()));
+	}
+
+	/**
+	 * Determina si se debe mostrar el botón de cerrar caso en una conversación
+	 * 
+	 * @param conversacion entidad de la conversación a evaluar
+	 * @param sesion       sesión del usuario actual
+	 * @return true si el usuario es el dueño del objeto de la conversación, false en caso contrario
+	 */
+	protected boolean mostrarBtnCerrarCaso(ConversacionEntity conversacion, SesionDTO sesion) {
+
+		return Objects.equals(conversacion.getObjeto().getUsuario().getId(), sesion.getId());
 	}
 }
