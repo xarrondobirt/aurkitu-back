@@ -71,7 +71,7 @@ class MensajeTest {
 		sesion = SesionDTO.builder().id(1).username("usuario1").build();
 		usuarioRemitente = UsuarioEntity.builder().id(1).username("usuario1").build();
 		usuarioDestinatario = UsuarioEntity.builder().id(2).username("usuario2").build();
-		objeto = ObjetoEntity.builder().id(100).descripcion("Móvil perdido").build();
+		objeto = ObjetoEntity.builder().id(100).descripcion("Móvil perdido").usuario(usuarioDestinatario).build();
 		conversacion = ConversacionEntity.builder().id(10).participante1(usuarioRemitente)
 				.participante2(usuarioDestinatario).objeto(objeto).lastUpdateDate(Instant.now()).build();
 		mensaje = MensajeEntity.builder().id(20).conversacion(conversacion).remitente(usuarioRemitente)
@@ -127,10 +127,11 @@ class MensajeTest {
 
 		// Arrange
 		ConversacionEntity conv1 = ConversacionEntity.builder().id(1).participante1(usuarioRemitente)
-				.participante2(usuarioDestinatario).lastUpdateDate(Instant.now().minusSeconds(3600)).build();
-		ConversacionEntity conv2 = ConversacionEntity.builder().id(2).participante1(usuarioDestinatario)
-				.participante2(UsuarioEntity.builder().id(3).username("usuario3").build()).lastUpdateDate(Instant.now())
+				.participante2(usuarioDestinatario).lastUpdateDate(Instant.now().minusSeconds(3600)).objeto(objeto)
 				.build();
+		ConversacionEntity conv2 = ConversacionEntity.builder().id(2).participante1(usuarioDestinatario)
+				.participante2(UsuarioEntity.builder().id(3).username("usuario3").build()).objeto(objeto)
+				.lastUpdateDate(Instant.now()).build();
 
 		Mockito.when(conversacionRepo.findByParticipante1IdOrParticipante2Id(1, 1)).thenReturn(Set.of(conv1, conv2));
 
