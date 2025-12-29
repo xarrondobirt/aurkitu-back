@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mapper.ConversacionMapper;
 import eus.birt.dam.aurkitu.mapper.MensajeMapper;
@@ -17,9 +18,11 @@ import eus.birt.dam.aurkitu.mensajes.persistence.ConversacionRepository;
 import eus.birt.dam.aurkitu.mensajes.persistence.MensajeRepository;
 import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.model.ConversacionEntity;
+import eus.birt.dam.aurkitu.model.EstadoObjetoEntity;
 import eus.birt.dam.aurkitu.model.MensajeEntity;
 import eus.birt.dam.aurkitu.model.ObjetoEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
@@ -43,6 +46,7 @@ public class MensajeServiceImpl implements MensajeService {
 	private final MensajeRepository mensajeRepo;
 	private final UsuarioRepository usuarioRepo;
 	private final ObjetoRepository objetoRepo;
+	private final EstadoObjetoRepository estadoObjetoRepo;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -127,5 +131,22 @@ public class MensajeServiceImpl implements MensajeService {
 
 		return ConversacionDetalleResponse.builder().idConversacion(idConversacion).mensajes(listaMensajes).build();
 
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public MensajeInfoResponse cerrarCaso(SesionDTO sesion, Integer idObjeto) {
+
+		ObjetoEntity objeto = objetoRepo.findById(idObjeto)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.OBJETO_NO_ENCONTRADO));
+
+		EstadoObjetoEntity estadoDevuelto = estadoObjetoRepo.findById(EstadoObjetoEnum.DEVUELTO.ordinal() + 1)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.ESTADO_NO_ENCONTRADO));
+
+		objeto.setEstado(estadoDevuelto);
+		objeto.setLastUpdateDate(Instant.now());
+		objetoRepo.save(objeto);
+
+		return new MensajeInfoResponse(Constantes.CASO_CERRADO);
 	}
 }

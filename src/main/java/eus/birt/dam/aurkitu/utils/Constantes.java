@@ -21,4 +21,5 @@ public class Constantes {
 	public static final String PASSWORD_ACTUALIZADA = "Contraseña actualizada correctamente";
 	public static final String OBJETO_GUARDADO = "Objeto guardado correctamente";
 	public static final String MENSAJE_ENVIADO = "Mensaje enviado correctamente";
+	public static final String CASO_CERRADO = "Objeto devuelto a su propietario/a";
 }
