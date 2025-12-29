@@ -53,4 +53,13 @@ public interface MensajeService {
 	 */
 	ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2, ObjetoEntity objeto);
 
+	/**
+	 * Cierra un caso de objeto perdido cambiando su estado a devuelto
+	 * 
+	 * @param sesion   sesión del usuario conectado
+	 * @param idObjeto identificador del objeto cuyo caso se va a cerrar
+	 * @return Mensaje con la respuesta informativa del cierre del caso
+	 */
+	MensajeInfoResponse cerrarCaso(SesionDTO sesion, Integer idObjeto);
+
 }
