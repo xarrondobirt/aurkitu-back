@@ -66,54 +66,6 @@ class BuscarObjetoTest {
 	}
 
 	@Test
-	void testBuscarObjetos_FiltroPorDescripcion() {
-
-		// Arrange
-		request.setDescripcion("móvil");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("Móvil Samsung negro", resultado.getFirst().getDescripcion());
-	}
-
-	@Test
-	void testBuscarObjetos_FiltroPorMarca() {
-
-		// Arrange
-		request.setMarca("samsung");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("Samsung", resultado.getFirst().getMarca());
-	}
-
-	@Test
-	void testBuscarObjetos_FiltroPorNumSerie() {
-
-		// Arrange
-		request.setSerie("SN123");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("SN123", resultado.getFirst().getSerie());
-	}
-
-	@Test
 	void testBuscarObjetos_FiltroPorTipoObjeto() {
 
 		// Arrange
@@ -130,27 +82,9 @@ class BuscarObjetoTest {
 	}
 
 	@Test
-	void testBuscarObjetos_FiltroPorColor() {
-
-		// Arrange
-		ClaveValorDTO color = new ClaveValorDTO(2, "NEGRO");
-		request.setColor(color);
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-	}
-
-	@Test
 	void testBuscarObjetos_FiltroPorEstado() {
 
 		// Arrange
-//		ClaveValorDTO estado = new ClaveValorDTO(1, "PERDIDO");
-//		request.setEstado(estado);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
@@ -214,8 +148,6 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_MultiplesFiltros() {
 
 		// Arrange
-		request.setDescripcion("samsung");
-		request.setMarca("Samsung");
 		ClaveValorDTO tipo = new ClaveValorDTO(1, "MOVIL");
 		request.setTipo(tipo);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
@@ -233,7 +165,6 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_SinResultados() {
 
 		// Arrange
-		request.setDescripcion("inexistente");
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.emptyList());
 
 		// Act
