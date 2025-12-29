@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class BuscarObjetoRequest {
 
-//	private ClaveValorDTO estado;
-
 	@NotNull(message = "La ubicación es obligatoria")
 	private UbicacionDTO ubicacion;
 
@@ -26,11 +24,9 @@ public final class BuscarObjetoRequest {
 
 	@NotNull(message = "El tipo de objeto es obligatorio")
 	private ClaveValorDTO tipo;
-	private String descripcion;
-	private String marca;
-	private String serie;
-	private ClaveValorDTO color;
+	// private String descripcion;
+	// private String marca;
+	// private String serie;
+	// private ClaveValorDTO color;
 	private Instant fecha;
-	// private Instant fechaHasta;
-
 }

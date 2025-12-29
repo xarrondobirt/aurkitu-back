@@ -153,35 +153,38 @@ public class ObjetoServiceImpl implements ObjetoService {
 							EstadoObjetoEnum.PERDIDO.ordinal() + 1));
 
 			// Filtro por ubicación y radio
-			if (filtros.getUbicacion() != null) {
+//			if (filtros.getUbicacion() != null) {
 
-				int radio = filtros.getRadio() != null ? filtros.getRadio() : 0;
+			int radio = filtros.getRadio() != null ? filtros.getRadio() : 0;
 
-				// Usar función PostGIS ST_DWithin para búsqueda por radio
-				Expression<Boolean> distancePredicate = cb.function("ST_DWithin", Boolean.class,
-						root.get(FiltroBusquedaEnum.UBICACION.toString()),
-						cb.function("ST_SetSRID", Point.class,
-								cb.function("ST_MakePoint", Point.class,
-										cb.literal(filtros.getUbicacion().getLongitud()),
-										cb.literal(filtros.getUbicacion().getLatitud())),
-								cb.literal(4326)),
-						cb.literal(radio));
-				predicates.add(cb.equal(distancePredicate, true));
-			}
+			Expression<Point> puntoBusqueda = cb.function("ST_SetSRID", Point.class,
+					cb.function("ST_MakePoint", Point.class, cb.literal(filtros.getUbicacion().getLongitud()),
+							cb.literal(filtros.getUbicacion().getLatitud())),
+					cb.literal(4326));
+
+			// Usar función PostGIS ST_DWithin para búsqueda por radio
+			Expression<Boolean> distancePredicate = cb.function("ST_DWithin", Boolean.class,
+					root.get(FiltroBusquedaEnum.UBICACION.toString()), puntoBusqueda, cb.literal(radio));
+			predicates.add(cb.equal(distancePredicate, true));
+//			}
+
+			// Orden por distancia (ST_Distance)
+			Expression<Double> distancia = cb.function("ST_Distance", Double.class, root.get("ubicacion"),
+					puntoBusqueda);
+			query.orderBy(cb.asc(distancia));
 
 			// Filtro por tipo de objeto
-			if (filtros.getTipo() != null) {
-				predicates.add(
-						cb.equal(root.get(FiltroBusquedaEnum.TIPO.toString()).get(FiltroBusquedaEnum.ID.toString()),
-								filtros.getTipo().getId()));
-			}
+//			if (filtros.getTipo() != null) {
+			predicates.add(cb.equal(root.get(FiltroBusquedaEnum.TIPO.toString()).get(FiltroBusquedaEnum.ID.toString()),
+					filtros.getTipo().getId()));
+//			}
 
 			// Filtro por color
-			if (filtros.getColor() != null) {
-				predicates.add(
-						cb.equal(root.get(FiltroBusquedaEnum.COLOR.toString()).get(FiltroBusquedaEnum.ID.toString()),
-								filtros.getColor().getId()));
-			}
+//			if (filtros.getColor() != null) {
+//				predicates.add(
+//						cb.equal(root.get(FiltroBusquedaEnum.COLOR.toString()).get(FiltroBusquedaEnum.ID.toString()),
+//								filtros.getColor().getId()));
+//			}
 
 			// Filtro por estado
 //			if (filtros.getEstado() != null) {
@@ -200,31 +203,31 @@ public class ObjetoServiceImpl implements ObjetoService {
 //						filtros.getFechaHasta()));
 //			}
 
-			if (filtros.getFecha() != null) {
+//			if (filtros.getFecha() != null) {
 
-				Instant inicioDia = filtros.getFecha().truncatedTo(ChronoUnit.DAYS);
+			Instant inicioDia = filtros.getFecha().truncatedTo(ChronoUnit.DAYS);
 
-				Instant finDia = inicioDia.plus(1, ChronoUnit.DAYS).minus(1, ChronoUnit.MILLIS);
-
-				predicates.add(cb.between(root.get(FiltroBusquedaEnum.FECHA.toString()), inicioDia, finDia));
-			}
+			Instant finDia = Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS).minus(1,
+					ChronoUnit.MILLIS);
+			predicates.add(cb.between(root.get(FiltroBusquedaEnum.FECHA.toString()), inicioDia, finDia));
+//			}
 
 			// Filtro por descripción
-			if (filtros.getDescripcion() != null && !filtros.getDescripcion().trim().isEmpty()) {
-				String likePattern = "%" + filtros.getDescripcion().toLowerCase() + "%";
-				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.DESCRIPCION.toString())), likePattern));
-			}
+//			if (filtros.getDescripcion() != null && !filtros.getDescripcion().trim().isEmpty()) {
+//				String likePattern = "%" + filtros.getDescripcion().toLowerCase() + "%";
+//				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.DESCRIPCION.toString())), likePattern));
+//			}
 
 			// Filtro por marca
-			if (filtros.getMarca() != null && !filtros.getMarca().trim().isEmpty()) {
-				String likePattern = "%" + filtros.getMarca().toLowerCase() + "%";
-				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.MARCA.toString())), likePattern));
-			}
+//			if (filtros.getMarca() != null && !filtros.getMarca().trim().isEmpty()) {
+//				String likePattern = "%" + filtros.getMarca().toLowerCase() + "%";
+//				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.MARCA.toString())), likePattern));
+//			}
 
 			// Filtro por número de serie
-			if (filtros.getSerie() != null && !filtros.getSerie().trim().isEmpty()) {
-				predicates.add(cb.equal(root.get(FiltroBusquedaEnum.SERIE.toString()), filtros.getSerie()));
-			}
+//			if (filtros.getSerie() != null && !filtros.getSerie().trim().isEmpty()) {
+//				predicates.add(cb.equal(root.get(FiltroBusquedaEnum.SERIE.toString()), filtros.getSerie()));
+//			}
 
 			return cb.and(predicates.toArray(new Predicate[0]));
 		};
