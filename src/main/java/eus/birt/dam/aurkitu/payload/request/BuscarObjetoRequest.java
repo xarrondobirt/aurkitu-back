@@ -1,6 +1,7 @@
 package eus.birt.dam.aurkitu.payload.request;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
 import eus.birt.dam.aurkitu.dto.UbicacionDTO;
@@ -28,5 +29,6 @@ public final class BuscarObjetoRequest {
 	// private String marca;
 	// private String serie;
 	// private ClaveValorDTO color;
-	private Instant fecha;
+	// TODO: Quitar mockeo
+	private Instant fecha = Instant.now().minus(365, ChronoUnit.DAYS);
 }
