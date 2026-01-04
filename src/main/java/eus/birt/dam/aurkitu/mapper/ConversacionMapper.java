@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import eus.birt.dam.aurkitu.dto.SesionDTO;
+import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.model.ConversacionEntity;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 
@@ -69,6 +70,7 @@ public abstract class ConversacionMapper {
 	 */
 	protected boolean mostrarBtnCerrarCaso(ConversacionEntity conversacion, SesionDTO sesion) {
 
-		return Objects.equals(conversacion.getObjeto().getUsuario().getId(), sesion.getId());
+		return Objects.equals(conversacion.getObjeto().getUsuario().getId(), sesion.getId())
+				&& Objects.equals(conversacion.getObjeto().getEstado().getId(), EstadoObjetoEnum.PERDIDO.ordinal() + 1);
 	}
 }
