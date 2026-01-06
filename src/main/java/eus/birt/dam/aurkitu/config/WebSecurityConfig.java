@@ -80,6 +80,8 @@ public class WebSecurityConfig {
 				// PRODUCCIÓN (El dominio real desde donde carga Angular)
 				"https://673bd45f-8f51-4f9e-bfdf.ad161612c2a6.pc.birt.eus",
 				"https://23e1799f-64b7-4fd3-ba1e-c6bd129c353a.pc.birt.eus",
+                "https://673bd45f-8f51-4f9e-bfdf.ad161612c2a6.pc.birt.eus:8443",
+                "https://23e1799f-64b7-4fd3-ba1e-c6bd129c353a.pc.birt.eus:8443",
 				// DESARROLLO (Túnel SSH, vital para tu entorno actual)
 				"https://localhost:8443",
 				// LOCALHOST (Desarrollo Angular estándar)
