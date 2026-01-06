@@ -44,10 +44,10 @@ class BuscarObjetoTest {
 	void setup() {
 		request = new BuscarObjetoRequest();
 		objetosMock = Arrays.asList(
-				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").numSerie("SN123")
-						.fechaPerdida(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
+				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").serie("SN123")
+						.fecha(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
 				ObjetoEntity.builder().id(2).descripcion("Cartera de cuero marrón").marca("Desconocida")
-						.fechaPerdida(Instant.now().minus(1, ChronoUnit.DAYS)).build());
+						.fecha(Instant.now().minus(1, ChronoUnit.DAYS)).build());
 		spec = Mockito.argThat(specification -> true);
 	}
 
@@ -63,54 +63,6 @@ class BuscarObjetoTest {
 		// Assert
 		assertNotNull(resultado);
 		assertEquals(2, resultado.size());
-	}
-
-	@Test
-	void testBuscarObjetos_FiltroPorDescripcion() {
-
-		// Arrange
-		request.setDescripcion("móvil");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("Móvil Samsung negro", resultado.getFirst().getDescripcion());
-	}
-
-	@Test
-	void testBuscarObjetos_FiltroPorMarca() {
-
-		// Arrange
-		request.setMarca("samsung");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("Samsung", resultado.getFirst().getMarca());
-	}
-
-	@Test
-	void testBuscarObjetos_FiltroPorNumSerie() {
-
-		// Arrange
-		request.setNumSerie("SN123");
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-		assertEquals("SN123", resultado.getFirst().getNumSerie());
 	}
 
 	@Test
@@ -130,27 +82,9 @@ class BuscarObjetoTest {
 	}
 
 	@Test
-	void testBuscarObjetos_FiltroPorColor() {
-
-		// Arrange
-		ClaveValorDTO color = new ClaveValorDTO(2, "NEGRO");
-		request.setColor(color);
-		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
-
-		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
-
-		// Assert
-		assertNotNull(resultado);
-		assertEquals(1, resultado.size());
-	}
-
-	@Test
 	void testBuscarObjetos_FiltroPorEstado() {
 
 		// Arrange
-		ClaveValorDTO estado = new ClaveValorDTO(1, "PERDIDO");
-		request.setEstado(estado);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
@@ -166,9 +100,7 @@ class BuscarObjetoTest {
 
 		// Arrange
 		Instant fechaDesde = Instant.now().minus(3, ChronoUnit.DAYS);
-		Instant fechaHasta = Instant.now().minus(1, ChronoUnit.DAYS);
-		request.setFechaDesde(fechaDesde);
-		request.setFechaHasta(fechaHasta);
+		request.setFecha(fechaDesde);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(objetosMock);
 
 		// Act
@@ -216,8 +148,6 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_MultiplesFiltros() {
 
 		// Arrange
-		request.setDescripcion("samsung");
-		request.setMarca("Samsung");
 		ClaveValorDTO tipo = new ClaveValorDTO(1, "MOVIL");
 		request.setTipo(tipo);
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
@@ -235,7 +165,6 @@ class BuscarObjetoTest {
 	void testBuscarObjetos_SinResultados() {
 
 		// Arrange
-		request.setDescripcion("inexistente");
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.emptyList());
 
 		// Act

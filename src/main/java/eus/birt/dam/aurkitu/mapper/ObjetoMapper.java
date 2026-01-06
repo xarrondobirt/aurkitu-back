@@ -25,7 +25,7 @@ public abstract class ObjetoMapper {
 	@Mapping(target = "ubicacion", expression = "java(UBICACION_MAPPER.toPoint(source.getUbicacion()))")
 	@Mapping(target = "radio", source = "source.radio", defaultValue = "0")
 	@Mapping(target = "lastUpdateDate", expression = "java(java.time.Instant.now())")
-	public abstract ObjetoEntity toEntity(ObjetoDTO source, ColorEntity color, TipoObjetoEntity tipoObjeto,
+	public abstract ObjetoEntity toEntity(ObjetoDTO source, ColorEntity color, TipoObjetoEntity tipo,
 			UsuarioEntity usuario);
 
 }

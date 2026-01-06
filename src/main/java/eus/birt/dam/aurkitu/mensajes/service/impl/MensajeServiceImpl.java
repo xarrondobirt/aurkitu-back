@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.enums.ErrorEnum;
+import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mapper.ConversacionMapper;
 import eus.birt.dam.aurkitu.mapper.MensajeMapper;
@@ -17,11 +18,14 @@ import eus.birt.dam.aurkitu.mensajes.persistence.ConversacionRepository;
 import eus.birt.dam.aurkitu.mensajes.persistence.MensajeRepository;
 import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.model.ConversacionEntity;
+import eus.birt.dam.aurkitu.model.EstadoObjetoEntity;
 import eus.birt.dam.aurkitu.model.MensajeEntity;
 import eus.birt.dam.aurkitu.model.ObjetoEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.persistence.UsuarioRepository;
@@ -42,12 +46,11 @@ public class MensajeServiceImpl implements MensajeService {
 	private final MensajeRepository mensajeRepo;
 	private final UsuarioRepository usuarioRepo;
 	private final ObjetoRepository objetoRepo;
+	private final EstadoObjetoRepository estadoObjetoRepo;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public MensajeInfoResponse enviarMensaje(SesionDTO sesion, EnviarMensajeRequest msgRequest) {
-
-//		log.info("MENSAJE - SERVICE - ENVIAR MENSAJE");
 
 		// Obtener usuarios participantes
 		UsuarioEntity remitente = usuarioRepo.findById(sesion.getId())
@@ -76,15 +79,8 @@ public class MensajeServiceImpl implements MensajeService {
 		return new MensajeInfoResponse(Constantes.MENSAJE_ENVIADO);
 	}
 
-	/**
-	 * Obtiene o crea una conversación entre dos usuarios sobre un objeto específico
-	 * 
-	 * @param usuario1 primer usuario participante
-	 * @param usuario2 segundo usuario participante
-	 * @param objeto   objeto sobre el que trata la conversación
-	 * @return conversación existente o nueva conversación creada
-	 */
-	private ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2,
+	@Override
+	public ConversacionEntity obtenerCrearConversacion(UsuarioEntity usuario1, UsuarioEntity usuario2,
 			ObjetoEntity objeto) {
 
 		// Buscar conversación específica
@@ -106,8 +102,6 @@ public class MensajeServiceImpl implements MensajeService {
 	@Override
 	public List<ConversacionResponse> obtenerConversacionesUsuario(SesionDTO sesion) {
 
-//		log.info("MENSAJE - SERVICE - OBTENER CONVERSACIONES");
-
 		Set<ConversacionEntity> conversaciones = conversacionRepo.findByParticipante1IdOrParticipante2Id(sesion.getId(),
 				sesion.getId());
 
@@ -120,9 +114,7 @@ public class MensajeServiceImpl implements MensajeService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public List<MensajeDTO> obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
-
-//		log.info("MENSAJE - SERVICE - OBTENER MENSAJES");
+	public ConversacionDetalleResponse obtenerMensajes(Integer idConversacion, SesionDTO sesion) {
 
 		// Obtener conversación
 		ConversacionEntity conversacion = conversacionRepo.findById(idConversacion)
@@ -135,7 +127,26 @@ public class MensajeServiceImpl implements MensajeService {
 		mensajes.forEach(m -> m.setLeido(true));
 		mensajeRepo.saveAll(mensajes);
 
-		return MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
+		List<MensajeDTO> listaMensajes = MensajeMapper.MAPPER.toListDTO(conversacion.getMensajes(), sesion);
 
+		return ConversacionDetalleResponse.builder().idConversacion(idConversacion).mensajes(listaMensajes).build();
+
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public MensajeInfoResponse cerrarCaso(SesionDTO sesion, Integer idObjeto) {
+
+		ObjetoEntity objeto = objetoRepo.findById(idObjeto)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.OBJETO_NO_ENCONTRADO));
+
+		EstadoObjetoEntity estadoDevuelto = estadoObjetoRepo.findById(EstadoObjetoEnum.DEVUELTO.ordinal() + 1)
+				.orElseThrow(() -> new AurkituException(ErrorEnum.ESTADO_NO_ENCONTRADO));
+
+		objeto.setEstado(estadoDevuelto);
+		objeto.setLastUpdateDate(Instant.now());
+		objetoRepo.save(objeto);
+
+		return new MensajeInfoResponse(Constantes.CASO_CERRADO);
 	}
 }

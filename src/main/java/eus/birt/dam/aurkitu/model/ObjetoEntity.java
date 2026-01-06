@@ -37,11 +37,11 @@ public class ObjetoEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "estado_id", referencedColumnName = "id")
 	private EstadoObjetoEntity estado;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UsuarioEntity usuario;
 
@@ -54,7 +54,7 @@ public class ObjetoEntity {
 	@Column(name = "radio_metros")
 	private Integer radio;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tipo", referencedColumnName = "id")
 	private TipoObjetoEntity tipo;
 
@@ -64,9 +64,9 @@ public class ObjetoEntity {
 	private String marca;
 
 	@Column(name = "numero_serie")
-	private String numSerie;
+	private String serie;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "color", referencedColumnName = "id")
 	private ColorEntity color;
 
@@ -78,7 +78,7 @@ public class ObjetoEntity {
 
 	@NotNull
 	@Column(name = "fecha_perdida")
-	private Instant fechaPerdida;
+	private Instant fecha;
 
 	@NotNull
 	@Column(name = "create_date")

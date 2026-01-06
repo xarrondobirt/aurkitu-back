@@ -3,6 +3,7 @@ package eus.birt.dam.aurkitu.mensajes.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,14 +19,17 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import eus.birt.dam.aurkitu.dto.SesionDTO;
+import eus.birt.dam.aurkitu.enums.EstadoObjetoEnum;
 import eus.birt.dam.aurkitu.exception.AurkituException;
 import eus.birt.dam.aurkitu.mensajes.persistence.ConversacionRepository;
 import eus.birt.dam.aurkitu.mensajes.persistence.MensajeRepository;
 import eus.birt.dam.aurkitu.mensajes.service.impl.MensajeServiceImpl;
 import eus.birt.dam.aurkitu.model.ConversacionEntity;
+import eus.birt.dam.aurkitu.model.EstadoObjetoEntity;
 import eus.birt.dam.aurkitu.model.MensajeEntity;
 import eus.birt.dam.aurkitu.model.ObjetoEntity;
 import eus.birt.dam.aurkitu.model.UsuarioEntity;
+import eus.birt.dam.aurkitu.objeto.persistence.EstadoObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
@@ -48,6 +52,9 @@ class MensajeTest {
 	@Mock
 	private ObjetoRepository objetoRepo;
 
+	@Mock
+	private EstadoObjetoRepository estadoObjetoRepo;
+
 	@InjectMocks
 	private MensajeServiceImpl mensajeService;
 
@@ -64,7 +71,7 @@ class MensajeTest {
 		sesion = SesionDTO.builder().id(1).username("usuario1").build();
 		usuarioRemitente = UsuarioEntity.builder().id(1).username("usuario1").build();
 		usuarioDestinatario = UsuarioEntity.builder().id(2).username("usuario2").build();
-		objeto = ObjetoEntity.builder().id(100).descripcion("Móvil perdido").build();
+		objeto = ObjetoEntity.builder().id(100).descripcion("Móvil perdido").usuario(usuarioDestinatario).build();
 		conversacion = ConversacionEntity.builder().id(10).participante1(usuarioRemitente)
 				.participante2(usuarioDestinatario).objeto(objeto).lastUpdateDate(Instant.now()).build();
 		mensaje = MensajeEntity.builder().id(20).conversacion(conversacion).remitente(usuarioRemitente)
@@ -120,10 +127,11 @@ class MensajeTest {
 
 		// Arrange
 		ConversacionEntity conv1 = ConversacionEntity.builder().id(1).participante1(usuarioRemitente)
-				.participante2(usuarioDestinatario).lastUpdateDate(Instant.now().minusSeconds(3600)).build();
-		ConversacionEntity conv2 = ConversacionEntity.builder().id(2).participante1(usuarioDestinatario)
-				.participante2(UsuarioEntity.builder().id(3).username("usuario3").build()).lastUpdateDate(Instant.now())
+				.participante2(usuarioDestinatario).lastUpdateDate(Instant.now().minusSeconds(3600)).objeto(objeto)
 				.build();
+		ConversacionEntity conv2 = ConversacionEntity.builder().id(2).participante1(usuarioDestinatario)
+				.participante2(UsuarioEntity.builder().id(3).username("usuario3").build()).objeto(objeto)
+				.lastUpdateDate(Instant.now()).build();
 
 		Mockito.when(conversacionRepo.findByParticipante1IdOrParticipante2Id(1, 1)).thenReturn(Set.of(conv1, conv2));
 
@@ -146,5 +154,31 @@ class MensajeTest {
 
 		// Act & Assert
 		assertThrows(AurkituException.class, () -> mensajeService.obtenerMensajes(idConversacionInexistente, sesion));
+	}
+
+	@Test
+	void testCerrarCaso_CambiaEstadoADevuelto() {
+
+		// Arrange
+		Integer idObjeto = 100;
+		EstadoObjetoEntity estadoDevuelto = EstadoObjetoEntity.builder().id(EstadoObjetoEnum.DEVUELTO.ordinal() + 1)
+				.codigo("DEVUELTO").build();
+
+		Mockito.when(objetoRepo.findById(idObjeto)).thenReturn(Optional.of(objeto));
+
+		Mockito.when(estadoObjetoRepo.findById(EstadoObjetoEnum.DEVUELTO.ordinal() + 1))
+				.thenReturn(Optional.of(estadoDevuelto));
+
+		// Act
+		MensajeInfoResponse resultado = mensajeService.cerrarCaso(sesion, idObjeto);
+
+		// Assert
+		assertNotNull(resultado);
+		assertEquals(Constantes.CASO_CERRADO, resultado.getMensaje());
+		assertEquals(estadoDevuelto, objeto.getEstado());
+
+		Mockito.verify(objetoRepo, times(1)).findById(idObjeto);
+		Mockito.verify(estadoObjetoRepo, times(1)).findById(EstadoObjetoEnum.DEVUELTO.ordinal() + 1);
+		Mockito.verify(objetoRepo, times(1)).save(objeto);
 	}
 }

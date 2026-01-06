@@ -8,20 +8,22 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eus.birt.dam.aurkitu.dto.MensajeDTO;
 import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.mensajes.service.MensajeService;
 import eus.birt.dam.aurkitu.payload.request.EnviarMensajeRequest;
+import eus.birt.dam.aurkitu.payload.response.ConversacionDetalleResponse;
 import eus.birt.dam.aurkitu.payload.response.ConversacionResponse;
 import eus.birt.dam.aurkitu.payload.response.MensajeInfoResponse;
 import eus.birt.dam.aurkitu.security.jwt.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +87,7 @@ public class MensajeController {
 	 */
 	@Operation(summary = "Obtener mensajes de conversación", description = "Obtiene los mensajes de una conversación específica y los marca como leídos")
 	@GetMapping("/conversacion/{idConversacion}/mensajes")
-	public ResponseEntity<List<MensajeDTO>> obtenerMensajes(@PathVariable Integer idConversacion,
+	public ResponseEntity<ConversacionDetalleResponse> obtenerMensajes(@PathVariable @NotNull Integer idConversacion,
 			HttpServletRequest request) {
 
 		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
@@ -94,8 +96,27 @@ public class MensajeController {
 				idConversacion);
 
 		// Este método obtiene y marca como leídos
-		List<MensajeDTO> mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
+		ConversacionDetalleResponse mensajes = mensajeService.obtenerMensajes(idConversacion, sesion);
 
 		return new ResponseEntity<>(mensajes, HttpStatus.OK);
+	}
+
+	/**
+	 * Cierra un caso de objeto perdido cambiando su estado a devuelto
+	 * 
+	 * @param idObjeto identificador del objeto cuyo caso se va a cerrar
+	 * @param request  objeto HttpServletRequest para obtener la sesión del usuario
+	 * @return ResponseEntity con la respuesta informativa del cierre del caso
+	 */
+	@Operation(summary = "Cerrar caso", description = "Cambia el estado de un objeto perdido a devuelto")
+	@PutMapping("/cerrar-caso/{idObjeto}")
+	public ResponseEntity<MensajeInfoResponse> cerrarCaso(@PathVariable @NotNull Integer idObjeto,
+			HttpServletRequest request) {
+
+		SesionDTO sesion = jwtUtils.getSesionFromRequest(request);
+
+		log.info("MENSAJE - CONTROLLER - CERRAR CASO - header: {} - idObjeto: {}", sesion.toString(), idObjeto);
+
+		return new ResponseEntity<>(mensajeService.cerrarCaso(sesion, idObjeto), HttpStatus.OK);
 	}
 }

@@ -28,6 +28,9 @@ public final class ConversacionResponse {
 	@Schema(description = "ID del objeto relacionado con la conversación")
 	private Integer idObjeto;
 
+	@Schema(description = "Tipo del objeto relacionado con la conversación")
+	private String tipoObjeto;
+
 	@Schema(description = "Fecha y hora de creación de la conversación")
 	private Instant createDate;
 
@@ -36,4 +39,7 @@ public final class ConversacionResponse {
 
 	@Schema(description = "Indica si hay mensajes nuevos sin leer en la conversación")
 	private boolean mensajesSinLeer;
+
+	@Schema(description = "Muestra el botón de cerrar caso")
+	private boolean btnCerrarCaso;
 }
