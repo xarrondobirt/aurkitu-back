@@ -54,9 +54,10 @@ public interface ObjetoService {
 	 * Busca objetos aplicando múltiples filtros
 	 * 
 	 * @param filtros Objeto con todos los criterios de búsqueda aplicables
+	 * @param sesion  Sesion del usuario
 	 * @return Lista de objetos que coinciden con los filtros
 	 */
-	List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros);
+	List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros, SesionDTO sesion);
 
 	/**
 	 * Establece un chat entre 2 usuarios para un objeto

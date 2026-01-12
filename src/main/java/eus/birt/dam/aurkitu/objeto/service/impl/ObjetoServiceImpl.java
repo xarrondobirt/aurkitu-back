@@ -126,13 +126,13 @@ public class ObjetoServiceImpl implements ObjetoService {
 	}
 
 	@Override
-	public List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros) {
+	public List<BuscarObjetoResponse> buscarObjetos(BuscarObjetoRequest filtros, SesionDTO sesion) {
 
 		Specification<ObjetoEntity> spec = this.crearQuery(filtros);
 
 		List<ObjetoEntity> objetos = objetoRepo.findAll(spec);
 
-		return BuscarObjetoMapper.MAPPER.toResponseList(objetos);
+		return BuscarObjetoMapper.MAPPER.toResponseList(objetos, sesion);
 
 	}
 

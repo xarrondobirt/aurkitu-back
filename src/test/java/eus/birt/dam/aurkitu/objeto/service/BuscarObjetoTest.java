@@ -20,8 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
 import eus.birt.dam.aurkitu.dto.ClaveValorDTO;
+import eus.birt.dam.aurkitu.dto.SesionDTO;
 import eus.birt.dam.aurkitu.dto.UbicacionDTO;
 import eus.birt.dam.aurkitu.model.ObjetoEntity;
+import eus.birt.dam.aurkitu.model.UsuarioEntity;
 import eus.birt.dam.aurkitu.objeto.persistence.ObjetoRepository;
 import eus.birt.dam.aurkitu.objeto.service.impl.ObjetoServiceImpl;
 import eus.birt.dam.aurkitu.payload.request.BuscarObjetoRequest;
@@ -39,16 +41,20 @@ class BuscarObjetoTest {
 	private BuscarObjetoRequest request;
 	private List<ObjetoEntity> objetosMock;
 	private Specification<ObjetoEntity> spec;
+	private SesionDTO sesion;
 
 	@BeforeEach
 	void setup() {
 		request = new BuscarObjetoRequest();
 		objetosMock = Arrays.asList(
 				ObjetoEntity.builder().id(1).descripcion("Móvil Samsung negro").marca("Samsung").serie("SN123")
-						.fecha(Instant.now().minus(2, ChronoUnit.DAYS)).build(),
+						.fecha(Instant.now().minus(2, ChronoUnit.DAYS)).usuario(UsuarioEntity.builder().id(2).build())
+						.build(),
 				ObjetoEntity.builder().id(2).descripcion("Cartera de cuero marrón").marca("Desconocida")
-						.fecha(Instant.now().minus(1, ChronoUnit.DAYS)).build());
+						.fecha(Instant.now().minus(1, ChronoUnit.DAYS)).usuario(UsuarioEntity.builder().id(2).build())
+						.build());
 		spec = Mockito.argThat(specification -> true);
+		sesion = SesionDTO.builder().id(1).build();
 	}
 
 	@Test
@@ -58,7 +64,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(objetosMock);
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -74,7 +80,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -88,7 +94,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -104,7 +110,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(objetosMock);
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -120,7 +126,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -137,7 +143,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(objetosMock);
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -153,7 +159,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.singletonList(objetosMock.getFirst()));
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);
@@ -168,7 +174,7 @@ class BuscarObjetoTest {
 		Mockito.when(objetoRepo.findAll(spec)).thenReturn(Collections.emptyList());
 
 		// Act
-		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request);
+		List<BuscarObjetoResponse> resultado = objetoService.buscarObjetos(request, sesion);
 
 		// Assert
 		assertNotNull(resultado);

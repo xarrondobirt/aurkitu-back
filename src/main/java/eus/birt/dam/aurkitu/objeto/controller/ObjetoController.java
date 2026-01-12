@@ -145,7 +145,7 @@ public class ObjetoController {
 
 		log.info("OBJETO - CONTROLLER - BUSCAR - header: {} - filtros: {}", sesion.toString(), filtros.toString());
 
-		return ResponseEntity.ok(objetoService.buscarObjetos(filtros));
+		return ResponseEntity.ok(objetoService.buscarObjetos(filtros, sesion));
 	}
 
 	/**
