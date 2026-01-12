@@ -32,5 +32,6 @@ public final class BuscarObjetoResponse {
 	private Instant createDate;
 	private Instant lastUpdateDate;
 	private SesionDTO usuario;
+	private boolean mostrarChat;
 
 }
