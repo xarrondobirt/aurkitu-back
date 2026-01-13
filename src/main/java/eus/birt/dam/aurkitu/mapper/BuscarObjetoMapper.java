@@ -42,6 +42,6 @@ public abstract class BuscarObjetoMapper {
 	 */
 	protected boolean mostrarChat(ObjetoEntity objeto, SesionDTO sesion) {
 
-		return Objects.equals(objeto.getUsuario().getId(), sesion.getId());
+		return !Objects.equals(objeto.getUsuario().getId(), sesion.getId());
 	}
 }
