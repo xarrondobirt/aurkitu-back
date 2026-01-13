@@ -153,9 +153,10 @@ public class ObjetoServiceImpl implements ObjetoService {
 							EstadoObjetoEnum.PERDIDO.ordinal() + 1));
 
 			// Filtro por ubicación y radio
-//			if (filtros.getUbicacion() != null) {
-
 			int radio = filtros.getRadio() != null ? filtros.getRadio() : 0;
+
+			// Conversión a grados
+			double radioGrados = radio / 111000.0;
 
 			Expression<Point> puntoBusqueda = cb.function("ST_SetSRID", Point.class,
 					cb.function("ST_MakePoint", Point.class, cb.literal(filtros.getUbicacion().getLongitud()),
@@ -164,70 +165,25 @@ public class ObjetoServiceImpl implements ObjetoService {
 
 			// Usar función PostGIS ST_DWithin para búsqueda por radio
 			Expression<Boolean> distancePredicate = cb.function("ST_DWithin", Boolean.class,
-					root.get(FiltroBusquedaEnum.UBICACION.toString()), puntoBusqueda, cb.literal(radio));
-			predicates.add(cb.equal(distancePredicate, true));
-//			}
+					root.get(FiltroBusquedaEnum.UBICACION.toString()), puntoBusqueda, cb.literal(radioGrados));
+//			predicates.add(cb.equal(distancePredicate, true));
+			predicates.add(cb.isTrue(distancePredicate));
 
 			// Orden por distancia (ST_Distance)
-			Expression<Double> distancia = cb.function("ST_Distance", Double.class, root.get("ubicacion"),
-					puntoBusqueda);
+			Expression<Double> distancia = cb.function("ST_Distance", Double.class,
+					root.get(FiltroBusquedaEnum.UBICACION.toString()), puntoBusqueda);
+
 			query.orderBy(cb.asc(distancia));
 
 			// Filtro por tipo de objeto
-//			if (filtros.getTipo() != null) {
 			predicates.add(cb.equal(root.get(FiltroBusquedaEnum.TIPO.toString()).get(FiltroBusquedaEnum.ID.toString()),
 					filtros.getTipo().getId()));
-//			}
-
-			// Filtro por color
-//			if (filtros.getColor() != null) {
-//				predicates.add(
-//						cb.equal(root.get(FiltroBusquedaEnum.COLOR.toString()).get(FiltroBusquedaEnum.ID.toString()),
-//								filtros.getColor().getId()));
-//			}
-
-			// Filtro por estado
-//			if (filtros.getEstado() != null) {
-//				predicates.add(
-//						cb.equal(root.get(FiltroBusquedaEnum.ESTADO.toString()).get(FiltroBusquedaEnum.ID.toString()),
-//								filtros.getEstado().getId()));
-//			}
-
-			// Filtro por fecha de pérdida (rango)
-//			if (filtros.getFechaDesde() != null) {
-//				predicates.add(cb.greaterThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
-//						filtros.getFechaDesde()));
-//			}
-//			if (filtros.getFechaHasta() != null) {
-//				predicates.add(cb.lessThanOrEqualTo(root.get(FiltroBusquedaEnum.FECHA_PERDIDA.toString()),
-//						filtros.getFechaHasta()));
-//			}
-
-//			if (filtros.getFecha() != null) {
 
 			Instant inicioDia = filtros.getFecha().truncatedTo(ChronoUnit.DAYS);
 
 			Instant finDia = Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS).minus(1,
 					ChronoUnit.MILLIS);
 			predicates.add(cb.between(root.get(FiltroBusquedaEnum.FECHA.toString()), inicioDia, finDia));
-//			}
-
-			// Filtro por descripción
-//			if (filtros.getDescripcion() != null && !filtros.getDescripcion().trim().isEmpty()) {
-//				String likePattern = "%" + filtros.getDescripcion().toLowerCase() + "%";
-//				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.DESCRIPCION.toString())), likePattern));
-//			}
-
-			// Filtro por marca
-//			if (filtros.getMarca() != null && !filtros.getMarca().trim().isEmpty()) {
-//				String likePattern = "%" + filtros.getMarca().toLowerCase() + "%";
-//				predicates.add(cb.like(cb.lower(root.get(FiltroBusquedaEnum.MARCA.toString())), likePattern));
-//			}
-
-			// Filtro por número de serie
-//			if (filtros.getSerie() != null && !filtros.getSerie().trim().isEmpty()) {
-//				predicates.add(cb.equal(root.get(FiltroBusquedaEnum.SERIE.toString()), filtros.getSerie()));
-//			}
 
 			return cb.and(predicates.toArray(new Predicate[0]));
 		};
